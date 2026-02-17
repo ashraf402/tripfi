@@ -1,26 +1,107 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@theme {
+  --color-brand-primary: #00d084;
+  --color-brand-hover: #00b36e;
+  --color-brand-glow: rgba(0, 208, 132, 0.15);
 
-@theme inline {
-  --color-background: var(--background);
+  /* Map theme tokens to CSS variables for dynamic switching */
+  --color-surface: var(--surface);
+  --color-surface-card: var(--surface-card);
+  --color-border-default: var(--border);
+  --color-text-secondary: var(--text-secondary);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-background: var(--background);
+
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-heading: "Sora", sans-serif !important;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* Force heading classes to use the heading font */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.font-heading {
+  font-family: var(--font-heading);
+}
+
+html {
+  background-color: var(--background);
+  overflow-x: hidden;
+  max-width: 100%;
 }
 
 body {
-  background: var(--background);
+  background-color: transparent;
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  overflow-x: hidden;
+  max-width: 100%;
+}
+
+/* Light mode (default) */
+:root {
+  --background: #f8fffe;
+  --foreground: #0a0a0a;
+
+  --surface: #f7faf9;
+  --surface-card: #f0f5f3; /* Greenish-gray card on light bg */
+
+  --border: #d4ddd9;
+  --primary: #00d084;
+  --primary-hover: #00b36e;
+  --text-secondary: #6b7280;
+
+  /* Additional variables */
+  --card: 0 0% 100%;
+  --card-foreground: 222.2 84% 4.9%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 222.2 84% 4.9%;
+  --primary-foreground: 210 40% 98%;
+  --secondary: 210 40% 96.1%;
+  --secondary-foreground: 222.2 47.4% 11.2%;
+  --muted: 210 40% 96.1%;
+  --muted-foreground: 215.4 16.3% 46.9%;
+  --accent: 210 40% 96.1%;
+  --accent-foreground: 222.2 47.4% 11.2%;
+  --destructive: 0 84.2% 60.2%;
+  --destructive-foreground: 210 40% 98%;
+  --border-shadcn: 214.3 31.8% 91.4%;
+  --input: 214.3 31.8% 91.4%;
+  --ring: 222.2 84% 4.9%;
+  --radius: 0.5rem;
+}
+
+/* Dark mode */
+.dark {
+  --background: #121212;
+  --foreground: #ffffff;
+
+  --surface: #1e1e1e;
+  --surface-card: #1e1e1e; /* Dark card */
+
+  --border: #2a2a2a;
+  --primary: #00d084;
+  --primary-hover: #00b36e;
+  --text-secondary: #a0a0a0;
+
+  /* Additional variables */
+  --card: 0 0% 7%;
+  --card-foreground: 0 0% 100%;
+  --popover: 0 0% 4%;
+  --popover-foreground: 0 0% 100%;
+  --primary-foreground: 0 0% 0%;
+  --secondary: 0 0% 12%;
+  --secondary-foreground: 0 0% 100%;
+  --muted: 0 0% 12%;
+  --muted-foreground: 0 0% 63%;
+  --accent: 158 100% 41%;
+  --accent-foreground: 0 0% 0%;
+  --destructive: 0 62.8% 30.6%;
+  --destructive-foreground: 0 0% 100%;
+  --border-shadcn: 0 0% 12%;
+  --input: 0 0% 12%;
+  --ring: 158 100% 41%;
 }
