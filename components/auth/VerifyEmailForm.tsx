@@ -153,22 +153,12 @@ export function VerifyEmailForm() {
       <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-primary/5 rounded-full blur-[120px] pointer-events-none" />
 
       {/* Header */}
-      <header className="absolute top-0 left-0 right-0 z-10 flex items-center justify-between px-6 lg:px-40 py-6 border-b border-white/5">
-        <div className="flex items-center gap-3">
-          <Logo />
-        </div>
-        <div className="flex items-center gap-4">
-          <div className="hidden md:block text-sm text-text-secondary">
-            Need help?
-          </div>
-          <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center border border-white/10">
-            <AlertCircle className="w-5 h-5 text-text-secondary" />
-          </div>
-        </div>
+      <header className="absolute top-0 left-0 right-0 z-10 flex items-center justify-center px-6 lg:px-40 py-6">
+        <Logo />
       </header>
 
       {/* Main Content */}
-      <main className="flex-1 flex items-center justify-center px-4 py-12 relative z-10 w-full">
+      <main className="flex-1 flex items-center justify-center px-2 sm:px-4 py-12 relative z-10 w-full">
         <div className="bg-surface backdrop-blur-md border border-border rounded-2xl p-8 md:p-12 shadow-2xl flex flex-col items-center text-center w-full max-w-120">
           {/* Icon */}
           <div className="mb-8 relative">
@@ -191,8 +181,8 @@ export function VerifyEmailForm() {
           </p>
 
           {/* OTP Input */}
-          <div className="w-full mb-10">
-            <div className="flex justify-between gap-2 md:gap-4">
+          <div className="max-w-full mb-10">
+            <div className="flex justify-center gap-3 md:gap-4">
               {otp.map((digit, index) => (
                 <Input
                   key={index}
@@ -205,7 +195,7 @@ export function VerifyEmailForm() {
                   onChange={(e) => handleChange(index, e.target.value)}
                   onKeyDown={(e) => handleKeyDown(index, e)}
                   onPaste={handlePaste}
-                  className="size-12 md:size-14 text-center text-xl font-bold bg-surface border-border rounded-lg focus-visible:ring-0 focus-visible:border-primary focus-visible:shadow-[0_0_0_3px_rgba(0,208,132,0.1)] transition-all duration-200 text-foreground"
+                  className="size-10 sm:size-12 md:size-14 text-center text-xl font-bold bg-surface border-border rounded-lg focus-visible:ring-0 focus-visible:border-primary focus-visible:shadow-[0_0_0_3px_rgba(0,208,132,0.1)] transition-all duration-200 text-foreground"
                   placeholder="•"
                 />
               ))}
