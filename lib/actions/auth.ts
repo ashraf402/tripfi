@@ -23,16 +23,9 @@ export async function signUp(formData: FormData) {
 
   if (error) return { error: error.message };
 
-  // Auto sign-in to establish session immediately
-  // (needed when email confirmation is enabled in Supabase)
-  const { error: signInError } = await supabase.auth.signInWithPassword({
-    email,
-    password,
-  });
-
-  if (signInError) return { error: signInError.message };
-
-  redirect("/onboarding/style");
+  // Return success — client will store email in sessionStorage
+  // and redirect to /verify-email for OTP verification
+  return { success: true };
 }
 
 // SIGN IN

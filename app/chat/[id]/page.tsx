@@ -21,12 +21,12 @@ async function ChatRoomLoader({ id }: { id: string }) {
 export default async function ChatPage({ params }: PageProps) {
   const { id } = await params;
   return (
-    <div className="flex h-screen bg-background overflow-hidden">
+    <div className="flex h-dvh bg-background overflow-hidden">
       {/* Sidebar always renders instantly */}
       <ChatSidebar activeId={id} />
 
       {/* ChatRoom streams in while skeleton shows */}
-      <main className="flex-1 min-w-0 h-full">
+      <main className="flex-1 min-w-0 h-dvh">
         <Suspense fallback={<ChatRoomSkeleton />}>
           <ChatRoomLoader id={id} />
         </Suspense>

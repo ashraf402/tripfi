@@ -5,9 +5,9 @@ import { ChatRoom } from "@/components/chatroom/core/ChatRoom";
 // No data fetching — renders instantly
 export default function NewChatPage() {
   return (
-    <div className="flex h-screen bg-background overflow-hidden">
+    <div className="flex h-dvh bg-background overflow-hidden">
       <ChatSidebar />
-      <main className="flex-1 min-w-0 h-full">
+      <main className="flex-1 min-w-0 h-dvh">
         <ChatRoom />
       </main>
     </div>

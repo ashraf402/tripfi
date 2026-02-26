@@ -3,13 +3,25 @@
 import { Logo } from "@/components/landing/Logo";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { AlertCircle, ArrowLeft, Mail } from "lucide-react";
+import { AlertCircle, ArrowLeft, Loader2, Mail } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
+import { createClient } from "@/lib/supabase/client";
 
 export function VerifyEmailForm() {
-  const [otp, setOtp] = useState(["", "", "", "", ""]);
+  const [otp, setOtp] = useState(["", "", "", "", "", ""]);
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
+
+  const router = useRouter();
+  const supabase = createClient();
+
+  const [email, setEmail] = useState("");
+  const [isVerifying, setIsVerifying] = useState(false);
+  const [isResending, setIsResending] = useState(false);
+  const [error, setError] = useState("");
+  const [countdown, setCountdown] = useState(59);
+  const [canResend, setCanResend] = useState(false);
 
   // Focus first input on mount
   useEffect(() => {
@@ -17,6 +29,26 @@ export function VerifyEmailForm() {
       inputRefs.current[0].focus();
     }
   }, []);
+
+  // Read email from sessionStorage
+  useEffect(() => {
+    const stored = sessionStorage.getItem("tripfi-pending-email");
+    if (!stored) {
+      router.replace("/signup");
+      return;
+    }
+    setEmail(stored);
+  }, [router]);
+
+  // Countdown timer
+  useEffect(() => {
+    if (countdown <= 0) {
+      setCanResend(true);
+      return;
+    }
+    const timer = setTimeout(() => setCountdown((c) => c - 1), 1000);
+    return () => clearTimeout(timer);
+  }, [countdown]);
 
   const handleChange = (index: number, value: string) => {
     // Only allow numbers
@@ -53,6 +85,65 @@ export function VerifyEmailForm() {
     });
     setOtp(newOtp);
     inputRefs.current[Math.min(pastedData.length, 5)]?.focus();
+  };
+
+  const handleVerify = async () => {
+    const code = otp.join("");
+    if (code.length < 6) {
+      setError("Please enter all 6 digits.");
+      return;
+    }
+
+    setIsVerifying(true);
+    setError("");
+
+    const { error } = await supabase.auth.verifyOtp({
+      email,
+      token: code,
+      type: "email",
+    });
+
+    if (error) {
+      setIsVerifying(false);
+      setError(
+        error.message.includes("expired")
+          ? "This code has expired. Request a new one."
+          : "Incorrect code. Please try again.",
+      );
+      // Clear boxes on error
+      setOtp(["", "", "", "", "", ""]);
+      inputRefs.current[0]?.focus();
+      return;
+    }
+
+    // Success — clear storage and redirect
+    sessionStorage.removeItem("tripfi-pending-email");
+    router.replace("/new");
+  };
+
+  const handleResend = async () => {
+    if (!canResend || isResending) return;
+
+    setIsResending(true);
+    setError("");
+
+    const { error } = await supabase.auth.resend({
+      type: "signup",
+      email,
+    });
+
+    setIsResending(false);
+
+    if (error) {
+      setError("Failed to resend. Please try again.");
+      return;
+    }
+
+    // Reset everything
+    setCountdown(59);
+    setCanResend(false);
+    setOtp(["", "", "", "", "", ""]);
+    inputRefs.current[0]?.focus();
   };
 
   return (
@@ -92,8 +183,11 @@ export function VerifyEmailForm() {
             Verify your email
           </h1>
           <p className="text-text-secondary text-base leading-relaxed mb-10 max-w-[320px]">
-            We sent a verification link to your email address. Please enter the
-            code below.
+            We sent a 6-digit code to{" "}
+            <span className="text-foreground font-semibold">
+              {email || "your email"}
+            </span>
+            . Please enter it below.
           </p>
 
           {/* OTP Input */}
@@ -111,16 +205,36 @@ export function VerifyEmailForm() {
                   onChange={(e) => handleChange(index, e.target.value)}
                   onKeyDown={(e) => handleKeyDown(index, e)}
                   onPaste={handlePaste}
-                  className="w-12 h-12 md:w-14 md:h-14 text-center text-xl font-bold bg-surface border-border rounded-lg focus-visible:ring-0 focus-visible:border-primary focus-visible:shadow-[0_0_0_3px_rgba(0,208,132,0.1)] transition-all duration-200 text-foreground"
+                  className="size-12 md:size-14 text-center text-xl font-bold bg-surface border-border rounded-lg focus-visible:ring-0 focus-visible:border-primary focus-visible:shadow-[0_0_0_3px_rgba(0,208,132,0.1)] transition-all duration-200 text-foreground"
                   placeholder="•"
                 />
               ))}
             </div>
           </div>
 
+          {/* Error Message */}
+          {error && (
+            <p className="text-red-400 text-sm text-center mb-4 -mt-6">
+              {error}
+            </p>
+          )}
+
           {/* Verify Button */}
-          <Button className="w-full bg-primary hover:bg-primary-hover text-black font-bold font-heading py-6 rounded-xl transition-all duration-200 text-lg shadow-lg shadow-[rgba(0,208,132,0.2)] mb-8 active:scale-[0.98]">
-            Verify
+          <Button
+            onClick={handleVerify}
+            disabled={
+              isVerifying || otp.join("").length < 6 || otp.includes("")
+            }
+            className="w-full bg-primary hover:bg-primary-hover text-black font-bold font-heading py-6 rounded-xl transition-all duration-200 text-lg shadow-lg shadow-[rgba(0,208,132,0.2)] mb-8 active:scale-[0.98]"
+          >
+            {isVerifying ? (
+              <span className="flex items-center gap-2 justify-center">
+                <Loader2 className="w-4 h-4 animate-spin" />
+                Verifying...
+              </span>
+            ) : (
+              "Verify"
+            )}
           </Button>
 
           {/* Links */}
@@ -129,9 +243,22 @@ export function VerifyEmailForm() {
               Don&apos;t receive the code?
               <Button
                 variant="ghost"
-                className="text-primary opacity-50 cursor-not-allowed ml-1 font-medium hover:opacity-100 transition-opacity hover:bg-transparent p-0 h-auto"
+                onClick={handleResend}
+                disabled={!canResend || isResending}
+                className={`
+                  ml-1 font-medium hover:bg-transparent p-0 h-auto transition-all
+                  ${
+                    canResend
+                      ? "text-primary opacity-100 cursor-pointer"
+                      : "text-primary opacity-50 cursor-not-allowed"
+                  }
+                `}
               >
-                Resend code (59s)
+                {isResending
+                  ? "Sending..."
+                  : canResend
+                    ? "Resend code"
+                    : `Resend code (${countdown}s)`}
               </Button>
             </div>
             <div className="pt-4 border-t border-border w-full">

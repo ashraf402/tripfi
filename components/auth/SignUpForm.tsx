@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Logo } from "@/components/landing/Logo";
@@ -24,6 +25,7 @@ import { PasswordField } from "@/components/ui/inputs/PasswordField";
 import { GoogleSignInButton } from "@/components/auth/GoogleSignInButton";
 
 export function SignUpForm() {
+  const router = useRouter();
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const [serverError, setServerError] = useState("");
 
@@ -48,11 +50,14 @@ export function SignUpForm() {
     formData.append("password", values.password);
 
     const result = await signUp(formData);
-    // signUp redirects to /onboarding on success
-    // result only returns on error
     if (result?.error) {
       setServerError(result.error);
+      return;
     }
+
+    // Store email for OTP verification page
+    sessionStorage.setItem("tripfi-pending-email", values.email);
+    router.push("/verify-email");
   };
 
   const handleGoogleSignIn = async () => {

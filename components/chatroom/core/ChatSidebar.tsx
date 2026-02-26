@@ -1,6 +1,8 @@
 "use client";
 
 import { Logo } from "@/components/landing/Logo";
+import { ThemeToggle } from "@/components/landing/ThemeToggle";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Tooltip,
@@ -12,19 +14,21 @@ import {
   deleteConversation,
   getConversations,
 } from "@/lib/actions/conversation";
+import { signOut } from "@/lib/actions/auth";
 import {
   useConversationActions,
   useConversations,
   useConversationStore,
 } from "@/lib/store/conversationStore";
 import type { Conversation } from "@/lib/types/chat";
-import { ChevronLeft, ChevronRight, Plus } from "lucide-react";
+import { ChevronLeft, ChevronRight, LogOut, Plus } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useEffect } from "react";
 import Image from "next/image";
 import { useAuthStore } from "@/lib/stores/auth-store";
 import { getRelativeTime } from "@/utils/time";
+import { Button } from "@/components/ui/button";
 
 // Limit visual length of titles
 function truncate(str: string, length: number) {
@@ -40,6 +44,8 @@ interface ChatSidebarProps {
 
 export function ChatSidebar({ activeId, className }: ChatSidebarProps) {
   const router = useRouter();
+  const [isLoggingOut, setIsLoggingOut] = React.useState(false);
+  const [showLogoutConfirm, setShowLogoutConfirm] = React.useState(false);
 
   // Auth
   const user = useAuthStore((s) => s.user);
@@ -304,49 +310,98 @@ export function ChatSidebar({ activeId, className }: ChatSidebarProps) {
           )}
         </ScrollArea>
 
-        {/* Footer Profile */}
-        <div
-          className={`
-            shrink-0 border-t border-border p-3
-            flex items-center gap-3
-            ${effectivelyCollapsed ? "justify-center" : "justify-between"}
-          `}
-        >
-          {/* Avatar — always visible */}
-          <div
-            className="w-10 h-10 rounded-full bg-primary/10 border border-primary/20
-                      flex items-center justify-center shrink-0 text-primary
-                      text-xs font-bold overflow-hidden"
-            title={effectivelyCollapsed ? displayName : ""}
-          >
-            {profile?.avatar_url ? (
-              <Image
-                src={profile.avatar_url}
-                alt={displayName}
-                width={40}
-                height={40}
-                className="w-full h-full object-cover"
-              />
-            ) : (
-              initial
-            )}
+        {/* Footer */}
+        <div className="shrink-0 border-t border-border">
+          {/* Theme Toggle — above profile */}
+          <div className="px-3 pt-3">
+            <ThemeToggle className="w-full" showText={!effectivelyCollapsed} />
           </div>
 
-          {/* Name + email — hidden when collapsed */}
-          {!effectivelyCollapsed && (
-            <div className="flex-1 min-w-0 pr-2">
-              <p className="text-foreground text-sm font-medium truncate">
-                {displayName}
-              </p>
-              <Link
-                href="/dashboard"
-                onClick={() => setIsMobileOpen(false)}
-                className="text-xs text-secondary hover:text-primary transition-colors truncate block"
-              >
-                View Dashboard
-              </Link>
+          {/* Profile row + Logout */}
+          <div
+            className={`
+              p-3 flex items-center gap-3
+              ${effectivelyCollapsed ? "flex-col justify-center" : "justify-between"}
+            `}
+          >
+            {/* Avatar — always visible */}
+            <div
+              className="w-10 h-10 rounded-full bg-primary/10 border border-primary/20
+                        flex items-center justify-center shrink-0 text-primary
+                        text-xs font-bold overflow-hidden"
+              title={effectivelyCollapsed ? displayName : ""}
+            >
+              {profile?.avatar_url ? (
+                <Image
+                  src={profile.avatar_url}
+                  alt={displayName}
+                  width={40}
+                  height={40}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                initial
+              )}
             </div>
-          )}
+
+            {/* Name + dashboard — hidden when collapsed */}
+            {!effectivelyCollapsed && (
+              <div className="flex-1 min-w-0">
+                <p className="text-foreground text-sm font-medium truncate">
+                  {displayName}
+                </p>
+                <Link
+                  href="/dashboard"
+                  onClick={() => setIsMobileOpen(false)}
+                  className="text-xs text-secondary hover:text-primary transition-colors truncate block"
+                >
+                  View Dashboard
+                </Link>
+              </div>
+            )}
+
+            {/* Logout button — triggers confirmation dialog */}
+            <TooltipProvider delayDuration={0}>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <ConfirmDialog
+                    open={showLogoutConfirm}
+                    onOpenChange={setShowLogoutConfirm}
+                    title="Sign out?"
+                    description="You'll need to sign in again to access your trips and conversations."
+                    confirmLabel="Sign out"
+                    loadingLabel="Signing out..."
+                    isLoading={isLoggingOut}
+                    onConfirm={async () => {
+                      setIsLoggingOut(true);
+                      // Clear client-side session data
+                      useConversationStore.setState({
+                        conversations: [],
+                        conversationListLoaded: false,
+                      });
+                      sessionStorage.clear();
+                      localStorage.removeItem("sidebar-collapsed");
+                      await signOut();
+                    }}
+                    trigger={
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="flex items-center justify-center shrink-0 text-secondary hover:text-red-400 hover:bg-red-500/10 transition-all duration-200"
+                      >
+                        <LogOut className="w-4 h-4" />
+                      </Button>
+                    }
+                  />
+                </TooltipTrigger>
+                {effectivelyCollapsed && (
+                  <TooltipContent side="right" className="z-50">
+                    <p>Log out</p>
+                  </TooltipContent>
+                )}
+              </Tooltip>
+            </TooltipProvider>
+          </div>
         </div>
       </aside>
     </>

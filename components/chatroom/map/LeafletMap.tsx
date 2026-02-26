@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { useTheme } from "next-themes";
 import {
   MapContainer,
   TileLayer,
@@ -195,6 +196,8 @@ export default function LeafletMap({
   activeMarkerId,
   onMarkerClick,
 }: LeafletMapProps) {
+  const { theme } = useTheme();
+
   // Build polyline path from marker order
   const polylinePath: [number, number][] = data.markers.map((m) => [
     m.latitude,
@@ -209,12 +212,16 @@ export default function LeafletMap({
       zoom={data.zoom}
       scrollWheelZoom={false}
       zoomControl={false}
+      attributionControl={false} /* Hide attribution to prevent UI overlap */
       style={{ height: "100%", width: "100%" }}
     >
-      {/* Dark-friendly tile layer */}
+      {/* Theme-dependent tile layer */}
       <TileLayer
-        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/">CARTO</a>'
-        url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+        url={
+          theme === "dark"
+            ? "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+            : "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
+        }
       />
 
       <MapUpdater center={[data.centerLat, data.centerLng]} zoom={data.zoom} />

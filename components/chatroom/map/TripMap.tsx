@@ -29,7 +29,7 @@ export function TripMap({ data, activeMarkerId, onMarkerClick }: TripMapProps) {
   }
 
   return (
-    <div className="size-full min-h-100 rounded-2xl md:rounded-none overflow-hidden border border-border shadow-sm relative z-0">
+    <div className="size-full min-h-100 overflow-hidden border border-border shadow-sm relative z-0">
       <MapComponent
         data={data}
         activeMarkerId={activeMarkerId}

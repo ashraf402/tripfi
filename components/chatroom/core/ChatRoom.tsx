@@ -126,7 +126,7 @@ export function ChatRoom({
   };
 
   return (
-    <div className="flex h-full w-full bg-background relative overflow-hidden">
+    <div className="flex h-full max-h-dvh w-full bg-background relative overflow-hidden">
       {/* Chat Area */}
       <div className="flex flex-col flex-1 min-w-0 h-full">
         {/* Header */}
