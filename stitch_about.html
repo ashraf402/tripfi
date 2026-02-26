@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>TripFi - About</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#00d184",
+              "primary-hover": "#00b572",
+              "background-light": "#f5f8f7",
+              "background-dark": "#0A0A0A",
+              "surface-dark": "#111111",
+              "surface-border": "#222222",
+              "text-main": "#FFFFFF",
+              "text-muted": "#A1A1AA",
+            },
+            fontFamily: {
+              "display": ["Inter", "sans-serif"],
+              "body": ["Inter", "sans-serif"],
+            },
+            borderRadius: {
+              "DEFAULT": "0.5rem",
+              "lg": "1rem",
+              "xl": "1.5rem", 
+              "2xl": "1.75rem", // Requested rounded-2xl look
+              "full": "9999px"
+            },
+            boxShadow: {
+                'glow': '0 0 20px rgba(0, 209, 132, 0.15)',
+                'glow-hover': '0 0 30px rgba(0, 209, 132, 0.25)',
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+        .text-gradient {
+            background: linear-gradient(to right, #ffffff, #a1a1aa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .glass-card {
+            background: rgba(17, 17, 17, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        /* Grid background pattern */
+        .bg-grid-pattern {
+            background-size: 40px 40px;
+            background-image: linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                              linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-text-main overflow-x-hidden">
+<div class="relative flex h-auto min-h-screen w-full flex-col">
+<!-- Header -->
+<header class="fixed top-0 left-0 right-0 z-50 flex items-center justify-between whitespace-nowrap border-b border-surface-border bg-background-dark/80 backdrop-blur-md px-6 py-4 md:px-10">
+<div class="flex items-center gap-3 text-white">
+<div class="size-8 text-primary">
+<span class="material-symbols-outlined !text-[32px]">flight_takeoff</span>
+</div>
+<h2 class="text-white text-xl font-bold leading-tight tracking-tight">TripFi</h2>
+</div>
+<nav class="hidden md:flex items-center gap-8">
+<a class="text-text-muted hover:text-white transition-colors text-sm font-medium" href="#">Home</a>
+<a class="text-white text-sm font-medium" href="#">About</a>
+<a class="text-text-muted hover:text-white transition-colors text-sm font-medium" href="#">Itineraries</a>
+</nav>
+<div class="flex items-center gap-4">
+<button class="hidden sm:flex cursor-pointer items-center justify-center rounded-2xl h-10 px-5 bg-surface-dark border border-surface-border text-white text-sm font-semibold hover:border-primary/50 transition-all">
+                    Docs
+                </button>
+<button class="flex cursor-pointer items-center justify-center rounded-2xl h-10 px-5 bg-primary hover:bg-primary-hover text-background-dark text-sm font-bold shadow-glow transition-all">
+                    Launch App
+                </button>
+</div>
+</header>
+<!-- Main Content Wrapper -->
+<main class="flex-grow pt-20">
+<!-- Hero Section -->
+<section class="relative px-6 py-16 md:py-24 lg:px-20 overflow-hidden">
+<div class="absolute top-0 right-0 w-1/2 h-full bg-primary/5 blur-[150px] rounded-full pointer-events-none"></div>
+<div class="layout-content-container max-w-[1280px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+<div class="flex flex-col gap-6 z-10">
+<div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-surface-dark border border-surface-border w-fit">
+<span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+<span class="text-xs font-medium text-primary uppercase tracking-wider">BCH-1 Hackcelerator</span>
+</div>
+<h1 class="text-4xl md:text-6xl font-black leading-[1.1] tracking-tight">
+                            We're building the <br/>
+<span class="text-primary">future of travel</span> <br/>
+                            payments.
+                        </h1>
+<p class="text-text-muted text-lg max-w-lg leading-relaxed">
+                            AI-driven itineraries meeting peer-to-peer Bitcoin Cash payments. Experience borderless travel planning with zero friction.
+                        </p>
+<div class="flex flex-wrap gap-4 pt-4">
+<button class="h-12 px-8 rounded-2xl bg-white text-background-dark font-bold hover:bg-gray-100 transition-colors">
+                                Start Planning
+                            </button>
+<button class="h-12 px-8 rounded-2xl border border-surface-border bg-transparent text-white font-medium hover:border-primary/50 hover:bg-surface-dark transition-all flex items-center gap-2">
+<span class="material-symbols-outlined text-[20px]">code</span>
+                                View Source
+                            </button>
+</div>
+</div>
+<!-- 3D Globe Visual Placeholder -->
+<div class="relative h-[400px] w-full flex items-center justify-center lg:justify-end z-10">
+<!-- Abstract Globe Representation -->
+<div class="relative w-[320px] h-[320px] md:w-[450px] md:h-[450px]">
+<div class="absolute inset-0 rounded-full border border-primary/20 animate-[spin_20s_linear_infinite]"></div>
+<div class="absolute inset-4 rounded-full border border-dashed border-primary/30 animate-[spin_15s_linear_infinite_reverse]"></div>
+<div class="absolute inset-12 rounded-full border border-dotted border-primary/40 animate-[spin_10s_linear_infinite]"></div>
+<!-- Floating Card Example inside the globe area -->
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 glass-card p-4 rounded-xl flex items-center gap-3 shadow-glow animate-bounce">
+<div class="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">flight</span>
+</div>
+<div>
+<p class="text-xs text-text-muted">Flight to Tokyo</p>
+<p class="text-sm font-bold text-white">0.45 BCH</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Mission Section -->
+<section class="py-20 px-6 bg-surface-dark border-y border-surface-border">
+<div class="max-w-4xl mx-auto text-center flex flex-col items-center gap-6">
+<div class="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center text-primary mb-2">
+<span class="material-symbols-outlined text-4xl">explore</span>
+</div>
+<h2 class="text-3xl md:text-4xl font-bold text-white tracking-tight">Our Mission</h2>
+<p class="text-text-muted text-xl leading-relaxed max-w-2xl">
+                        To decentralize travel by making planning instant and payments borderless through the power of Bitcoin Cash and Artificial Intelligence.
+                    </p>
+</div>
+</section>
+<!-- How We're Different (Features) -->
+<section class="py-24 px-6 lg:px-20 bg-background-dark">
+<div class="max-w-[1280px] mx-auto">
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<!-- Card 1 -->
+<div class="group p-8 rounded-2xl bg-surface-dark border border-surface-border hover:border-primary/50 transition-all hover:shadow-glow duration-300">
+<div class="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary mb-6 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-2xl">psychology</span>
+</div>
+<h3 class="text-xl font-bold text-white mb-3">AI-Powered Planning</h3>
+<p class="text-text-muted leading-relaxed">
+                                Smart itineraries generated in seconds using Groq &amp; Gemini. Forget hours of research; get a personalized plan instantly.
+                            </p>
+</div>
+<!-- Card 2 -->
+<div class="group p-8 rounded-2xl bg-surface-dark border border-surface-border hover:border-primary/50 transition-all hover:shadow-glow duration-300">
+<div class="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary mb-6 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-2xl">currency_bitcoin</span>
+</div>
+<h3 class="text-xl font-bold text-white mb-3">Pay with BCH</h3>
+<p class="text-text-muted leading-relaxed">
+                                Seamless, borderless crypto payments. No foreign transaction fees, instant settlement, and peer-to-peer freedom.
+                            </p>
+</div>
+<!-- Card 3 -->
+<div class="group p-8 rounded-2xl bg-surface-dark border border-surface-border hover:border-primary/50 transition-all hover:shadow-glow duration-300">
+<div class="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary mb-6 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-2xl">dataset</span>
+</div>
+<h3 class="text-xl font-bold text-white mb-3">Real-Time Data</h3>
+<p class="text-text-muted leading-relaxed">
+                                Live pricing and availability sourced directly from Amadeus APIs, ensuring your trip is bookable the moment you decide.
+                            </p>
+</div>
+</div>
+</div>
+</section>
+<!-- Built For (Context & Stats) -->
+<section class="py-20 px-6 lg:px-20 bg-grid-pattern relative border-t border-surface-border">
+<div class="absolute inset-0 bg-gradient-to-b from-background-dark via-transparent to-background-dark pointer-events-none"></div>
+<div class="max-w-[1280px] mx-auto relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+<div class="flex flex-col gap-6">
+<h2 class="text-3xl md:text-4xl font-bold text-white">Built for the <br/><span class="text-primary">BCH-1 Hackcelerator</span></h2>
+<p class="text-text-muted text-lg leading-relaxed">
+                            TripFi was conceived and developed specifically for the Bitcoin Cash ecosystem. We're leveraging the low fees and fast confirmation times of BCH to solve real-world payment friction in the travel industry.
+                        </p>
+<div class="flex items-center gap-2 text-primary font-medium">
+<span class="material-symbols-outlined">rocket_launch</span>
+<span>Hackathon Submission 2024</span>
+</div>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full">
+<div class="p-6 rounded-2xl bg-surface-dark border border-surface-border flex flex-col items-center justify-center text-center gap-2">
+<span class="text-3xl font-black text-white">1 Week</span>
+<span class="text-sm text-text-muted uppercase tracking-wide">Dev Time</span>
+</div>
+<div class="p-6 rounded-2xl bg-surface-dark border border-surface-border flex flex-col items-center justify-center text-center gap-2">
+<span class="text-3xl font-black text-white">$20K</span>
+<span class="text-sm text-text-muted uppercase tracking-wide">Prize Track</span>
+</div>
+<div class="p-6 rounded-2xl bg-surface-dark border border-surface-border flex flex-col items-center justify-center text-center gap-2">
+<span class="text-3xl font-black text-white">∞</span>
+<span class="text-sm text-text-muted uppercase tracking-wide">Trips Possible</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Team Section -->
+<section class="py-24 px-6 bg-background-dark">
+<div class="max-w-xl mx-auto">
+<div class="glass-card p-8 md:p-12 rounded-2xl flex flex-col items-center text-center gap-6 relative overflow-hidden group">
+<div class="absolute top-0 w-full h-1 bg-gradient-to-r from-transparent via-primary to-transparent"></div>
+<div class="relative">
+<div class="w-32 h-32 rounded-full p-1 border-2 border-primary shadow-glow overflow-hidden bg-surface-dark">
+<img alt="Founder Portrait, smiling man in casual tech attire" class="w-full h-full object-cover rounded-full" data-alt="Portrait of the founder" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA2L3FlKXleZnROY5uEoU8XUevTJpMGJqEt9XmZP1lPBJcGpiQx2hRUD4GHIpykoPuKeIsSTXrnp95_fRwO4N-thlDCFKLsCzIBVHejcpDE7y28I-U0Tw0C1O4fE86kbvd7Enl4id-xvF65GOv9RacI9mg1Tm1PpnGJScIvBxTaAVPW8jepOTkcwSwffprCwQ3cV_MY7iAHwDn6fGh020c3S_EvX9PcXT5cCiAWWWXT2PKWB_KRI1wrL2G_9sqUqxoOD2PQARQ9mKhh"/>
+</div>
+<div class="absolute bottom-0 right-0 bg-primary text-background-dark p-1.5 rounded-full border-4 border-surface-dark">
+<span class="material-symbols-outlined text-sm font-bold">check</span>
+</div>
+</div>
+<div>
+<h3 class="text-2xl font-bold text-white">Alex Morgan</h3>
+<p class="text-primary font-medium">Founder &amp; Lead Developer</p>
+</div>
+<p class="text-text-muted">
+                            Full Stack Developer &amp; BCH Enthusiast building on the bleeding edge of travel tech. Passionate about making crypto usable for everyday life.
+                        </p>
+<div class="flex gap-4 mt-2">
+<a class="w-10 h-10 rounded-full bg-surface-border flex items-center justify-center text-white hover:bg-primary hover:text-background-dark transition-colors" href="#">
+<span class="material-symbols-outlined text-xl">code</span> <!-- GitHub/Code Icon proxy -->
+</a>
+<a class="w-10 h-10 rounded-full bg-surface-border flex items-center justify-center text-white hover:bg-primary hover:text-background-dark transition-colors" href="#">
+<span class="material-symbols-outlined text-xl">alternate_email</span> <!-- Social/Twitter proxy -->
+</a>
+</div>
+</div>
+</div>
+</section>
+<!-- Tech Stack -->
+<section class="py-16 px-6 lg:px-20 border-t border-surface-border bg-surface-dark">
+<div class="max-w-[1280px] mx-auto flex flex-col items-center gap-10">
+<p class="text-sm font-semibold text-text-muted uppercase tracking-widest">Powered By</p>
+<div class="flex flex-wrap justify-center gap-3 md:gap-4 max-w-4xl">
+<!-- Tech Pill -->
+<div class="px-5 py-2.5 rounded-full bg-background-dark border border-surface-border flex items-center gap-2 text-white hover:border-primary/30 transition-colors cursor-default">
+<span class="material-symbols-outlined text-lg">javascript</span>
+<span class="font-medium text-sm">Next.js 14</span>
+</div>
+<div class="px-5 py-2.5 rounded-full bg-background-dark border border-surface-border flex items-center gap-2 text-white hover:border-primary/30 transition-colors cursor-default">
+<span class="material-symbols-outlined text-lg">data_object</span>
+<span class="font-medium text-sm">TypeScript</span>
+</div>
+<div class="px-5 py-2.5 rounded-full bg-background-dark border border-surface-border flex items-center gap-2 text-white hover:border-primary/30 transition-colors cursor-default">
+<span class="material-symbols-outlined text-lg">database</span>
+<span class="font-medium text-sm">Supabase</span>
+</div>
+<div class="px-5 py-2.5 rounded-full bg-background-dark border border-surface-border flex items-center gap-2 text-white hover:border-primary/30 transition-colors cursor-default">
+<span class="material-symbols-outlined text-lg">smart_toy</span>
+<span class="font-medium text-sm">Groq AI</span>
+</div>
+<div class="px-5 py-2.5 rounded-full bg-background-dark border border-surface-border flex items-center gap-2 text-white hover:border-primary/30 transition-colors cursor-default">
+<span class="material-symbols-outlined text-lg">auto_awesome</span>
+<span class="font-medium text-sm">Google Gemini</span>
+</div>
+<div class="px-5 py-2.5 rounded-full bg-background-dark border border-surface-border flex items-center gap-2 text-white hover:border-primary/30 transition-colors cursor-default">
+<span class="material-symbols-outlined text-lg">flight</span>
+<span class="font-medium text-sm">Amadeus API</span>
+</div>
+<div class="px-5 py-2.5 rounded-full bg-background-dark border border-surface-border flex items-center gap-2 text-primary hover:border-primary/30 transition-colors cursor-default">
+<span class="material-symbols-outlined text-lg">currency_bitcoin</span>
+<span class="font-bold text-sm">Bitcoin Cash</span>
+</div>
+<div class="px-5 py-2.5 rounded-full bg-background-dark border border-surface-border flex items-center gap-2 text-white hover:border-primary/30 transition-colors cursor-default">
+<span class="material-symbols-outlined text-lg">palette</span>
+<span class="font-medium text-sm">Tailwind CSS</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Footer CTA -->
+<section class="py-20 px-6 bg-surface-dark relative overflow-hidden">
+<div class="absolute inset-0 bg-primary/5"></div>
+<div class="max-w-4xl mx-auto relative z-10 text-center flex flex-col items-center gap-8">
+<h2 class="text-3xl md:text-5xl font-black text-white tracking-tight">Ready to travel <br/> without borders?</h2>
+<p class="text-text-muted text-lg max-w-lg">Join the future of decentralized travel planning today.</p>
+<div class="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
+<button class="flex items-center justify-center rounded-2xl h-12 px-8 bg-primary text-background-dark text-base font-bold shadow-glow hover:bg-primary-hover transition-all w-full sm:w-auto">
+                            Start Planning
+                        </button>
+<button class="flex items-center justify-center rounded-2xl h-12 px-8 bg-transparent border border-surface-border text-white text-base font-medium hover:bg-white/5 hover:border-white/20 transition-all w-full sm:w-auto">
+                            Back to Home
+                        </button>
+</div>
+</div>
+</section>
+</main>
+<!-- Simple Footer -->
+<footer class="py-8 px-6 border-t border-surface-border bg-background-dark text-center">
+<p class="text-sm text-text-muted">© 2024 TripFi. Built for BCH-1 Hackcelerator.</p>
+</footer>
+</div>
+</body></html>

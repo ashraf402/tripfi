@@ -2,7 +2,7 @@
 
 > **Travel smarter. Pay faster. Explore freely.**
 
-TripFi is a modern travel booking platform that combines AI-powered trip planning with Bitcoin Cash (BCH) payments — giving travelers a seamless, low-fee, and transparent experience from destination discovery to final booking.
+TripFi is an AI-powered travel platform that plans your entire trip through natural conversation — from destination discovery to day-by-day itineraries — with interactive maps and real-time flight and hotel data. Built for the hackathon with a vision to integrate Bitcoin Cash (BCH) payments for sub-cent booking fees.
 
 ---
 
@@ -14,19 +14,39 @@ TripFi solves the three biggest pain points in modern travel:
 - **Slow, expensive payments** — 3%+ foreign transaction fees and multi-day settlement times
 - **Generic recommendations** — one-size-fits-all suggestions that don't match your travel style
 
-TripFi brings everything into one platform, powered by AI and settled on-chain with Bitcoin Cash.
+TripFi brings everything into one conversational interface, powered by AI. Just tell it where you want to go and it handles the rest.
 
 ---
 
 ## ✨ Features
 
-- **Smart Trip Planning** — AI-powered itinerary builder that adapts to your budget, style, and preferences in real time
-- **BCH Instant Payments** — Book anything with Bitcoin Cash. Sub-$0.01 fees, settled in under 2 seconds
-- **AI Travel Assistant** — Chat with your 24/7 personal travel agent for recommendations, alerts, and rebooking
-- **All-in-One Dashboard** — Every booking, receipt, and itinerary in a single workspace
-- **Real-Time Price Tracking** — Get notified the moment prices drop for your saved destinations
-- **Secure & Transparent** — Blockchain-backed receipts. No hidden fees. Ever.
-- **Group Travel Mode** — Split costs, sync itineraries, and coordinate with your whole crew
+### 🤖 AI Travel Assistant
+- **Conversational trip planning** — Chat naturally to plan trips. "Plan a 5-day trip to Bali" just works.
+- **Intent detection engine** — Automatically understands what you need: destination suggestions, flight searches, hotel searches, itinerary building, weather, or general chat.
+- **Smart context memory** — Remembers your origin, dates, budget, and preferences across the conversation.
+
+### 🗺️ Spatial Map Triggers
+- **MacroMap** — When suggesting destinations, the AI automatically shows all options on a map relative to your starting point.
+- **RouteMap** — After building an itinerary, a route map of Day 1 appears with all waypoints connected.
+- **RadiusMap** — Ask "What's near my hotel?" and get a neighborhood map centered on your accommodation.
+- **Interactive Leaflet maps** — Custom SVG markers color-coded by type (hotel, activity, airport, restaurant), auto-fit bounds, route polylines, and custom zoom controls on dark CARTO tiles.
+
+### ✈️ Real-Time Travel Data
+- **Flight search** — Live pricing via Kiwi and flight status via Aviationstack.
+- **Hotel search** — Real availability and pricing for destinations worldwide.
+- **Activity discovery** — Curated activities and experiences per destination.
+- **Weather data** — Current conditions and forecasts for trip planning.
+
+### 🎨 Premium Chat Experience
+- **Rich component cards** — Flights, hotels, itineraries, weather, destinations, and maps render as interactive cards in the chat.
+- **Quick pick chips** — AI suggests tappable destination options for instant planning.
+- **Markdown rendering** — AI responses render beautifully with headings, lists, bold, and inline code.
+- **Typing indicator** — Smooth loading states while the AI thinks.
+
+### 🔐 Auth & Persistence
+- **Supabase authentication** — Email/password login with protected routes.
+- **Chat persistence** — All conversations and messages saved to the database.
+- **Conversation sidebar** — Browse and resume past trip conversations.
 
 ---
 
@@ -34,15 +54,19 @@ TripFi brings everything into one platform, powered by AI and settled on-chain w
 
 | Layer | Technology |
 |---|---|
-| Framework | Next.js 14 (App Router) |
+| Framework | Next.js 16 (App Router) |
 | Language | TypeScript |
 | Styling | Tailwind CSS v4.0 |
 | UI Components | shadcn/ui |
 | Animations | Framer Motion |
-| Icons | Lucide React |
+| Icons | Lucide React, MingCute Icons |
+| Maps | Leaflet + react-leaflet |
+| AI (Primary) | Google Gemini 2.5 Flash |
+| AI (Fallback) | Groq (Llama) |
 | Auth & Database | Supabase |
-| AI Layer | Anthropic Claude / OpenAI via Vercel AI SDK |
-| Payments | BCH via BitPay / CoinGate |
+| State Management | Zustand |
+| Flights | Kiwi API + Aviationstack |
+| Images | Unsplash + Pexels (fallback chain) |
 | Deployment | Vercel |
 
 ---
@@ -53,15 +77,14 @@ TripFi brings everything into one platform, powered by AI and settled on-chain w
 
 - Node.js 18+
 - npm or pnpm
-- A Supabase account
-- An Amadeus API key (for flight/hotel data)
-- A BCH payment gateway key (BitPay or CoinGate)
+- A Supabase project
+- API keys for the services listed below
 
 ### Installation
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/tripfi.git
+git clone https://github.com/ashraf402/tripfi.git
 cd tripfi
 
 # Install dependencies
@@ -73,24 +96,25 @@ cp .env.example .env.local
 
 ### Environment Variables
 
-Create a `.env.local` file in the root with the following:
+Create a `.env.local` file in the root:
 
 ```env
 # Supabase
 NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
 
-# Amadeus (Flight & Hotel Data)
-AMADEUS_CLIENT_ID=your_amadeus_client_id
-AMADEUS_CLIENT_SECRET=your_amadeus_client_secret
-
 # AI
-ANTHROPIC_API_KEY=your_anthropic_api_key
-OPENAI_API_KEY=your_openai_api_key
+GOOGLE_AI_KEY=your_gemini_api_key
+GROQ_API_KEY=your_groq_api_key
 
-# BCH Payments
-BITPAY_API_KEY=your_bitpay_api_key
-COINGATE_API_KEY=your_coingate_api_key
+# Flights
+KIWI_API_KEY=your_kiwi_api_key
+KIWI_ENABLED=true
+AVIATIONSTACK_API_KEY=your_aviationstack_api_key
+
+# Images
+UNSPLASH_ACCESS_KEY=your_unsplash_access_key
+PEXELS_API_KEY=your_pexels_api_key
 ```
 
 ### Run the Development Server
@@ -103,89 +127,99 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ---
 
+## 🧠 AI Architecture
+
+TripFi uses a single **orchestrator** (`lib/ai/orchestrator.ts`) that:
+
+1. **Detects intent** from user messages using Gemini (destination suggest, search flights, search hotels, plan trip, weather, general chat)
+2. **Executes the right pipeline** — each intent triggers different API calls and data fetching
+3. **Returns structured responses** — `{ message, component, data }` where the component is rendered as an interactive card in the chat
+4. **Triggers spatial maps automatically** — based on intent, the orchestrator attaches map data so the MapPanel opens with the right markers
+
+```
+User Message → Intent Detection → Pipeline Execution → Response + Component + Map
+```
+
+**Fallback chain:** Gemini → Groq → hardcoded error messages. The AI never fails silently.
+
+---
+
 ## 📁 Project Structure
 
 ```
 tripfi/
-├── app/                      # Next.js App Router
-│   ├── layout.tsx            # Root layout with ThemeProvider
-│   ├── page.tsx              # Landing page (composed sections)
-│   └── dashboard/            # Authenticated dashboard
+├── app/                        # Next.js App Router
+│   ├── layout.tsx              # Root layout with ThemeProvider
+│   ├── page.tsx                # Landing page
+│   ├── new/                    # New chat page
+│   ├── chat/[id]/              # Chat conversation page
+│   ├── login/ & signup/        # Auth pages
+│   └── api/chat/               # Chat API route
 ├── components/
-│   ├── landing/              # Landing page sections
-│   │   ├── Navbar.tsx
-│   │   ├── Hero.tsx
-│   │   ├── Features.tsx
-│   │   ├── HowItWorks.tsx
-│   │   ├── BCHSection.tsx
-│   │   ├── Testimonials.tsx
-│   │   ├── Pricing.tsx
-│   │   ├── CTABanner.tsx
-│   │   ├── Footer.tsx
-│   │   └── ThemeToggle.tsx
-│   └── ui/                   # shadcn/ui components
-├── lib/                      # Utilities and helpers
-├── agents/                   # AI agent definitions
-│   ├── trip-planner.ts       # Trip planning agent
-│   └── deal-scout.ts         # Deal discovery agent
-├── public/
-│   ├── logo-dark.png
-│   └── logo-light.png
-└── styles/
-    └── globals.css           # Tailwind v4 @theme config
+│   ├── chatroom/
+│   │   ├── core/               # ChatRoom, ChatMessage, ChatInput, etc.
+│   │   ├── map/                # MapPanel, TripMap, LeafletMap, MapPopup
+│   │   ├── maps/               # MacroMap, RouteMap, RadiusMap cards
+│   │   ├── flights/            # FlightSearchResults
+│   │   ├── hotels/             # HotelSearchResults
+│   │   ├── itinerary/          # ItineraryCard
+│   │   ├── weather/            # WeatherCard
+│   │   └── destinations/       # DestinationGrid
+│   ├── landing/                # Landing page sections
+│   └── ui/                     # shadcn/ui components
+├── lib/
+│   ├── ai/                     # Orchestrator, Gemini, Groq clients
+│   ├── services/               # Flight, hotel, activity, image services
+│   ├── store/                  # Zustand stores (conversation, map, auth)
+│   ├── supabase/               # Supabase client & middleware
+│   ├── types/                  # TypeScript type definitions
+│   └── hooks/                  # Custom React hooks
+└── public/                     # Static assets
 ```
 
 ---
 
-## 🎨 Brand & Design
+## 🎨 Design
 
-| Token | Value |
-|---|---|
-| Primary | `#00D084` |
-| Primary Hover | `#00B36E` |
-| Background (Dark) | `#0A0A0A` |
-| Background (Light) | `#F8FFFE` |
-| Surface | `#111111` |
-| Border | `#1F1F1F` |
-| Text Secondary | `#A0A0A0` |
+TripFi uses a dark-first design with a signature mint green accent (`#00D084`). Both light and dark themes are fully supported via `next-themes`.
 
-TripFi uses a dark-first design with a signature mint green accent. Both light and dark themes are fully supported via `next-themes` with a toggle in the footer.
+Map markers use custom SVG icons from Lucide, color-coded:
+- 🟢 Hotels (`#00D084`)
+- 🔵 Activities (`#3B82F6`)
+- 🟠 Airports (`#F97316`)
+- 🟣 Restaurants (`#A855F7`)
 
 ---
 
-## 🤖 AI Agents
+## 💳 BCH Payments (Coming Soon)
 
-TripFi uses two AI agents built on the Vercel AI SDK:
-
-**Trip Planner Agent**
-Takes user preferences (budget, interests, dates, travel style) and generates a personalized itinerary with reasoning. Uses streaming responses for a fast, interactive feel.
-
-**Deal Scout Agent**
-Monitors available flights and hotels in real time, surfaces the best options based on the user's profile and past behavior, and sends alerts when prices drop.
-
----
-
-## 💳 BCH Payment Flow
+BCH payment integration is actively in development. The planned flow:
 
 1. User selects a booking and proceeds to checkout
-2. TripFi generates a BCH payment address via the payment gateway
+2. TripFi generates a BCH payment address
 3. User sends BCH from their wallet
-4. Transaction is confirmed on-chain (typically under 2 seconds)
-5. Booking is confirmed and a blockchain receipt is issued
-6. Gateway settles in fiat to the supplier — suppliers never touch crypto
+4. Transaction confirmed on-chain (typically under 2 seconds)
+5. Booking confirmed with a blockchain receipt
+6. Sub-$0.01 transaction fees — no hidden costs
 
 ---
 
 ## 🗺️ Roadmap
 
-- [x] Landing page with AI-generated design
-- [x] Navbar with smart theme switching
-- [x] Features bento grid
-- [ ] Supabase auth and user onboarding
-- [ ] Amadeus flight and hotel search integration
-- [ ] AI trip planner (MVP)
+- [x] Landing page with theme switching
+- [x] Supabase auth (login/signup)
+- [x] AI chat assistant with intent detection
+- [x] Flight search (Kiwi + Aviationstack)
+- [x] Hotel search
+- [x] Activity search
+- [x] AI trip planner with full itinerary generation
+- [x] Weather integration
+- [x] Interactive maps with custom markers
+- [x] Spatial map triggers (MacroMap, RouteMap, RadiusMap)
+- [x] Chat persistence with conversation history
+- [x] Image service with Unsplash + Pexels fallback
 - [ ] BCH checkout flow
-- [ ] User dashboard
+- [ ] User dashboard with booking history
 - [ ] Group travel mode
 - [ ] Mobile app (React Native)
 
@@ -216,4 +250,4 @@ MIT License © 2025 TripFi. See [LICENSE](./LICENSE) for details.
 
 Built with ❤️ for travelers who move fast and pay smart.
 
-[Website](https://tripfi-app.vercel.app) · [Twitter](https://x.com/tripfiapp) · [Discord](https://discord.gg/tripfi)
+[Website](https://tripfi-app.vercel.app) · [Twitter](https://x.com/tripfiapp) · [Telegram](https://t.me/tripfiapp)

@@ -3,6 +3,7 @@ import { ThemeProvider } from "next-themes";
 import { Inter } from "next/font/google"; // 1. Import fonts
 import "./globals.css";
 import { AIAssistant } from "@/components/landing/AIAssistant";
+import { SessionProvider } from "@/components/providers/SessionProvider";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -34,12 +35,13 @@ export default function RootLayout({
           href="https://fonts.googleapis.com/css2?family=Sora:wght@100..800&display=swap"
           rel="stylesheet"
         />
+        <link rel="stylesheet" href="/assets/ming-cute/MingCute.css" />
       </head>
 
       <body className={`${inter.variable} font-sans antialiased`}>
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
-          {children}
-          <AIAssistant />
+          <SessionProvider>{children}</SessionProvider>
+          {/* <AIAssistant /> */}
         </ThemeProvider>
       </body>
     </html>

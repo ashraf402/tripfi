@@ -29,7 +29,7 @@ export default function Features() {
   }, []);
 
   return (
-    <section className="py-24 px-4 w-full overflow-hidden bg-(--background)">
+    <section className="py-24 px-4 w-full overflow-hidden bg-background">
       <div className="max-w-6xl mx-auto">
         {/* Section Header */}
         <motion.div
@@ -43,11 +43,11 @@ export default function Features() {
           transition={{ duration: 0.5 }}
           className="mb-12"
         >
-          <h2 className="text-4xl font-bold tracking-tight leading-tight mb-3 font-heading text-(--foreground)">
+          <h2 className="text-4xl font-bold tracking-tight leading-tight mb-3 font-heading text-foreground">
             Everything you need for{" "}
-            <span className="text-(--primary)">seamless travel</span>
+            <span className="text-primary">seamless travel</span>
           </h2>
-          <p className="text-(--text-secondary) max-w-md mb-16 text-lg">
+          <p className="text-text-secondary max-w-md mb-16 text-lg">
             Experience travel planning reimagined with the power of blockchain
             and AI. Designed for the modern nomad.
           </p>
@@ -66,23 +66,23 @@ export default function Features() {
               amount: 0.2,
             }}
             variants={cardVariants}
-            className="group relative col-span-1 md:col-span-2 lg:col-span-4 overflow-hidden rounded-2xl border border-(--border) bg-(--surface-card) backdrop-blur-md p-6 flex flex-col hover:border-(--primary) hover:shadow-[0_0_32px_rgba(0,208,132,0.12)] transition-all duration-300 cursor-pointer min-w-0"
+            className="group relative col-span-1 md:col-span-2 lg:col-span-4 overflow-hidden rounded-2xl border border-border bg-surface-card backdrop-blur-md p-6 flex flex-col hover:border-primary hover:shadow-[0_0_32px_rgba(0,208,132,0.12)] transition-all duration-300 cursor-pointer min-w-0"
           >
             {/* AI Badge */}
             <div className="absolute top-6 right-6 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-black/40 backdrop-blur-md border border-white/10 text-[10px] font-medium text-(--primary) uppercase tracking-wider">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-black/40 backdrop-blur-md border border-white/10 text-[10px] font-medium text-primary uppercase tracking-wider">
                 <Sparkles className="w-3 h-3" />
                 Generative AI Configured
               </div>
             </div>
 
-            <div className="w-9 h-9 rounded-lg bg-(--surface) border border-(--border) flex items-center justify-center mb-4">
-              <Map className="w-4 h-4 text-(--primary)" />
+            <div className="w-9 h-9 rounded-lg bg-surface border border-border flex items-center justify-center mb-4">
+              <Map className="w-4 h-4 text-primary" />
             </div>
-            <h3 className="text-xl font-bold font-heading text-(--foreground) mb-2">
+            <h3 className="text-xl font-bold font-heading text-foreground mb-2">
               Smart Trip Planning
             </h3>
-            <p className="text-(--text-secondary)">
+            <p className="text-text-secondary">
               Our AI analyzes thousands of routes to build your perfect
               itinerary in seconds, not hours.
             </p>
@@ -107,35 +107,35 @@ export default function Features() {
               amount: 0.2,
             }}
             variants={cardVariants}
-            className="group col-span-1 md:col-span-2 lg:col-span-2 overflow-hidden rounded-2xl border border-(--border) bg-(--surface-card) backdrop-blur-md p-6 flex flex-col hover:border-(--primary) hover:shadow-[0_0_32px_rgba(0,208,132,0.12)] transition-all duration-300 cursor-pointer min-w-0"
+            className="group col-span-1 md:col-span-2 lg:col-span-2 overflow-hidden rounded-2xl border border-border bg-surface-card backdrop-blur-md p-6 flex flex-col hover:border-primary hover:shadow-[0_0_32px_rgba(0,208,132,0.12)] transition-all duration-300 cursor-pointer min-w-0"
           >
-            <div className="w-9 h-9 rounded-lg bg-(--surface) border border-(--border) flex items-center justify-center mb-4">
+            <div className="w-9 h-9 rounded-lg bg-surface border border-border flex items-center justify-center mb-4">
               {/* Bitcoin B symbol substitute or text */}
-              <span className="text-(--primary) font-bold text-lg">₿</span>
+              <span className="text-primary font-bold text-lg">₿</span>
             </div>
-            <h3 className="text-xl font-bold font-heading text-(--foreground) mb-2">
+            <h3 className="text-xl font-bold font-heading text-foreground mb-2">
               Instant Payments
             </h3>
-            <p className="text-(--text-secondary)">
+            <p className="text-text-secondary">
               Settle bookings in under a minute with Bitcoin Cash.
             </p>
 
             <div className="mt-auto pt-8 space-y-3">
               <div className="flex justify-between text-sm">
-                <span className="text-(--text-secondary)">Processing Time</span>
-                <span className="text-(--primary) font-mono text-right">
+                <span className="text-text-secondary">Processing Time</span>
+                <span className="text-primary font-mono text-right">
                   {"< 2s"}
                 </span>
               </div>
               <div className="flex justify-between text-sm">
-                <span className="text-(--text-secondary)">Network Fee</span>
-                <span className="text-(--primary) font-mono text-right">
+                <span className="text-text-secondary">Network Fee</span>
+                <span className="text-primary font-mono text-right">
                   $0.001
                 </span>
               </div>
               <div className="flex justify-between text-sm">
-                <span className="text-(--text-secondary)">Security</span>
-                <span className="text-(--primary) font-mono flex items-center gap-1 justify-end">
+                <span className="text-text-secondary">Security</span>
+                <span className="text-primary font-mono flex items-center gap-1 justify-end">
                   <ShieldCheck size={12} /> AES-256
                 </span>
               </div>
@@ -153,24 +153,24 @@ export default function Features() {
               amount: 0.2,
             }}
             variants={cardVariants}
-            className="group col-span-1 lg:col-span-3 overflow-hidden rounded-2xl border border-(--border) bg-(--surface-card) backdrop-blur-md p-6 flex flex-col hover:border-(--primary) hover:shadow-[0_0_32px_rgba(0,208,132,0.12)] transition-all duration-300 cursor-pointer min-w-0"
+            className="group col-span-1 lg:col-span-3 overflow-hidden rounded-2xl border border-border bg-surface-card backdrop-blur-md p-6 flex flex-col hover:border-primary hover:shadow-[0_0_32px_rgba(0,208,132,0.12)] transition-all duration-300 cursor-pointer min-w-0"
           >
             {/* AI Badge */}
             <div className="absolute top-6 right-6 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-black/40 backdrop-blur-md border border-white/10 text-[10px] font-medium text-(--primary) uppercase tracking-wider">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-black/40 backdrop-blur-md border border-white/10 text-[10px] font-medium text-primary uppercase tracking-wider">
                 <Sparkles className="w-3 h-3" />
                 Generative AI Configured
               </div>
             </div>
 
-            <div className="w-9 h-9 rounded-lg bg-(--surface) border border-(--border) flex items-center justify-center mb-4">
+            <div className="w-9 h-9 rounded-lg bg-surface border border-border flex items-center justify-center mb-4">
               {/* Location Pin substitute using Map or generic */}
-              <Map className="w-4 h-4 text-(--primary)" />
+              <Map className="w-4 h-4 text-primary" />
             </div>
-            <h3 className="text-xl font-bold font-heading text-(--foreground) mb-2">
+            <h3 className="text-xl font-bold font-heading text-foreground mb-2">
               AI Recommendations
             </h3>
-            <p className="text-(--text-secondary)">
+            <p className="text-text-secondary">
               Personalized spots based on your taste profile and past trips.
             </p>
           </motion.div>
@@ -186,15 +186,15 @@ export default function Features() {
               amount: 0.2,
             }}
             variants={cardVariants}
-            className="group col-span-1 lg:col-span-3 overflow-hidden rounded-2xl border border-(--border) bg-(--surface-card) backdrop-blur-md p-6 flex flex-col hover:border-(--primary) hover:shadow-[0_0_32px_rgba(0,208,132,0.12)] transition-all duration-300 cursor-pointer min-w-0"
+            className="group col-span-1 lg:col-span-3 overflow-hidden rounded-2xl border border-border bg-surface-card backdrop-blur-md p-6 flex flex-col hover:border-primary hover:shadow-[0_0_32px_rgba(0,208,132,0.12)] transition-all duration-300 cursor-pointer min-w-0"
           >
-            <div className="w-9 h-9 rounded-lg bg-(--surface) border border-(--border) flex items-center justify-center mb-4">
-              <Shield className="w-4 h-4 text-(--primary)" />
+            <div className="w-9 h-9 rounded-lg bg-surface border border-border flex items-center justify-center mb-4">
+              <Shield className="w-4 h-4 text-primary" />
             </div>
-            <h3 className="text-xl font-bold font-heading text-(--foreground) mb-2">
+            <h3 className="text-xl font-bold font-heading text-foreground mb-2">
               Secure Protocol
             </h3>
-            <p className="text-(--text-secondary)">
+            <p className="text-text-secondary">
               Cryptographically secured reservations on the blockchain.
             </p>
           </motion.div>
@@ -210,16 +210,16 @@ export default function Features() {
               amount: 0.2,
             }}
             variants={cardVariants}
-            className="group col-span-1 md:col-span-2 lg:col-span-6 overflow-hidden rounded-2xl border border-(--border) bg-(--surface-card) backdrop-blur-md p-6 flex flex-col md:flex-row items-center gap-6 hover:border-(--primary) hover:shadow-[0_0_32px_rgba(0,208,132,0.12)] transition-all duration-300 cursor-pointer min-w-0"
+            className="group col-span-1 md:col-span-2 lg:col-span-6 overflow-hidden rounded-2xl border border-border bg-surface-card backdrop-blur-md p-6 flex flex-col md:flex-row items-center gap-6 hover:border-primary hover:shadow-[0_0_32px_rgba(0,208,132,0.12)] transition-all duration-300 cursor-pointer min-w-0"
           >
             <div className="flex-1">
-              <div className="w-9 h-9 rounded-lg bg-(--surface) border border-(--border) flex items-center justify-center mb-4">
-                <TrendingDown className="w-4 h-4 text-(--primary)" />
+              <div className="w-9 h-9 rounded-lg bg-surface border border-border flex items-center justify-center mb-4">
+                <TrendingDown className="w-4 h-4 text-primary" />
               </div>
-              <h3 className="text-xl font-bold font-heading text-(--foreground) mb-2">
+              <h3 className="text-xl font-bold font-heading text-foreground mb-2">
                 Unbeatable Low Fees
               </h3>
-              <p className="text-(--text-secondary) max-w-sm">
+              <p className="text-text-secondary max-w-sm">
                 We cut out the middlemen. No hidden fees, no surprise charges.
                 Pay only for your trip.
               </p>
@@ -230,7 +230,7 @@ export default function Features() {
               <div className="space-y-3">
                 {/* Competitor A */}
                 <div className="space-y-1">
-                  <div className="flex justify-between text-xs text-(--text-secondary)">
+                  <div className="flex justify-between text-xs text-text-secondary">
                     <span>Competitor A</span>
                     <span>$12.50 fee</span>
                   </div>
@@ -240,7 +240,7 @@ export default function Features() {
                 </div>
                 {/* Competitor B */}
                 <div className="space-y-1">
-                  <div className="flex justify-between text-xs text-(--text-secondary)">
+                  <div className="flex justify-between text-xs text-text-secondary">
                     <span>Competitor B</span>
                     <span>$9.00 fee</span>
                   </div>
@@ -250,12 +250,12 @@ export default function Features() {
                 </div>
                 {/* TripFi */}
                 <div className="space-y-1">
-                  <div className="flex justify-between text-xs font-semibold text-(--primary)">
+                  <div className="flex justify-between text-xs font-semibold text-primary">
                     <span>TripFi</span>
                     <span>$0.05 fee</span>
                   </div>
                   <div className="h-2 w-full bg-white/5 rounded-full overflow-hidden">
-                    <div className="h-full w-[2%] bg-(--primary) rounded-full shadow-[0_0_10px_#00D084]"></div>
+                    <div className="h-full w-[2%] bg-primary rounded-full shadow-[0_0_10px_#00D084]"></div>
                   </div>
                 </div>
               </div>

@@ -6,7 +6,7 @@ import HowItWorks from "@/components/landing/HowItWorks";
 import BCHSection from "@/components/landing/BCHSection";
 import Testimonials from "@/components/landing/Testimonials";
 import Pricing from "@/components/landing/Pricing";
-import CTABanner from "@/components/landing/CTABanner";
+import CTASection from "@/components/shared/CTASection";
 import Footer from "@/components/landing/Footer";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { ScrollToTop } from "@/components/landing/ScrollToTop";
@@ -18,13 +18,13 @@ export default function Home() {
       <div className="flex-1 overflow-hidden">
         <ScrollArea data-main-scroll="true" className="h-full w-full">
           <Hero />
-          <TrustedBy />
+          {/* <TrustedBy /> */}
           <Features />
           <HowItWorks />
           <BCHSection />
           <Testimonials />
           <Pricing />
-          <CTABanner />
+          <CTASection />
           <Footer />
         </ScrollArea>
         <ScrollToTop />

@@ -28,9 +28,9 @@ const testimonials = [
 
 export default function Testimonials() {
   return (
-    <section className="py-24 bg-(--surface) border-y border-(--border) px-4">
+    <section className="py-24 bg-surface border-y border-border px-4">
       <div className="container max-w-6xl mx-auto px-4 md:px-6">
-        <h2 className="text-3xl md:text-5xl font-bold font-heading text-center text-(--foreground) mb-16">
+        <h2 className="text-3xl md:text-5xl font-bold font-heading text-center text-foreground mb-16">
           Loved by nomads
         </h2>
 
@@ -38,19 +38,17 @@ export default function Testimonials() {
           {testimonials.map((t, i) => (
             <div
               key={i}
-              className="bg-(--surface-card) backdrop-blur-sm border border-(--border) p-8 rounded-2xl hover:border-(--border-hover) transition-colors"
+              className="bg-surface-card backdrop-blur-sm border border-border p-8 rounded-2xl hover:border-border-hover transition-colors"
             >
               <div className="flex gap-1 text-yellow-500 mb-4">
                 {[...Array(t.stars)].map((_, i) => (
                   <Star key={i} className="w-4 h-4 fill-current" />
                 ))}
               </div>
-              <p className="text-(--text-secondary) mb-6 italic">
-                "{t.content}"
-              </p>
+              <p className="text-text-secondary mb-6 italic">"{t.content}"</p>
               <div>
-                <p className="text-(--foreground) font-semibold">{t.name}</p>
-                <p className="text-sm text-(--text-secondary)/70">{t.role}</p>
+                <p className="text-foreground font-semibold">{t.name}</p>
+                <p className="text-sm text-text-secondary/70">{t.role}</p>
               </div>
             </div>
           ))}

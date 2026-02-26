@@ -9,9 +9,24 @@
   --color-surface: var(--surface);
   --color-surface-card: var(--surface-card);
   --color-border-default: var(--border);
+  --color-border: var(--border);
+  --color-input: var(--border);
+  --color-ring: var(--primary);
   --color-text-secondary: var(--text-secondary);
+  --color-primary-hover: var(--primary-hover);
+  --color-surface-hover: var(--surface-hover);
   --color-foreground: var(--foreground);
   --color-background: var(--background);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--surface);
+  --color-accent-foreground: var(--foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
 
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   --font-heading: "Sora", sans-serif !important;
@@ -35,10 +50,11 @@ html {
 }
 
 body {
-  background-color: transparent;
-  color: var(--foreground);
-  overflow-x: hidden;
-  max-width: 100%;
+  @apply bg-transparent overflow-x-hidden text-foreground/50 max-w-full;
+}
+
+button {
+  @apply font-heading;
 }
 
 /* Light mode (default) */
@@ -52,6 +68,7 @@ body {
   --border: #d4ddd9;
   --primary: #00d084;
   --primary-hover: #00b36e;
+  --surface-hover: #e8edeb;
   --text-secondary: #6b7280;
 
   /* Additional variables */
@@ -85,6 +102,7 @@ body {
   --border: #2a2a2a;
   --primary: #00d084;
   --primary-hover: #00b36e;
+  --surface-hover: #2a2a2a;
   --text-secondary: #a0a0a0;
 
   /* Additional variables */
