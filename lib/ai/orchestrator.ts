@@ -836,6 +836,8 @@ export interface OrchestratorResponse {
   message: string;
   component: ComponentType;
   data: unknown;
+  secondaryComponent?: ComponentType;
+  secondaryData?: unknown;
   contextUpdate?: Partial<ConversationContext>;
 }
 
@@ -981,8 +983,10 @@ export async function orchestrate(
 
       return {
         message: suggestionText,
-        component: hasMapData ? "MacroMap" : null,
-        data: hasMapData ? macroMapData : null,
+        component: null,
+        data: null,
+        secondaryComponent: hasMapData ? "MacroMap" : null,
+        secondaryData: hasMapData ? macroMapData : null,
         contextUpdate: {
           days: params.days,
           departureDate: params.departureDate,
@@ -1311,8 +1315,10 @@ export async function orchestrate(
 
         return {
           message,
-          component: hasRouteData ? "RouteMap" : "ItineraryCard",
-          data: hasRouteData ? routeMapData : itineraryData,
+          component: "ItineraryCard",
+          data: itineraryData,
+          secondaryComponent: hasRouteData ? "RouteMap" : null,
+          secondaryData: hasRouteData ? routeMapData : null,
           contextUpdate: {
             origin,
             destination,

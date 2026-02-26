@@ -117,6 +117,8 @@ export async function POST(req: NextRequest) {
         content: response.message,
         component: response.component,
         data: response.data,
+        secondaryComponent: response.secondaryComponent ?? null,
+        secondaryData: response.secondaryData ?? null,
         timestamp: new Date(),
       } as any).catch((err) =>
         console.error("[API] Failed to save assistant message:", err.message),
@@ -128,6 +130,8 @@ export async function POST(req: NextRequest) {
       message: response.message,
       component: response.component,
       data: response.data,
+      secondaryComponent: response.secondaryComponent ?? null,
+      secondaryData: response.secondaryData ?? null,
       contextUpdate: mergedContextUpdate,
     });
   } catch (error: any) {

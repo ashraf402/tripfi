@@ -148,6 +148,9 @@ export function useChat(options: UseChatOptions = {}): UseChatReturn {
           content: data.message,
           component: (data.component as ComponentType) ?? null,
           data: data.data ?? null,
+          secondaryComponent:
+            (data.secondaryComponent as ComponentType) ?? null,
+          secondaryData: data.secondaryData ?? null,
           timestamp: new Date(),
         };
 

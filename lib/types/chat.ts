@@ -36,6 +36,8 @@ export interface ChatMessage {
     | RouteMapData
     | RadiusMapData
     | null;
+  secondaryComponent?: ComponentType;
+  secondaryData?: MacroMapData | RouteMapData | RadiusMapData | null;
   timestamp: Date;
   isStreaming?: boolean;
 }

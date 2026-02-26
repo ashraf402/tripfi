@@ -46,9 +46,16 @@ export const ChatMessage = memo(function ChatMessage({
   }
 
   const shouldRender = message.component !== null && message.data !== null;
+  const shouldRenderSecondary =
+    message.secondaryComponent != null && message.secondaryData != null;
 
   const RichComponent =
     shouldRender && message.component ? COMPONENT_MAP[message.component] : null;
+
+  const SecondaryComponent =
+    shouldRenderSecondary && message.secondaryComponent
+      ? COMPONENT_MAP[message.secondaryComponent]
+      : null;
 
   return (
     <div className="flex w-full max-w-screen sm:max-w-full flex-col gap-4">
@@ -59,9 +66,20 @@ export const ChatMessage = memo(function ChatMessage({
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.2 }}
-          className="w-full max-w-full" // Align with message content (avatar width + gap)
+          className="w-full max-w-full"
         >
           <RichComponent data={message.data} />
+        </motion.div>
+      )}
+
+      {shouldRenderSecondary && SecondaryComponent && (
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: 0.4 }}
+          className="w-full max-w-full"
+        >
+          <SecondaryComponent data={message.secondaryData} />
         </motion.div>
       )}
     </div>
