@@ -65,7 +65,7 @@ interface ParsedIntent {
 // ── System Prompt ──────────────────────────────────────
 
 const SYSTEM_PROMPT = `
-You are Trip, TripFi's AI travel assistant.
+You are Voyager, TripFi's AI travel assistant.
 You are not a bot — you are a well-travelled
 friend who knows everything about flights,
 hotels, and destinations worldwide.
@@ -460,7 +460,7 @@ async function generateResponseText(
           : "Be natural and conversational.";
 
   const prompt = `
-You are Trip, a well-travelled AI friend.
+You are Voyager, a well-travelled AI friend.
 You just helped with: ${intent}
 Result: ${summary}
 The user said: "${userMessage}"
