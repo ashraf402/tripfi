@@ -12,7 +12,7 @@ export function LegalPage({ document: doc }: LegalPageProps) {
     <div className="min-h-screen bg-background">
       <div className="max-w-3xl mx-auto px-4 py-16">
         {/* Header */}
-        <div className="mb-12">
+        <div className="my-12">
           <h1 className="text-foreground text-3xl font-bold tracking-tight mb-3">
             {doc.title}
           </h1>
@@ -35,6 +35,15 @@ export function LegalPage({ document: doc }: LegalPageProps) {
               <li key={section.id}>
                 <a
                   href={`#${section.id}`}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    document
+                      .getElementById(section.id)
+                      ?.scrollIntoView({ behavior: "smooth" });
+
+                    // Also update the URL hash without jumping
+                    window.history.pushState(null, "", `#${section.id}`);
+                  }}
                   className="text-text-secondary hover:text-primary text-sm transition-colors"
                 >
                   {section.heading}
@@ -70,8 +79,8 @@ export function LegalPage({ document: doc }: LegalPageProps) {
 
 function LegalSectionBlock({ section }: { section: LegalSection }) {
   return (
-    <section id={section.id}>
-      <h2 className="text-foreground text-xl font-bold mb-4 scroll-mt-8">
+    <section id={section.id} className="scroll-mt-24">
+      <h2 className="text-foreground text-xl font-bold mb-4">
         {section.heading}
       </h2>
 

@@ -1,9 +1,8 @@
+import { SessionProvider } from "@/components/providers/SessionProvider";
 import type { Metadata } from "next";
 import { ThemeProvider } from "next-themes";
 import { Inter } from "next/font/google"; // 1. Import fonts
 import "./globals.css";
-import { AIAssistant } from "@/components/landing/AIAssistant";
-import { SessionProvider } from "@/components/providers/SessionProvider";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -38,10 +37,12 @@ export default function RootLayout({
         <link rel="stylesheet" href="/assets/ming-cute/MingCute.css" />
       </head>
 
-      <body className={`${inter.variable} font-sans antialiased`}>
+      <body
+        className={`${inter.variable} font-sans antialiased`}
+        suppressHydrationWarning
+      >
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
           <SessionProvider>{children}</SessionProvider>
-          {/* <AIAssistant /> */}
         </ThemeProvider>
       </body>
     </html>
