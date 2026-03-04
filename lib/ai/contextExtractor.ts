@@ -1,7 +1,7 @@
 import { groq, GROQ_MODEL } from "./groq";
 import type { ConversationContext } from "@/lib/types/context";
 
-// ── Extract Context from Exchange ──────────────────────
+// Extract Context from Exchange
 
 export async function extractContext(
   userMessage: string,
@@ -81,7 +81,7 @@ Rules:
   }
 }
 
-// ── Build Context Summary for Injection ────────────────
+// Build Context Summary for Injection
 
 export function buildContextSummary(context: ConversationContext): string {
   if (Object.keys(context).length === 0) {

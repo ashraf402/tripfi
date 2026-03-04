@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { Clock, MapPin, Tag } from "lucide-react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { getActivityImage } from "@/lib/utils/imageHelpers";
 import type { Activity } from "@/lib/types/chat";
 
@@ -54,10 +55,13 @@ export function ActivityCard({ activity }: ActivityCardProps) {
       <div className="flex flex-1 flex-col justify-between p-4">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <span className="inline-flex items-center gap-1 text-[10px] uppercase font-bold text-primary tracking-wider">
+            <Badge
+              variant="outline"
+              className="border-0 px-0 inline-flex items-center gap-1 text-[10px] uppercase font-bold text-primary tracking-wider"
+            >
               <Tag className="h-3 w-3" />
               {activity.category}
-            </span>
+            </Badge>
           </div>
           <h3 className="font-heading text-lg font-bold text-foreground leading-tight">
             {activity.name}

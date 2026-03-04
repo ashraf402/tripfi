@@ -1,5 +1,4 @@
 import { createClient } from "@/lib/supabase/server";
-import { getServerDb } from "@/lib/db/server";
 import { NextResponse } from "next/server";
 
 export async function GET(request: Request) {
@@ -7,27 +6,78 @@ export async function GET(request: Request) {
   const code = searchParams.get("code");
   const next = searchParams.get("next") ?? "/new";
 
-  if (code) {
-    const supabase = await createClient();
-    const { data, error } = await supabase.auth.exchangeCodeForSession(code);
-
-    if (!error && data.user) {
-      // Check onboarding status via DB abstraction
-      const db = await getServerDb();
-      const { data: profile } = await db.findOne<{
-        onboarding_completed: boolean;
-      }>("profiles", {
-        select: "onboarding_completed",
-        filters: [{ column: "id", operator: "eq", value: data.user.id }],
-      });
-
-      const redirectTo = profile?.onboarding_completed
-        ? next
-        : "/onboarding/style";
-
-      return NextResponse.redirect(`${origin}${redirectTo}`);
-    }
+  if (!code) {
+    return NextResponse.redirect(`${origin}/login?error=missing_code`);
   }
 
-  return NextResponse.redirect(`${origin}/login?error=auth`);
+  const supabase = await createClient();
+
+  const { error } = await supabase.auth.exchangeCodeForSession(code);
+
+  if (error) {
+    console.error("[Auth Callback] exchangeCodeForSession error:", error);
+    return NextResponse.redirect(`${origin}/login?error=auth_failed`);
+  }
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return NextResponse.redirect(`${origin}/login?error=auth_failed`);
+  }
+
+  // Determine provider from multiple metadata sources
+  const meta = user.user_metadata ?? {};
+  const isGoogleProvider =
+    meta.iss?.includes("google") ||
+    meta.provider === "google" ||
+    user.app_metadata?.provider === "google";
+
+  // Upsert profile — creates row for new users, updates for returning ones.
+  // full_name uses coalesce so an existing value is never overwritten with null.
+  await supabase.from("profiles").upsert(
+    {
+      id: user.id,
+      email: user.email,
+      full_name: meta.full_name ?? meta.name ?? null,
+      avatar_url: meta.avatar_url ?? meta.picture ?? null,
+      provider: isGoogleProvider ? "google" : "email",
+      google_id: meta.sub ?? null,
+    },
+    {
+      onConflict: "id",
+      ignoreDuplicates: false,
+    },
+  );
+
+  // Account linking: if this is a Google sign-in on an EXISTING email account
+  // (google_id was previously null), patch only the fields that are missing so
+  // the original full_name or avatar_url set during email signup is preserved.
+  if (isGoogleProvider) {
+    await supabase
+      .from("profiles")
+      .update({
+        google_id: meta.sub ?? null,
+        avatar_url: meta.picture ?? meta.avatar_url ?? null,
+        provider: "google",
+      })
+      .eq("id", user.id)
+      .is("google_id", null);
+  }
+
+  // Decide where to send the user based on onboarding status
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("onboarding_completed")
+    .eq("id", user.id)
+    .single();
+
+  const onboardingDone = profile?.onboarding_completed ?? false;
+
+  if (!onboardingDone) {
+    return NextResponse.redirect(`${origin}/onboarding/style`);
+  }
+
+  return NextResponse.redirect(`${origin}${next}`);
 }

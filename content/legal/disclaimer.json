@@ -1,0 +1,68 @@
+{
+  "id": "disclaimer",
+  "title": "Disclaimer",
+  "lastUpdated": "2025-01-01",
+  "effectiveDate": "2025-01-01",
+  "contact": {
+    "email": "legal@tripfi.app",
+    "emailPostLaunch": "legal@tripfi.io",
+    "company": "TripFi, Inc."
+  },
+  "sections": [
+    {
+      "id": "general",
+      "heading": "General Disclaimer",
+      "content": "The information provided on TripFi's platform is for general informational purposes only. While we strive to keep the information accurate and up to date, TripFi, Inc. makes no representations or warranties of any kind, express or implied, about the completeness, accuracy, reliability, suitability, or availability of the Services or the information, products, services, or related graphics contained on the platform."
+    },
+    {
+      "id": "travel-information",
+      "heading": "Travel Information",
+      "content": "Travel information including flight schedules, hotel availability, pricing, and destination details is provided in real time from third-party suppliers and may change without notice:",
+      "list": [
+        "Flight schedules are subject to change by airlines at any time",
+        "Hotel availability and pricing may differ at time of booking confirmation",
+        "Destination entry requirements, visa rules, and travel advisories change frequently",
+        "TripFi is not responsible for any losses arising from reliance on travel information displayed on our platform",
+        "Always verify entry requirements directly with the relevant government or embassy"
+      ]
+    },
+    {
+      "id": "ai-recommendations",
+      "heading": "AI-Generated Recommendations",
+      "content": "TripFi uses artificial intelligence to generate travel plans, recommendations, and itineraries. Please note:",
+      "list": [
+        "AI recommendations are generated based on your inputs and available data, and may not be perfect",
+        "AI-generated content should be independently verified before acting upon it",
+        "TripFi makes no warranty that AI recommendations will meet your specific requirements",
+        "Exercise your own judgment when following AI-generated travel advice"
+      ]
+    },
+    {
+      "id": "bch-cryptocurrency",
+      "heading": "Cryptocurrency and BCH",
+      "content": "TripFi accepts Bitcoin Cash (BCH) as a payment method. Important disclaimers regarding cryptocurrency:",
+      "list": [
+        "Cryptocurrency values are highly volatile and can change significantly in short periods",
+        "TripFi is not responsible for losses due to BCH exchange rate fluctuations",
+        "Blockchain transactions are irreversible once confirmed",
+        "TripFi does not provide financial or investment advice regarding cryptocurrency",
+        "You are solely responsible for the security of your BCH wallet and private keys"
+      ]
+    },
+    {
+      "id": "third-party-links",
+      "heading": "Third-Party Links and Services",
+      "content": "Our platform may contain links to third-party websites or integrate with third-party services. TripFi has no control over the content, privacy policies, or practices of any third-party sites or services. We strongly advise you to review the privacy policy and terms of service of any third-party sites you visit."
+    },
+    {
+      "id": "no-warranty",
+      "heading": "No Warranty",
+      "content": "To the fullest extent permitted by applicable law, TripFi excludes all representations, warranties, and conditions relating to our platform and the use of our Services. Nothing in this disclaimer will limit or exclude our liability for death or personal injury caused by negligence, fraud or fraudulent misrepresentation, or any other liability that cannot be excluded or limited under applicable law."
+    },
+    {
+      "id": "limitation",
+      "heading": "Limitation of Liability",
+      "content": "In no event will TripFi, Inc., its directors, employees, partners, agents, suppliers, or affiliates, be liable for any indirect, incidental, special, consequential, or punitive damages, including without limitation loss of profits, data, goodwill, service interruption, or any other commercial damages or losses, arising out of or in connection with your use of our Services."
+    }
+  ]
+}

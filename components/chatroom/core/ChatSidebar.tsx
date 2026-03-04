@@ -1,6 +1,7 @@
 "use client";
 
 import { Logo } from "@/components/landing/Logo";
+import { TestnetBadge } from "@/components/shared/TestnetBadge";
 import { ThemeToggle } from "@/components/landing/ThemeToggle";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -21,7 +22,7 @@ import {
   useConversationStore,
 } from "@/lib/store/conversationStore";
 import type { Conversation } from "@/lib/types/chat";
-import { ChevronLeft, ChevronRight, LogOut, Plus } from "lucide-react";
+import { ChevronLeft, ChevronRight, LogOut, Plus, Plane } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useEffect } from "react";
@@ -29,6 +30,7 @@ import Image from "next/image";
 import { useAuthStore } from "@/lib/stores/auth-store";
 import { getRelativeTime } from "@/utils/time";
 import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
 
 // Limit visual length of titles
 function truncate(str: string, length: number) {
@@ -175,20 +177,23 @@ export function ChatSidebar({ activeId, className }: ChatSidebarProps) {
         {/* Header row */}
         <div
           className={`
-            flex items-center h-14 px-3 shrink-0 border-b border-border
+            flex items-center h-14 px-3 shrink-0 border-border
             ${effectivelyCollapsed ? "justify-center" : "justify-between"}
           `}
         >
           {!effectivelyCollapsed && (
-            <Link href="/" className="block">
+            <Link href="/" className="flex items-center gap-2">
               <Logo className="h-6 w-auto pl-1" />
+              <TestnetBadge />
             </Link>
           )}
 
           {/* Toggle button */}
-          <button
+          <Button
+            variant="ghost"
+            size="icon"
             onClick={toggleCollapse}
-            className={`hidden md:flex w-8 h-8 rounded-lg items-center justify-center text-secondary hover:text-foreground hover:bg-primary/10 transition-all duration-200 shrink-0 ${
+            className={`hidden md:flex rounded-lg items-center justify-center text-secondary hover:text-foreground hover:bg-primary/10 transition-all duration-200 shrink-0 ${
               isMounted ? "opacity-100" : "opacity-0 pointer-events-none"
             }`}
             title={effectivelyCollapsed ? "Expand sidebar" : "Collapse sidebar"}
@@ -198,7 +203,7 @@ export function ChatSidebar({ activeId, className }: ChatSidebarProps) {
             ) : (
               <ChevronLeft className="w-4 h-4" />
             )}
-          </button>
+          </Button>
         </div>
 
         {/* New Trip Button */}
@@ -206,15 +211,15 @@ export function ChatSidebar({ activeId, className }: ChatSidebarProps) {
           <TooltipProvider delayDuration={0}>
             <Tooltip>
               <TooltipTrigger asChild>
-                <button
+                <Button
                   onClick={() => {
                     router.push("/new");
                     if (isMobileOpen) setIsMobileOpen(false);
                   }}
                   title={effectivelyCollapsed ? "New Trip" : ""}
                   className={`
-                    flex items-center gap-2 bg-primary text-black font-semibold rounded-xl
-                    hover:bg-primary/90 transition-all duration-200
+                    flex items-center gap-2 text-black font-semibold rounded-xl
+                    transition-all duration-200
                     ${
                       effectivelyCollapsed
                         ? "w-10 h-10 justify-center mx-auto"
@@ -226,11 +231,47 @@ export function ChatSidebar({ activeId, className }: ChatSidebarProps) {
                   {!effectivelyCollapsed && (
                     <span className="text-sm truncate">New Trip</span>
                   )}
-                </button>
+                </Button>
               </TooltipTrigger>
               {effectivelyCollapsed && (
                 <TooltipContent side="right" className="z-50">
                   <p>New Trip</p>
+                </TooltipContent>
+              )}
+            </Tooltip>
+          </TooltipProvider>
+        </div>
+
+        {/* My Trips Link */}
+        <div className="px-3 pb-3 shrink-0">
+          <TooltipProvider delayDuration={0}>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Link
+                  href="/trips"
+                  onClick={() => {
+                    if (isMobileOpen) setIsMobileOpen(false);
+                  }}
+                  title={effectivelyCollapsed ? "My Trips" : ""}
+                  className={`
+                    flex items-center gap-2 text-primary font-semibold rounded-xl
+                    transition-all duration-200 hover:bg-surface-hover border border-transparent hover:border-border/50
+                    ${
+                      effectivelyCollapsed
+                        ? "w-10 h-10 justify-center mx-auto"
+                        : "w-full px-3 py-2.5 justify-start"
+                    }
+                  `}
+                >
+                  <Plane className="w-4 h-4 shrink-0" />
+                  {!effectivelyCollapsed && (
+                    <span className="text-sm truncate">My Trips</span>
+                  )}
+                </Link>
+              </TooltipTrigger>
+              {effectivelyCollapsed && (
+                <TooltipContent side="right" className="z-50">
+                  <p>My Trips</p>
                 </TooltipContent>
               )}
             </Tooltip>
@@ -287,16 +328,18 @@ export function ChatSidebar({ activeId, className }: ChatSidebarProps) {
                           {conv.title}
                         </span>
 
-                        <button
+                        <Button
+                          variant="ghost"
+                          size="icon"
                           onClick={(e) => handleDelete(e, conv.id)}
                           className="absolute right-2 top-2 opacity-0 group-hover:opacity-100
                                     text-secondary hover:text-red-400
-                                    transition-all p-1 -mr-1 bg-surface-hover/80 rounded-md
+                                    transition-all h-6 w-6 rounded-md
                                     hover:bg-red-500/10"
                           title="Delete trip"
                         >
                           ×
-                        </button>
+                        </Button>
                       </div>
 
                       <span className="text-[10px] text-secondary/50 font-light">
@@ -311,7 +354,8 @@ export function ChatSidebar({ activeId, className }: ChatSidebarProps) {
         </ScrollArea>
 
         {/* Footer */}
-        <div className="shrink-0 border-t border-border">
+        <Separator />
+        <div className="shrink-0 border-border">
           {/* Theme Toggle — above profile */}
           <div className="px-3 pt-3">
             <ThemeToggle className="w-full" showText={!effectivelyCollapsed} />

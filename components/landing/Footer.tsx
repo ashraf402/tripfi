@@ -2,8 +2,8 @@
 
 import { Logo } from "@/components/landing/Logo";
 import { ThemeToggle } from "@/components/landing/ThemeToggle";
+import { Separator } from "@/components/ui/separator";
 import socials from "@/data/socials.json";
-import { Headset, Twitter } from "lucide-react";
 import Link from "next/link";
 import Icon from "../ui/icons/Icon";
 
@@ -48,68 +48,55 @@ export default function Footer() {
           </div>
 
           {/* Links Columns */}
-          {/* The following section is replaced by the user's provided code snippet */}
-          {/* {Object.entries(footerLinks).map(([category, links]) => (
-            <div key={category} className="lg:col-span-1">
-              <h4 className="text-foreground font-semibold mb-6">
-                {category}
-              </h4>
-              <ul className="space-y-4">
-                {links.map((link) => (
-                  <li key={link}>
-                    <Link
-                      href="#"
-                      className="text-text-secondary hover:text-primary transition-colors text-sm"
-                    >
-                      {link}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))} */}
           <div>
             <h3 className="font-bold font-heading text-foreground mb-4">
               Product
             </h3>
             <ul className="space-y-3 text-sm text-text-secondary">
               <li>
-                <a href="#" className="hover:text-primary transition-colors">
+                <a href="/new" className="hover:text-primary transition-colors">
                   Flights
                 </a>
               </li>
               <li>
-                <a href="#" className="hover:text-primary transition-colors">
+                <a href="/new" className="hover:text-primary transition-colors">
                   Hotels
                 </a>
               </li>
               <li>
-                <a href="#" className="hover:text-primary transition-colors">
+                <a href="/new" className="hover:text-primary transition-colors">
                   AI Planner
                 </a>
               </li>
             </ul>
           </div>
+
           <div>
             <h3 className="font-bold font-heading text-foreground mb-4">
               Company
             </h3>
             <ul className="space-y-3 text-sm text-text-secondary">
               <li>
-                <a href="#" className="hover:text-primary transition-colors">
+                <a
+                  href="/about"
+                  className="hover:text-primary transition-colors"
+                >
                   About
                 </a>
               </li>
               <li>
-                <a href="#" className="hover:text-primary transition-colors">
+                <a
+                  href="/careers"
+                  className="hover:text-primary transition-colors"
+                >
                   Careers
                 </a>
               </li>
-              <li>
-                <a href="#" className="hover:text-primary transition-colors">
+              {/* <li>
+                <a href="/blog" className="hover:text-primary transition-colors">
                   Blog
                 </a>
-              </li>
+              </li> */}
             </ul>
           </div>
           <div>
@@ -118,25 +105,56 @@ export default function Footer() {
             </h3>
             <ul className="space-y-3 text-sm text-text-secondary">
               <li>
-                <a href="#" className="hover:text-primary transition-colors">
+                <a
+                  href="/help"
+                  className="hover:text-primary transition-colors"
+                >
                   Help Center
                 </a>
               </li>
               <li>
-                <a href="#" className="hover:text-primary transition-colors">
+                <a
+                  href="/contact"
+                  className="hover:text-primary transition-colors"
+                >
                   Contact Us
                 </a>
               </li>
-              <li>
+              {/* <li>
                 <a href="#" className="hover:text-primary transition-colors">
                   API
                 </a>
-              </li>
+              </li> */}
+            </ul>
+          </div>
+          <div>
+            <h3 className="font-bold font-heading text-foreground mb-4">
+              Legal
+            </h3>
+            <ul className="space-y-3 text-sm text-text-secondary">
+              {[
+                { label: "Privacy Policy", href: "/privacy" },
+                { label: "Terms of Service", href: "/terms" },
+                { label: "Cookie Policy", href: "/cookies" },
+                { label: "Refund Policy", href: "/refunds" },
+                { label: "Acceptable Use", href: "/acceptable-use" },
+                { label: "Disclaimer", href: "/disclaimer" },
+              ].map((link) => (
+                <li key={link.href}>
+                  <Link
+                    href={link.href}
+                    className="hover:text-primary transition-colors"
+                  >
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
         </div>
 
-        <div className="flex flex-col md:flex-row items-center justify-between pt-8 border-t border-border gap-4">
+        <Separator className="mt-8" />
+        <div className="flex flex-col md:flex-row items-center justify-between pt-8 gap-4">
           <p className="text-sm text-text-secondary">
             © {new Date().getFullYear()} TripFi, Inc. All rights reserved.
           </p>

@@ -1,8 +1,9 @@
 "use client";
 
-import React, { useState, useRef, useEffect } from "react";
-import { Loader2, ArrowUp } from "lucide-react";
-import { QUICK_ACTIONS } from "@/data/conversations";
+import { Button } from "@/components/ui/button";
+import { ArrowUp, Loader2 } from "lucide-react";
+import React, { useEffect, useRef, useState } from "react";
+import { sanitizeChat } from "@/lib/utils/sanitize";
 
 interface ChatInputProps {
   onSendMessage: (message: string) => Promise<void>;
@@ -16,6 +17,7 @@ export function ChatInput({
   hasMessages,
 }: ChatInputProps) {
   const [input, setInput] = useState("");
+  const [error, setError] = useState("");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   // Auto-focus on mount
@@ -46,17 +48,38 @@ export function ChatInput({
   };
 
   const handleSend = async () => {
-    if (!input.trim() || isLoading) return;
+    const raw = input.trim();
+    if (!raw || isLoading) return;
 
-    const message = input;
+    const { value, isClean, threat } = sanitizeChat(raw);
+
+    if (!isClean && threat === "prompt_injection") {
+      setError(
+        "That message contains content that cannot be processed. Please rephrase.",
+      );
+      return;
+    }
+
+    if (!value) return;
+
     setInput("");
+    setError("");
 
     // Reset height immediately
     if (textareaRef.current) {
       textareaRef.current.style.height = "auto";
     }
 
-    await onSendMessage(message);
+    await onSendMessage(value);
+  };
+
+  const handlePaste = (e: React.ClipboardEvent) => {
+    const pasted = e.clipboardData.getData("text");
+    const { value } = sanitizeChat(pasted);
+    if (value !== pasted) {
+      e.preventDefault();
+      setInput((prev) => prev + value);
+    }
   };
 
   const handleQuickAction = (prompt: string) => {
@@ -70,23 +93,26 @@ export function ChatInput({
         <textarea
           ref={textareaRef}
           value={input}
-          onChange={(e) => setInput(e.target.value)}
+          onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
+            setInput(e.target.value)
+          }
           onKeyDown={handleKeyDown}
+          onPaste={handlePaste}
           placeholder="Ask anything about your trip..."
-          className="flex-1 bg-transparent border-0 text-foreground placeholder:text-secondary focus:outline-none focus:ring-0 resize-none max-h-40 min-h-6 py-3 px-2 text-sm scrollbar-thin scrollbar-thumb-border scrollbar-track-transparent"
+          className="flex-1 bg-transparent border-0 text-foreground placeholder:text-secondary focus-visible:ring-0 focus-visible:ring-offset-0 resize-none max-h-40 min-h-6 py-3 px-2 text-sm scrollbar-thin scrollbar-thumb-border scrollbar-track-transparent rounded-none shadow-none outline-none"
           disabled={isLoading}
           rows={1}
         />
 
-        <button
+        <Button
+          size="icon"
           onClick={handleSend}
           disabled={!input.trim() || isLoading}
           className={`
-            h-10 w-10 flex items-center justify-center rounded-xl mb-1
-            transition-all duration-200
+            mb-1 transition-all duration-200
             ${
               input.trim() && !isLoading
-                ? "bg-primary text-black hover:bg-primary-hover shadow-md"
+                ? "shadow-md"
                 : "bg-surface-hover text-secondary cursor-not-allowed opacity-50"
             }
           `}
@@ -96,8 +122,10 @@ export function ChatInput({
           ) : (
             <ArrowUp className="w-5 h-5" />
           )}
-        </button>
+        </Button>
       </div>
+
+      {error && <p className="text-red-400 text-xs px-4 pb-2">{error}</p>}
 
       {hasMessages && (
         <div className="text-center">

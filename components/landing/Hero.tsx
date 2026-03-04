@@ -5,6 +5,8 @@ import { useSuggestions } from "@/lib/hooks/useSuggestions";
 import { useChat } from "@/lib/hooks/useChat";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 
 const personas = ["Nomads", "Families", "Crypto Users", "Everyone"];
 
@@ -80,13 +82,16 @@ export default function Hero() {
           className="max-w-4xl"
         >
           {/* Badge */}
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-sm font-medium text-white mb-8">
+          <Badge
+            variant="outline"
+            className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border-white/20 text-sm font-medium text-white mb-8 border"
+          >
             <span className="relative flex h-2 w-2">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
             </span>
             AI-Powered Travel Agent
-          </div>
+          </Badge>
 
           <h1 className="text-5xl sm:text-6xl md:text-7xl font-bold font-heading tracking-tight text-white mb-3 sm:mb-6 leading-tight">
             Travel Smarter <br />
@@ -117,22 +122,24 @@ export default function Hero() {
                 </div>
               ) : suggestions.length > 0 ? (
                 suggestions.slice(0, 2).map((suggestion, idx) => (
-                  <button
+                  <Button
+                    variant="outline"
                     key={idx}
                     onClick={() => handleSuggestionClick(suggestion)}
-                    className="text-sm px-3 py-1 rounded-full bg-white/5 border border-white/10 text-gray-300 hover:text-white hover:bg-white/10 hover:border-white/20 transition-all active:scale-95 text-left line-clamp-1 max-w-62.5"
+                    className="text-sm px-3 py-1 rounded-full h-auto bg-white/5 border-white/10 text-gray-300 hover:text-white hover:bg-white/10 hover:border-white/20 transition-all active:scale-95 text-left line-clamp-1 max-w-62.5 border"
                     title={suggestion}
                   >
                     {suggestion}
-                  </button>
+                  </Button>
                 ))
               ) : (
-                <button
+                <Button
+                  variant="outline"
                   onClick={() => handleSuggestionClick("Honeymoon in Bali")}
-                  className="text-sm px-3 py-1 rounded-full bg-white/5 border border-white/10 text-gray-300 hover:text-white hover:bg-white/10 hover:border-white/20 transition-all active:scale-95"
+                  className="text-sm px-3 py-1 h-auto rounded-full bg-white/5 border-white/10 text-gray-300 hover:text-white hover:bg-white/10 hover:border-white/20 transition-all active:scale-95 border"
                 >
                   "Honeymoon in Bali"
-                </button>
+                </Button>
               )}
             </div>
           </div>

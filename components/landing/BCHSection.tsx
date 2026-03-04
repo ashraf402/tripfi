@@ -1,8 +1,9 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
+import { ArrowRight, Check } from "lucide-react";
 import Image from "next/image";
-import { Check, ArrowRight } from "lucide-react";
 
 export default function BCHSection() {
   return (
@@ -31,10 +32,10 @@ export default function BCHSection() {
               crypto-native speed.
             </p>
 
-            <button className="group bg-primary hover:bg-primary-hover text-black text-lg font-semibold px-8 py-4 rounded-full transition-all flex items-center gap-2 hover:shadow-[0_0_24px_rgba(0,208,132,0.2)]">
+            <Button className="group bg-primary hover:bg-primary-hover text-black text-lg font-semibold px-8 py-6 rounded-full transition-all flex items-center gap-2 hover:shadow-[0_0_24px_rgba(0,208,132,0.2)] h-auto">
               Start Booking
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-            </button>
+            </Button>
 
             <div className="mt-12 flex items-center gap-4">
               {/* Avatars placeholder */}

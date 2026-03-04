@@ -5,7 +5,7 @@ import { redirect } from "next/navigation";
 import type { Conversation, ChatMessage } from "@/lib/types/chat";
 import { saveMessage } from "@/lib/services/chat/chatService";
 
-// ── Create new conversation ────────────────
+// Create new conversation
 
 export async function createConversation(
   firstMessage: string,
@@ -43,7 +43,7 @@ export async function createConversation(
   return { id: data.id };
 }
 
-// ── Get all conversations ──────────────────
+// Get all conversations
 
 export async function getConversations(): Promise<Conversation[]> {
   const supabase = (await createClient()) as any;
@@ -64,7 +64,7 @@ export async function getConversations(): Promise<Conversation[]> {
   return data as Conversation[];
 }
 
-// ── Get conversation + messages ────────────
+// Get conversation + messages
 
 export async function getConversationWithMessages(
   conversationId: string,
@@ -104,7 +104,7 @@ export async function getConversationWithMessages(
   };
 }
 
-// ── Update title ───────────────────────────
+// Update title
 
 export async function updateConversationTitle(
   conversationId: string,
@@ -117,7 +117,7 @@ export async function updateConversationTitle(
     .eq("id", conversationId);
 }
 
-// ── Delete conversation ────────────────────
+// Delete conversation
 
 export async function deleteConversation(
   conversationId: string,

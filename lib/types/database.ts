@@ -50,31 +50,46 @@ export type Database = {
           id: string;
           created_at: string;
           user_id: string;
-          title: string;
-          destination: string;
-          start_date: string | null;
-          end_date: string | null;
-          notes: string | null;
+          booking_id: string;
+          title: string | null;
+          destination: string | null;
+          destination_city: string | null;
+          cover_image_url: string | null;
+          departure_date: string | null;
+          return_date: string | null;
+          status: string | null;
+          travel_style: string | null;
+          travelers: number | null;
         };
         Insert: {
           id?: string;
           created_at?: string;
           user_id: string;
-          title: string;
-          destination: string;
-          start_date?: string | null;
-          end_date?: string | null;
-          notes?: string | null;
+          booking_id: string;
+          title?: string | null;
+          destination?: string | null;
+          destination_city?: string | null;
+          cover_image_url?: string | null;
+          departure_date?: string | null;
+          return_date?: string | null;
+          status?: string | null;
+          travel_style?: string | null;
+          travelers?: number | null;
         };
         Update: {
           id?: string;
           created_at?: string;
           user_id?: string;
-          title?: string;
-          destination?: string;
-          start_date?: string | null;
-          end_date?: string | null;
-          notes?: string | null;
+          booking_id?: string;
+          title?: string | null;
+          destination?: string | null;
+          destination_city?: string | null;
+          cover_image_url?: string | null;
+          departure_date?: string | null;
+          return_date?: string | null;
+          status?: string | null;
+          travel_style?: string | null;
+          travelers?: number | null;
         };
         Relationships: [];
       };
@@ -82,29 +97,110 @@ export type Database = {
         Row: {
           id: string;
           created_at: string;
-          trip_id: string;
-          type: string;
-          details: Json;
-          price: number;
-          currency: string;
+          updated_at: string | null;
+          user_id: string;
+          conversation_id: string | null;
+          origin: string | null;
+          destination: string | null;
+          destination_city: string | null;
+          departure_date: string | null;
+          return_date: string | null;
+          travelers: number | null;
+          trip_days: number | null;
+          travel_style: string | null;
+          total_usd: number | null;
+          total_bch: number | null;
+          bch_rate_at_booking: number | null;
+          flight_data: Json | null;
+          hotel_data: Json | null;
+          itinerary_data: Json | null;
+          status: string | null;
         };
         Insert: {
           id?: string;
           created_at?: string;
-          trip_id: string;
-          type: string;
-          details: Json;
-          price: number;
-          currency: string;
+          updated_at?: string | null;
+          user_id: string;
+          conversation_id?: string | null;
+          origin?: string | null;
+          destination?: string | null;
+          destination_city?: string | null;
+          departure_date?: string | null;
+          return_date?: string | null;
+          travelers?: number | null;
+          trip_days?: number | null;
+          travel_style?: string | null;
+          total_usd?: number | null;
+          total_bch?: number | null;
+          bch_rate_at_booking?: number | null;
+          flight_data?: Json | null;
+          hotel_data?: Json | null;
+          itinerary_data?: Json | null;
+          status?: string | null;
         };
         Update: {
           id?: string;
           created_at?: string;
-          trip_id?: string;
-          type?: string;
-          details?: Json;
-          price?: number;
-          currency?: string;
+          updated_at?: string | null;
+          user_id?: string;
+          conversation_id?: string | null;
+          origin?: string | null;
+          destination?: string | null;
+          destination_city?: string | null;
+          departure_date?: string | null;
+          return_date?: string | null;
+          travelers?: number | null;
+          trip_days?: number | null;
+          travel_style?: string | null;
+          total_usd?: number | null;
+          total_bch?: number | null;
+          bch_rate_at_booking?: number | null;
+          flight_data?: Json | null;
+          hotel_data?: Json | null;
+          itinerary_data?: Json | null;
+          status?: string | null;
+        };
+        Relationships: [];
+      };
+      payment_transactions: {
+        Row: {
+          id: string;
+          created_at: string;
+          booking_id: string;
+          user_id: string;
+          payment_id: string | null;
+          payment_url: string | null;
+          amount_bch: number | null;
+          amount_usd: number | null;
+          status: string | null;
+          is_testnet: boolean | null;
+          confirmed_at: string | null;
+        };
+        Insert: {
+          id?: string;
+          created_at?: string;
+          booking_id: string;
+          user_id: string;
+          payment_id?: string | null;
+          payment_url?: string | null;
+          amount_bch?: number | null;
+          amount_usd?: number | null;
+          status?: string | null;
+          is_testnet?: boolean | null;
+          confirmed_at?: string | null;
+        };
+        Update: {
+          id?: string;
+          created_at?: string;
+          booking_id?: string;
+          user_id?: string;
+          payment_id?: string | null;
+          payment_url?: string | null;
+          amount_bch?: number | null;
+          amount_usd?: number | null;
+          status?: string | null;
+          is_testnet?: boolean | null;
+          confirmed_at?: string | null;
         };
         Relationships: [];
       };
@@ -161,37 +257,6 @@ export type Database = {
           data?: Json | null;
         };
         Relationships: [];
-      };
-      // Add other tables as needed based on the user request context or leave as minimal placeholder
-      // User mentioned: itinerary_items, saved_destinations, price_alerts, transactions
-      itinerary_items: {
-        Row: {
-          id: string;
-          // ... types would be here
-        };
-        Insert: {};
-        Update: {};
-      };
-      saved_destinations: {
-        Row: {
-          id: string;
-        };
-        Insert: {};
-        Update: {};
-      };
-      price_alerts: {
-        Row: {
-          id: string;
-        };
-        Insert: {};
-        Update: {};
-      };
-      transactions: {
-        Row: {
-          id: string;
-        };
-        Insert: {};
-        Update: {};
       };
     };
     Views: {

@@ -35,7 +35,7 @@ interface UnsplashPhoto {
   links: { html: string };
 }
 
-// ── Core search function ───────────────────
+// Core search function
 
 async function searchPhoto(
   query: string,
@@ -85,7 +85,7 @@ async function searchPhoto(
   return urls[index];
 }
 
-// ── Pexels fallback ────────────────────────
+// Pexels fallback
 
 const PEXELS_KEY = process.env.PEXELS_API_KEY;
 
@@ -136,7 +136,7 @@ async function searchPhotoPexels(
   return urls[index];
 }
 
-// ── Provider chain ─────────────────────────
+// Provider chain
 // Unsplash first → Pexels fallback →
 // source.unsplash.com static fallback
 
@@ -168,7 +168,7 @@ async function getImageWithFallback(
   return staticFallback;
 }
 
-// ── Public helpers ─────────────────────────
+// Public helpers
 
 export async function getHotelImage(
   hotelName: string,
@@ -232,7 +232,7 @@ export async function getFlightImage(airlineCode?: string): Promise<string> {
   );
 }
 
-// ── Airline logo (airhex — free, no key) ───
+// Airline logo (airhex — free, no key)
 
 export function getAirlineLogoUrl(airlineCode: string): string {
   return (

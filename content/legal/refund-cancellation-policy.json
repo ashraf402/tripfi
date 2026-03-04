@@ -1,0 +1,79 @@
+{
+  "id": "refund-cancellation-policy",
+  "title": "Refund and Cancellation Policy",
+  "lastUpdated": "2025-01-01",
+  "effectiveDate": "2025-01-01",
+  "contact": {
+    "email": "support@tripfi.app",
+    "emailPostLaunch": "support@tripfi.io",
+    "company": "TripFi, Inc."
+  },
+  "sections": [
+    {
+      "id": "overview",
+      "heading": "Overview",
+      "content": "TripFi acts as a booking agent between travellers and travel suppliers (airlines, hotels, tour operators, etc.). Refund and cancellation terms are primarily determined by the individual travel supplier whose services you have booked. This policy explains both supplier-level and platform-level refund processes."
+    },
+    {
+      "id": "supplier-policies",
+      "heading": "Supplier Cancellation Policies",
+      "content": "Each booking is subject to the cancellation policy of the specific supplier. These policies vary widely:",
+      "list": [
+        "Non-refundable: Some fares and hotel rates are entirely non-refundable once booked",
+        "Partially refundable: Some bookings allow cancellation with a penalty fee",
+        "Fully refundable: Some bookings allow free cancellation within a specified window",
+        "Change fees: Modifications to bookings may incur fees set by the supplier"
+      ],
+      "footer": "Always review the supplier's cancellation terms before completing your booking. These terms are clearly displayed during the checkout process."
+    },
+    {
+      "id": "platform-fees",
+      "heading": "TripFi Platform Fees",
+      "content": "TripFi charges a service fee for bookings made through our platform. Our platform fee policy:",
+      "list": [
+        "Platform service fees are non-refundable in all circumstances",
+        "If a supplier provides a full refund, you will receive the supplier amount minus the TripFi service fee",
+        "Platform fees cover the AI planning, booking facilitation, and customer support services"
+      ]
+    },
+    {
+      "id": "bch-payments",
+      "heading": "BCH Payment Refunds",
+      "content": "For bookings paid with Bitcoin Cash (BCH):",
+      "list": [
+        "Refunds are processed in BCH at the prevailing exchange rate at the time of refund",
+        "This means the BCH amount refunded may differ from the BCH amount originally paid due to exchange rate fluctuations",
+        "TripFi is not responsible for any losses arising from BCH exchange rate movements between payment and refund",
+        "BCH refunds are processed within 5–10 business days once approved"
+      ]
+    },
+    {
+      "id": "how-to-cancel",
+      "heading": "How to Cancel a Booking",
+      "content": "To cancel a booking:",
+      "list": [
+        "Log in to your TripFi account and navigate to My Trips",
+        "Select the booking you wish to cancel",
+        "Click \"Cancel Booking\" and follow the on-screen instructions",
+        "Review the cancellation terms and confirm your cancellation",
+        "You will receive a confirmation email with any applicable refund details"
+      ]
+    },
+    {
+      "id": "refund-processing",
+      "heading": "Refund Processing Times",
+      "content": "Once a refund has been approved:",
+      "list": [
+        "Credit/debit card refunds: 5–10 business days",
+        "BCH refunds: 5–10 business days",
+        "Bank transfers: 7–14 business days"
+      ],
+      "footer": "Processing times may vary depending on your financial institution."
+    },
+    {
+      "id": "disputes",
+      "heading": "Disputes",
+      "content": "If you believe a refund has been incorrectly processed or you are unsatisfied with the refund amount, please contact our support team within 30 days of the refund being issued. We will do our best to resolve any disputes in a fair and timely manner."
+    }
+  ]
+}

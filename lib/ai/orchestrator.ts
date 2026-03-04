@@ -1,4 +1,5 @@
 import { groq, GROQ_MODEL } from "./groq";
+import { getDemoPricesIfTestnet } from "@/lib/services/pricing/demoPrice";
 import { gemini } from "./gemini";
 import { searchFlights } from "@/lib/services/flights/flightService";
 import { searchHotels } from "@/lib/services/hotels/hotelService";
@@ -9,6 +10,7 @@ import {
 import { getFlightStatus } from "@/lib/services/flights/aviationstackService";
 import { getBchRate, usdToBch } from "@/lib/services/bchRate";
 import { buildContextSummary } from "./contextExtractor";
+import { sanitizeChat } from "@/lib/utils/sanitize";
 import type { ConversationContext } from "@/lib/types/context";
 import type {
   ChatMessage,
@@ -22,6 +24,7 @@ import type {
   MacroMapData,
   RouteMapData,
   RadiusMapData,
+  ItineraryCostBreakdown,
 } from "@/lib/types/chat";
 import {
   AIRPORT_TO_HOTEL_CITY,
@@ -31,7 +34,7 @@ import {
   getDefaultDepartureDate,
 } from "@/utils/travel";
 
-// ── Intent Types ───────────────────────────────────────
+// Intent Types
 
 type Intent =
   | "search_flights"
@@ -62,7 +65,7 @@ interface ParsedIntent {
   };
 }
 
-// ── System Prompt ──────────────────────────────────────
+// System Prompt
 
 const SYSTEM_PROMPT = `
 You are Voyager, TripFi's AI travel assistant.
@@ -299,7 +302,7 @@ map of Day 1 will automatically appear.
 Don't re-describe the route in text.
 `;
 
-// ── Intent Detection ───────────────────────────────────
+// Intent Detection
 
 async function detectIntent(
   userMessage: string,
@@ -431,7 +434,7 @@ Never assume trip planning intent from casual or ambiguous messages.
     return { intent: "general_chat", params: {} };
   }
 }
-// ── Generate Response Text ─────────────────────────────
+// Generate Response Text
 
 async function generateResponseText(
   userMessage: string,
@@ -519,7 +522,7 @@ function getFallbackMessage(intent: Intent, summary: string): string {
   return messages[intent] ?? `Here's what I found: ${summary}.`;
 }
 
-// ── Destination Suggestions ────────────────────────────
+// Destination Suggestions
 // Called when user wants inspiration with no destination
 
 async function generateDestinationSuggestions(
@@ -580,7 +583,7 @@ Do NOT add any text after the QUICK_PICKS line.
   }
 }
 
-// ── Build Itinerary from Real Data ─────────────────────
+// Build Itinerary from Real Data
 
 async function buildItinerary(
   params: ParsedIntent["params"],
@@ -719,30 +722,98 @@ async function buildItinerary(
   }
 
   // Totals from real API data
-  const flightCost = flightData?.flights?.[0]?.priceUsd ?? 0;
-  const hotelCost = hotelData?.hotels?.[0]?.totalPriceUsd ?? 0;
-  const activityCost = (activityData?.activities ?? [])
-    .slice(0, 5)
-    .reduce((sum, a) => sum + (a.priceUsd ?? 0), 0);
+  // After building flights and hotels,
+  // calculate each cost separately
 
-  const totalCostUsd = flightCost + hotelCost + activityCost;
-  const totalCostBch = usdToBch(totalCostUsd, bchRate);
+  const realFlightCost = (() => {
+    const flight = flightData?.flights?.[0];
+    if (!flight) return 0;
+    const raw =
+      (flight as any).price?.total ??
+      (flight as any).price?.amount ??
+      (flight as any).totalPrice ??
+      flight.priceUsd ??
+      0;
+    return typeof raw === "string" ? parseFloat(raw) : raw;
+  })();
 
-  if (totalCostUsd > 50000) {
-    console.error(
-      "[Price Guard] totalCostUsd seems wrong:",
-      totalCostUsd,
-      "— check price fields above",
-    );
-  }
+  const realHotelCost = (() => {
+    const hotel = hotelData?.hotels?.[0];
+    if (!hotel) return 0;
+    const perNight =
+      (hotel as any).price?.perNight ??
+      (hotel as any).pricePerNight ??
+      (hotel as any).price?.amount ??
+      hotel.pricePerNightUsd ??
+      0;
+    const nights = days ?? 1;
+    const raw = typeof perNight === "string" ? parseFloat(perNight) : perNight;
+    return raw * nights;
+  })();
 
-  // SANITY CHECK for Bug 2
-  console.log(
-    "[Orchestrator] Total cost check:",
-    `$${totalCostUsd} USD /`,
-    `${totalCostBch} BCH`,
-    `(Rate: ${bchRate})`,
+  const realActivitiesCost = (() => {
+    const acts = dayCards?.flatMap((d) => d.items ?? []) ?? [];
+    return acts.reduce((sum, a) => {
+      const price = (a as any).price ?? (a as any).cost ?? a.costUsd ?? 0;
+      const raw = typeof price === "string" ? parseFloat(price) : price;
+      return sum + (isNaN(raw) ? 0 : raw);
+    }, 0);
+  })();
+
+  const realTaxesAndFees = Math.round(
+    (realFlightCost + realHotelCost + realActivitiesCost) * 0.15,
   );
+
+  const realTotal =
+    realFlightCost + realHotelCost + realActivitiesCost + realTaxesAndFees;
+
+  const bchRateValue = bchRate || 450;
+
+  // Demo price override: on testnet, replace real prices with small
+  // randomized amounts so tBCH amounts are tiny and testable.
+  // On mainnet getDemoPricesIfTestnet returns null and real prices are used.
+  const nights = days ?? 1;
+  const activityCount = dayCards.reduce(
+    (sum, d) =>
+      sum +
+      d.items.filter((it) => it.type === "activity" || it.type === "food")
+        .length,
+    0,
+  );
+
+  const demoPrices = getDemoPricesIfTestnet({ nights, activityCount });
+
+  let costs: ItineraryCostBreakdown;
+
+  if (demoPrices) {
+    costs = demoPrices;
+    console.log(
+      "[Orchestrator] TESTNET demo prices:",
+      `$${demoPrices.total} USD`,
+      `/ ${(demoPrices.total / bchRateValue).toFixed(8)} BCH`,
+    );
+  } else {
+    if (realTotal > 50000) {
+      console.error(
+        "[Price Guard] total seems wrong:",
+        realTotal,
+        "— check price fields above",
+      );
+    }
+    console.log(
+      "[Orchestrator] Total cost check:",
+      `$${realTotal} USD /`,
+      `${realTotal / bchRateValue} BCH`,
+      `(Rate: ${bchRateValue})`,
+    );
+    costs = {
+      flightCost: Math.round(realFlightCost * 100) / 100,
+      hotelCost: Math.round(realHotelCost * 100) / 100,
+      activitiesCost: Math.round(realActivitiesCost * 100) / 100,
+      taxesAndFees: Math.round(realTaxesAndFees * 100) / 100,
+      total: Math.round(realTotal * 100) / 100,
+    };
+  }
 
   return {
     title: `${destination} Trip`,
@@ -752,13 +823,14 @@ async function buildItinerary(
     totalDays: days,
     travelers: params.adults ?? 1,
     days: dayCards,
-    totalCostUsd,
-    totalCostBch,
+    costs,
+    totalCostUsd: costs.total, // keep in sync
+    totalCostBch: Math.round((costs.total / bchRateValue) * 1e8) / 1e8,
     isSaved: false,
   };
 }
 
-// ── User-Friendly Error Messages ───────────────────────
+// User-Friendly Error Messages
 
 function getErrorMessage(intent: Intent, error: any): string {
   const base = error?.message?.includes("No flights")
@@ -774,7 +846,7 @@ function getErrorMessage(intent: Intent, error: any): string {
   return `${base} Please try adjusting your dates or destination and I'll search again.`;
 }
 
-// ── Extract City From Natural Message ────────────────
+// Extract City From Natural Message
 // Last resort when intent parser doesn't extract a destination.
 // Strips common chip-style openers and treats the remainder as
 // a city name for IATA lookup via cityNameToIata().
@@ -808,7 +880,7 @@ function extractCityFromMessage(message: string): string | null {
   return null;
 }
 
-// ── Extract Cities From Quick Picks ─────────────────
+// Extract Cities From Quick Picks
 // Parses QUICK_PICKS JSON array from the AI suggestion
 // response and extracts city names from natural phrases.
 
@@ -830,7 +902,7 @@ function extractCitiesFromQuickPicks(text: string): string[] {
   }
 }
 
-// ── Main Orchestrator ──────────────────────────────────
+// Main Orchestrator
 
 export interface OrchestratorResponse {
   message: string;
@@ -847,10 +919,21 @@ export async function orchestrate(
   userOriginIata?: string,
   context?: ConversationContext,
 ): Promise<OrchestratorResponse> {
+  // Last line of defense: sanitize before any intent detection or AI call
+  const { value: safeMessage } = sanitizeChat(userMessage);
+
+  if (!safeMessage) {
+    return {
+      message: "I could not process that message. Please try rephrasing.",
+      component: null,
+      data: null,
+    };
+  }
+
   const contextSummary = context ? buildContextSummary(context) : "";
 
   const parsed = await detectIntent(
-    userMessage,
+    safeMessage,
     conversationHistory,
     userOriginIata,
     contextSummary || undefined,
@@ -865,7 +948,7 @@ export async function orchestrate(
   console.log("[Orchestrator] ─────────────────────\n");
 
   switch (intent) {
-    // ── Flights ──────────────────────────────────────
+    // Flights
     case "search_flights": {
       try {
         const origin =
@@ -925,7 +1008,7 @@ export async function orchestrate(
       }
     }
 
-    // ── Destination Suggestions ───────────────────────────
+    // Destination Suggestions
     case "destination_suggest": {
       const suggestionText = await generateDestinationSuggestions(
         userMessage,
@@ -935,7 +1018,7 @@ export async function orchestrate(
         context?.origin ?? userOriginIata,
       );
 
-      // ── MacroMap trigger: geocode suggested cities ──
+      // MacroMap trigger: geocode suggested cities
       const cities = extractCitiesFromQuickPicks(suggestionText);
 
       const geoResults = await Promise.allSettled(
@@ -996,7 +1079,7 @@ export async function orchestrate(
       };
     }
 
-    // ── Hotels ───────────────────────────────────────
+    // Hotels
     case "search_hotels": {
       try {
         const hotelDestination =
@@ -1056,7 +1139,7 @@ export async function orchestrate(
       }
     }
 
-    // ── Activities ───────────────────────────────────
+    // Activities
     case "search_activities": {
       try {
         const cityName =
@@ -1092,13 +1175,13 @@ export async function orchestrate(
       }
     }
 
-    // ── Full Trip Plan ────────────────────────────────
+    // Full Trip Plan
     case "plan_trip": {
       try {
         const origin =
           params.origin ?? context?.origin ?? userOriginIata ?? "LOS";
 
-        // ── Destination resolution chain ──────────
+        // Destination resolution chain
         // 1. Direct IATA from intent detection
         // 2. City name → IATA lookup
         // 3. Extract city name from raw message
@@ -1261,7 +1344,7 @@ export async function orchestrate(
           activityData,
         );
 
-        // ── RouteMap trigger: extract Day 1 waypoints ──
+        // RouteMap trigger: extract Day 1 waypoints
         const day1 = itineraryData.days[0];
         const waypoints = day1
           ? day1.items
@@ -1347,7 +1430,7 @@ export async function orchestrate(
       }
     }
 
-    // ── Destination Info ──────────────────────────────
+    // Destination Info
     case "destination_info": {
       try {
         const cityName =
@@ -1384,7 +1467,7 @@ export async function orchestrate(
       }
     }
 
-    // ── Flight Status ────────────────────────────────
+    // Flight Status
     case "flight_status": {
       try {
         const flightNumber = params.flightNumber;
@@ -1427,10 +1510,10 @@ export async function orchestrate(
       }
     }
 
-    // ── General Chat ──────────────────────────────────
+    // General Chat
     case "general_chat":
     default: {
-      // ── RadiusMap trigger: detect hotel neighborhood queries ──
+      // RadiusMap trigger: detect hotel neighborhood queries
       const isRadiusQuery =
         /near(?:by)?|around|walking distance|close to|neighbourhood|neighborhood|surroundings|area|cafes?|restaurants? near|pharmacy near|atm near/i.test(
           userMessage,

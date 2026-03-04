@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { Star, MapPin } from "lucide-react";
 import Image from "next/image";
 import { getHotelImage } from "@/lib/utils/imageHelpers";
+import { Separator } from "@/components/ui/separator";
 import type { Hotel } from "@/lib/types/chat";
 
 interface HotelCardProps {
@@ -84,7 +85,8 @@ export function HotelCard({ hotel }: HotelCardProps) {
         </div>
 
         {/* Price Footer */}
-        <div className="mt-4 flex items-end justify-between border-t border-border pt-3">
+        <Separator className="mt-4" />
+        <div className="flex items-end justify-between pt-3">
           <div className="text-xs text-text-secondary">
             Total for {hotel.nights} night{hotel.nights > 1 ? "s" : ""}
           </div>

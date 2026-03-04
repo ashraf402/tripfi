@@ -1,15 +1,16 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
-import { Wallet, Download, Check } from "lucide-react";
+import { BookingModal } from "@/components/chatroom/booking/BookingModal";
 import { Button } from "@/components/ui/button";
-import { DayCard } from "./DayCard";
-import { ItinerarySummary } from "./ItinerarySummary";
-import { SaveItineraryButton } from "./SaveItineraryButton";
-import { getDestinationImage } from "@/lib/utils/imageHelpers";
-import Image from "next/image";
+import { Separator } from "@/components/ui/separator";
 import type { ItineraryData } from "@/lib/types/chat";
+import { getDestinationImage } from "@/lib/utils/imageHelpers";
+import { motion } from "framer-motion";
+import { Bitcoin, Plane, Hotel, MapPin, Receipt } from "lucide-react";
+import Image from "next/image";
+import { useEffect, useState } from "react";
+import { DayCard } from "./DayCard";
+import { SaveItineraryButton } from "./SaveItineraryButton";
 
 interface ItineraryCardProps {
   data: ItineraryData;
@@ -22,6 +23,7 @@ export function ItineraryCard({ data, onSave }: ItineraryCardProps) {
     `https://source.unsplash.com/800x400/?${encodeURIComponent(data.destination)},city`,
   );
   const [imageLoaded, setImageLoaded] = useState(false);
+  const [isBookingOpen, setIsBookingOpen] = useState(false);
 
   useEffect(() => {
     getDestinationImage(data.destination).then((url) => {
@@ -81,34 +83,114 @@ export function ItineraryCard({ data, onSave }: ItineraryCardProps) {
       </div>
 
       {/* Footer Actions */}
-      <div className="mt-4 flex flex-col sm:flex-row gap-4 sm:items-center justify-between border-t border-border pt-4">
-        <div className="flex flex-col">
-          <span className="text-xs text-text-secondary">
-            Total Estimated Cost
-          </span>
-          <div className="flex items-baseline gap-2">
-            <span className="text-xl font-heading font-bold text-foreground">
-              ${data.totalCostUsd.toLocaleString()}
-            </span>
-            <span className="text-sm text-text-secondary">
-              / ${data.totalCostUsd + 200}
-            </span>
+      {data.costs && (
+        <div className="mt-4 pt-4 border-t border-border space-y-2.5 px-4">
+          <p className="text-secondary text-xs font-semibold uppercase tracking-wider">
+            Cost Estimate
+          </p>
+
+          {data.costs.flightCost > 0 && (
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2 text-secondary">
+                <Plane className="w-3.5 h-3.5" />
+                <span className="text-sm">Flights</span>
+              </div>
+              <span className="text-foreground text-sm font-medium">
+                ${data.costs.flightCost.toFixed(2)}
+              </span>
+            </div>
+          )}
+
+          {data.costs.hotelCost > 0 && (
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2 text-secondary">
+                <Hotel className="w-3.5 h-3.5" />
+                <span className="text-sm">Hotel ({data.totalDays} nights)</span>
+              </div>
+              <span className="text-foreground text-sm font-medium">
+                ${data.costs.hotelCost.toFixed(2)}
+              </span>
+            </div>
+          )}
+
+          {data.costs.activitiesCost > 0 && (
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2 text-secondary">
+                <MapPin className="w-3.5 h-3.5" />
+                <span className="text-sm">Activities</span>
+              </div>
+              <span className="text-foreground text-sm font-medium">
+                ${data.costs.activitiesCost.toFixed(2)}
+              </span>
+            </div>
+          )}
+
+          {data.costs.taxesAndFees > 0 && (
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2 text-secondary">
+                <Receipt className="w-3.5 h-3.5" />
+                <span className="text-sm">Taxes and fees (est.)</span>
+              </div>
+              <span className="text-foreground text-sm font-medium">
+                ${data.costs.taxesAndFees.toFixed(2)}
+              </span>
+            </div>
+          )}
+
+          <Separator />
+
+          <div className="flex items-center justify-between pb-1">
+            <span className="text-foreground font-bold text-sm">Total</span>
+            <div className="text-right">
+              <p className="text-foreground font-bold">
+                ${data.costs.total.toFixed(2)}
+              </p>
+              <p className="text-primary text-xs font-medium">
+                {data.totalCostBch.toFixed(8)} BCH
+              </p>
+            </div>
           </div>
         </div>
+      )}
 
-        <div className="flex justify-end gap-2">
-          <Button
-            variant="outline"
-            className="border-border bg-transparent text-foreground hover:bg-surface-hover h-10 px-4"
-          >
-            Save Plan
-          </Button>
-          <Button className="bg-primary text-black hover:bg-primary-hover font-bold h-10 px-4 gap-2 shadow-[0_0_15px_rgba(0,208,132,0.3)]">
-            <Wallet className="h-4 w-4" />
-            Pay with BCH
-          </Button>
+      {!data.costs && data.totalCostUsd > 0 && (
+        <div className="mt-4 pt-4 border-t border-border px-4 pb-1">
+          <div className="flex items-center justify-between">
+            <span className="text-foreground font-bold text-sm">Total</span>
+            <div className="text-right">
+              <p className="text-foreground font-bold">
+                ${data.totalCostUsd.toFixed(2)}
+              </p>
+              <p className="text-primary text-xs">
+                {data.totalCostBch.toFixed(8)} BCH
+              </p>
+            </div>
+          </div>
         </div>
+      )}
+
+      <div className="w-full flex justify-end gap-2 pt-2">
+        <Button
+          variant="outline"
+          className="border-border bg-transparent text-foreground hover:bg-surface-hover h-10 px-4"
+        >
+          Save Plan
+        </Button>
+        <Button
+          onClick={() => setIsBookingOpen(true)}
+          className="bg-primary text-black hover:bg-primary-hover font-bold h-10 px-4 gap-2 shadow-[0_0_15px_rgba(0,208,132,0.3)]"
+        >
+          <Bitcoin className="h-4 w-4" />
+          Book this trip
+        </Button>
       </div>
+
+      <BookingModal
+        isOpen={isBookingOpen}
+        onClose={() => setIsBookingOpen(false)}
+        itinerary={data}
+        conversationId={data.tripId ?? ""}
+      />
     </div>
   );
 }

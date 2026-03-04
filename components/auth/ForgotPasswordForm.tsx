@@ -21,7 +21,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-
+import { Card, CardContent } from "@/components/ui/card";
 type PageState = "idle" | "success";
 
 export function ForgotPasswordForm() {
@@ -72,8 +72,8 @@ export function ForgotPasswordForm() {
             <Logo />
           </div>
 
-          <div className="bg-surface backdrop-blur-md border border-border rounded-2xl p-8 shadow-2xl overflow-hidden min-w-0">
-            <div className="flex flex-col items-center text-center gap-6 py-4">
+          <Card className="bg-surface backdrop-blur-md border border-border rounded-2xl sm:p-2 shadow-2xl overflow-hidden min-w-0">
+            <CardContent className="flex flex-col items-center text-center gap-6 py-4 p-8">
               <div className="w-16 h-16 rounded-full bg-[rgba(0,208,132,0.1)] border border-primary flex items-center justify-center">
                 <Mail className="w-7 h-7 text-primary" />
               </div>
@@ -108,8 +108,8 @@ export function ForgotPasswordForm() {
               >
                 Back to sign in
               </Link>
-            </div>
-          </div>
+            </CardContent>
+          </Card>
         </div>
       </div>
     );
@@ -137,74 +137,79 @@ export function ForgotPasswordForm() {
         </div>
 
         {/* Reset Password Card */}
-        <div className="bg-surface backdrop-blur-md border border-border rounded-2xl p-8 shadow-2xl overflow-hidden min-w-0">
-          <div className="text-center mb-8">
-            <h2 className="text-foreground text-2xl font-bold leading-tight tracking-tight mb-2">
-              Reset your password
-            </h2>
-            <p className="text-text-secondary text-sm leading-relaxed">
-              Enter your email and we&apos;ll send you a reset link
-            </p>
-          </div>
-
-          {/* Server error */}
-          {serverError && (
-            <div className="bg-red-500/10 border border-red-500/30 rounded-xl px-4 py-3 mb-6">
-              <p className="text-red-400 text-sm">{serverError}</p>
+        <Card className="bg-surface backdrop-blur-md border border-border rounded-2xl sm:p-2 shadow-2xl overflow-hidden min-w-0">
+          <CardContent className="p-8">
+            <div className="text-center mb-8">
+              <h2 className="text-foreground text-2xl font-bold leading-tight tracking-tight mb-2">
+                Reset your password
+              </h2>
+              <p className="text-text-secondary text-sm leading-relaxed">
+                Enter your email and we&apos;ll send you a reset link
+              </p>
             </div>
-          )}
 
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-              {/* Email Field */}
-              <FormField
-                control={form.control}
-                name="email"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-foreground text-sm font-medium leading-none ml-1">
-                      Email Address
-                    </FormLabel>
-                    <FormControl>
-                      <Input
-                        {...field}
-                        type="email"
-                        placeholder="name@example.com"
-                        autoComplete="email"
-                        className="w-full bg-surface border-border rounded-xl py-6 pl-4 pr-4 text-foreground placeholder:text-text-secondary focus-visible:ring-0 focus-visible:border-primary focus-visible:shadow-[0_0_0_3px_rgba(0,208,132,0.1)] transition-all duration-200"
-                      />
-                    </FormControl>
-                    <FormMessage className="text-red-400 text-xs" />
-                  </FormItem>
-                )}
-              />
+            {/* Server error */}
+            {serverError && (
+              <div className="bg-red-500/10 border border-red-500/30 rounded-xl px-4 py-3 mb-6">
+                <p className="text-red-400 text-sm">{serverError}</p>
+              </div>
+            )}
 
-              {/* Send Reset Link Button */}
-              <Button
-                type="submit"
-                disabled={isSubmitting}
-                className="w-full bg-primary hover:bg-primary-hover text-black font-bold font-heading py-6 rounded-xl shadow-lg shadow-[rgba(0,208,132,0.2)] transition-all duration-200 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
+            <Form {...form}>
+              <form
+                onSubmit={form.handleSubmit(onSubmit)}
+                className="space-y-6"
               >
-                {isSubmitting ? (
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                ) : (
-                  "Send Reset Link"
-                )}
-              </Button>
-            </form>
-          </Form>
+                {/* Email Field */}
+                <FormField
+                  control={form.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-foreground text-sm font-medium leading-none ml-1">
+                        Email Address
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          type="email"
+                          placeholder="name@example.com"
+                          autoComplete="email"
+                          className="w-full bg-surface border-border rounded-xl py-6 pl-4 pr-4 text-foreground placeholder:text-text-secondary focus-visible:ring-0 focus-visible:border-primary focus-visible:shadow-[0_0_0_3px_rgba(0,208,132,0.1)] transition-all duration-200"
+                        />
+                      </FormControl>
+                      <FormMessage className="text-red-400 text-xs" />
+                    </FormItem>
+                  )}
+                />
 
-          {/* Back to Login */}
-          <div className="mt-8 flex justify-center">
-            <Link
-              href="/login"
-              className="group flex items-center gap-2 text-text-secondary hover:text-primary transition-colors duration-200 text-sm font-medium"
-            >
-              <ArrowLeft className="w-4 h-4 transition-transform duration-200 group-hover:-translate-x-1" />
-              Back to login
-            </Link>
-          </div>
-        </div>
+                {/* Send Reset Link Button */}
+                <Button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="w-full bg-primary hover:bg-primary-hover text-black font-bold font-heading py-6 rounded-xl shadow-lg shadow-[rgba(0,208,132,0.2)] transition-all duration-200 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {isSubmitting ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    "Send Reset Link"
+                  )}
+                </Button>
+              </form>
+            </Form>
+
+            {/* Back to Login */}
+            <div className="mt-8 flex justify-center">
+              <Link
+                href="/login"
+                className="group flex items-center gap-2 text-text-secondary hover:text-primary transition-colors duration-200 text-sm font-medium"
+              >
+                <ArrowLeft className="w-4 h-4 transition-transform duration-200 group-hover:-translate-x-1" />
+                Back to login
+              </Link>
+            </div>
+          </CardContent>
+        </Card>
 
         {/* Footer / Support */}
         <p className="mt-8 text-center text-text-secondary text-xs">

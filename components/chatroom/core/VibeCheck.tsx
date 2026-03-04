@@ -10,6 +10,7 @@ import {
   MONTH_OPTIONS,
   type VibeOption,
 } from "@/lib/types/vibe";
+import { Button } from "@/components/ui/button";
 
 interface VibeCheckProps {
   onSend: (message: string) => Promise<void>;
@@ -105,7 +106,8 @@ export function VibeCheck({ onSend, isLoading }: VibeCheckProps) {
               <p className="text-secondary text-xs">How long?</p>
               <div className="flex gap-2 flex-wrap">
                 {DURATION_OPTIONS.map((option) => (
-                  <button
+                  <Button
+                    variant="outline"
                     key={option.days}
                     onClick={() =>
                       setSelectedDuration((prev) =>
@@ -113,7 +115,7 @@ export function VibeCheck({ onSend, isLoading }: VibeCheckProps) {
                       )
                     }
                     className={`
-                      rounded-full px-4 py-1.5
+                      rounded-full px-4 py-1.5 h-auto
                       text-sm border
                       transition-all duration-150
                       ${
@@ -124,7 +126,7 @@ export function VibeCheck({ onSend, isLoading }: VibeCheckProps) {
                     `}
                   >
                     {option.label}
-                  </button>
+                  </Button>
                 ))}
               </div>
             </div>
@@ -134,7 +136,8 @@ export function VibeCheck({ onSend, isLoading }: VibeCheckProps) {
               <p className="text-secondary text-xs">When are you thinking?</p>
               <div className="flex gap-2 flex-wrap">
                 {MONTH_OPTIONS.map((month) => (
-                  <button
+                  <Button
+                    variant="outline"
                     key={month}
                     onClick={() =>
                       setSelectedMonth((prev) =>
@@ -142,7 +145,7 @@ export function VibeCheck({ onSend, isLoading }: VibeCheckProps) {
                       )
                     }
                     className={`
-                      rounded-full px-3 py-1
+                      rounded-full px-3 py-1 h-auto
                       text-xs border
                       transition-all duration-150
                       ${
@@ -153,7 +156,7 @@ export function VibeCheck({ onSend, isLoading }: VibeCheckProps) {
                     `}
                   >
                     {month.slice(0, 3)}
-                  </button>
+                  </Button>
                 ))}
               </div>
             </div>

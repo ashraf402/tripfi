@@ -1,5 +1,5 @@
 export interface ConversationContext {
-  // ── Trip basics ──────────────────────────
+  // Trip basics
   origin?: string; // IATA: "LOS"
   destination?: string; // IATA: "DXB"
   destinationCity?: string; // "Dubai"
@@ -10,18 +10,18 @@ export interface ConversationContext {
   budget?: number; // 3000 (USD)
   travelClass?: string; // "BUSINESS"
 
-  // ── User preferences ────────────────────
+  // User preferences
   preferences?: string[]; // ["luxury", "beach"]
   dietary?: string[]; // ["vegetarian"]
   interests?: string[]; // ["museums", "hiking"]
 
-  // ── What AI has already shown ────────────
+  // What AI has already shown
   shownFlights?: string; // "3 flights LOS→DXB"
   shownHotels?: string; // "3 hotels in Dubai"
   shownActivities?: string; // "10 activities"
   shownItinerary?: boolean; // true if plan shown
 
-  // ── Conversation meta ────────────────────
+  // Conversation meta
   lastIntent?: string; // "plan_trip"
   messageCount?: number; // 6
   lastUpdated?: string; // ISO timestamp

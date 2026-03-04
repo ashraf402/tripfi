@@ -1,8 +1,10 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { AnimatePresence, motion } from "framer-motion";
+import { Send, Sparkles, X } from "lucide-react";
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Sparkles, X, Send } from "lucide-react";
 
 export function AIAssistant() {
   const [isOpen, setIsOpen] = useState(false);
@@ -22,13 +24,15 @@ export function AIAssistant() {
                 <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
                 <span className="font-semibold text-sm">TripFi Agent</span>
               </div>
-              <button
+              <Button
+                variant="ghost"
+                size="icon"
                 onClick={() => setIsOpen(false)}
-                className="text-gray-400 hover:text-white transition-colors"
+                className="h-6 w-6 text-gray-400 hover:text-white hover:bg-surface-hover transition-colors"
                 aria-label="Close Assistant"
               >
                 <X className="w-4 h-4" />
-              </button>
+              </Button>
             </div>
             <div className="p-4 h-64 overflow-y-auto space-y-4">
               <div className="flex items-start gap-3">
@@ -43,17 +47,19 @@ export function AIAssistant() {
             </div>
             <div className="p-3 bg-surface border-t border-border">
               <div className="relative">
-                <input
+                <Input
                   type="text"
                   placeholder="Ask me anything..."
-                  className="w-full bg-black/20 border border-border rounded-full px-4 py-2 text-sm text-white focus:outline-none focus:border-primary transition-colors"
+                  className="w-full bg-black/20 border-border rounded-full pr-10 text-sm text-white focus-visible:ring-0 focus-visible:border-primary transition-colors"
                 />
-                <button
-                  className="absolute right-2 top-1/2 -translate-y-1/2 text-primary hover:scale-110 transition-transform"
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8 text-primary hover:scale-110 hover:bg-transparent transition-transform"
                   aria-label="Send Message"
                 >
                   <Send className="w-4 h-4" />
-                </button>
+                </Button>
               </div>
             </div>
           </motion.div>

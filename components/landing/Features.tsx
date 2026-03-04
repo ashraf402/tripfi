@@ -1,10 +1,10 @@
 "use client";
 
+import { Badge } from "@/components/ui/badge";
 import { motion, Variants } from "framer-motion";
+import { Map, Shield, ShieldCheck, Sparkles, TrendingDown } from "lucide-react"; // ShieldCheck for card 2, Shield for card 4
 import Image from "next/image";
-import { Map, ShieldCheck, Sparkles, TrendingDown, Shield } from "lucide-react"; // ShieldCheck for card 2, Shield for card 4
-import { cn } from "@/lib/utils";
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useState } from "react";
 
 const cardVariants: Variants = {
   hidden: { opacity: 0, y: 28 },
@@ -70,10 +70,13 @@ export default function Features() {
           >
             {/* AI Badge */}
             <div className="absolute top-6 right-6 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-black/40 backdrop-blur-md border border-white/10 text-[10px] font-medium text-primary uppercase tracking-wider">
+              <Badge
+                variant="outline"
+                className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-black/40 backdrop-blur-md border-white/10 text-[10px] font-medium text-primary uppercase tracking-wider"
+              >
                 <Sparkles className="w-3 h-3" />
                 Generative AI Configured
-              </div>
+              </Badge>
             </div>
 
             <div className="w-9 h-9 rounded-lg bg-surface border border-border flex items-center justify-center mb-4">
@@ -157,10 +160,13 @@ export default function Features() {
           >
             {/* AI Badge */}
             <div className="absolute top-6 right-6 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-black/40 backdrop-blur-md border border-white/10 text-[10px] font-medium text-primary uppercase tracking-wider">
+              <Badge
+                variant="outline"
+                className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-black/40 backdrop-blur-md border-white/10 text-[10px] font-medium text-primary uppercase tracking-wider"
+              >
                 <Sparkles className="w-3 h-3" />
                 Generative AI Configured
-              </div>
+              </Badge>
             </div>
 
             <div className="w-9 h-9 rounded-lg bg-surface border border-border flex items-center justify-center mb-4">

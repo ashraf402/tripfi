@@ -1,0 +1,95 @@
+{
+  "id": "acceptable-use-policy",
+  "title": "Acceptable Use Policy",
+  "lastUpdated": "2025-01-01",
+  "effectiveDate": "2025-01-01",
+  "contact": {
+    "email": "legal@tripfi.app",
+    "emailPostLaunch": "legal@tripfi.io",
+    "company": "TripFi, Inc."
+  },
+  "sections": [
+    {
+      "id": "introduction",
+      "heading": "Introduction",
+      "content": "This Acceptable Use Policy (\"AUP\") sets out the rules governing the use of TripFi's platform, services, website, and APIs (collectively, \"Services\"). By using our Services, you agree to comply with this policy. TripFi reserves the right to suspend or terminate access for any user who violates this policy."
+    },
+    {
+      "id": "permitted-uses",
+      "heading": "Permitted Uses",
+      "content": "You may use our Services only for lawful purposes and in accordance with our Terms of Service. Permitted uses include:",
+      "list": [
+        "Searching for and booking travel for yourself or others with their explicit consent",
+        "Using our AI travel planner for personal travel planning",
+        "Accessing your account information and booking history",
+        "Communicating with our support team",
+        "Sharing travel content through legitimate social features of the platform"
+      ]
+    },
+    {
+      "id": "prohibited-activities",
+      "heading": "Prohibited Activities",
+      "content": "You must not use our Services to engage in any of the following activities:",
+      "subsections": [
+        {
+          "heading": "Fraudulent Activities",
+          "content": "Any form of fraud is strictly prohibited, including:",
+          "list": [
+            "Making fraudulent bookings with stolen or invalid payment methods",
+            "Creating fake accounts or impersonating other individuals",
+            "Providing false information to obtain discounts or benefits",
+            "Attempting to manipulate our pricing algorithms"
+          ]
+        },
+        {
+          "heading": "Technical Abuse",
+          "content": "The following technical abuses are prohibited:",
+          "list": [
+            "Automated scraping, crawling, or data harvesting of our platform",
+            "Reverse engineering, decompiling, or disassembling any part of our software",
+            "Attempting to probe, scan, or test for vulnerabilities",
+            "Introducing malware, viruses, or any malicious code",
+            "Attempting to gain unauthorised access to our systems or other users' accounts",
+            "Overloading our infrastructure through denial-of-service attacks or excessive API requests"
+          ]
+        },
+        {
+          "heading": "Harmful Content",
+          "content": "You must not use our platform to distribute or transmit:",
+          "list": [
+            "Content that is defamatory, abusive, harassing, or threatening",
+            "Content that promotes discrimination based on race, gender, religion, nationality, or other characteristics",
+            "Spam or unsolicited commercial communications",
+            "Content that infringes intellectual property rights of any party"
+          ]
+        },
+        {
+          "heading": "Illegal Activities",
+          "content": "The following illegal activities are strictly prohibited:",
+          "list": [
+            "Facilitating money laundering or other financial crimes",
+            "Using the platform to evade sanctions or export controls",
+            "Booking travel for or assisting individuals on government watchlists",
+            "Any activity that violates applicable local, national, or international law"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "enforcement",
+      "heading": "Enforcement",
+      "content": "TripFi reserves the right to investigate and take appropriate action against any violation of this policy, including:",
+      "list": [
+        "Temporary or permanent suspension of your account",
+        "Cancellation of any affected bookings without refund",
+        "Reporting to law enforcement or regulatory authorities",
+        "Civil action for damages caused by your violation"
+      ]
+    },
+    {
+      "id": "reporting",
+      "heading": "Reporting Violations",
+      "content": "If you become aware of any violation of this Acceptable Use Policy, please report it to us immediately. We take all reports seriously and will investigate promptly."
+    }
+  ]
+}

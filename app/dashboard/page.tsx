@@ -1,13 +1,14 @@
 "use client";
 
-import { useState } from "react";
 import { ChatSidebar } from "@/components/chatroom/core/ChatSidebar";
-import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Menu, Plus } from "lucide-react";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
+import { Menu, Plus } from "lucide-react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 export default function DashboardPage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -125,8 +126,9 @@ export default function DashboardPage() {
                         <CardTitle className="text-lg group-hover:text-primary transition-colors">
                           {trip.title}
                         </CardTitle>
-                        <span
-                          className={`text-[10px] px-2 py-0.5 rounded-full border ${
+                        <Badge
+                          variant="outline"
+                          className={`text-[10px] px-2 py-0.5 rounded-full ${
                             trip.status === "Completed"
                               ? "bg-green-500/10 text-green-500 border-green-500/20"
                               : trip.status === "Saved"
@@ -135,7 +137,7 @@ export default function DashboardPage() {
                           }`}
                         >
                           {trip.status}
-                        </span>
+                        </Badge>
                       </div>
                     </CardHeader>
                     <CardContent>
@@ -147,10 +149,10 @@ export default function DashboardPage() {
                 </Link>
               ))}
 
-              {/* Add New Card */}
-              <button
+              <Button
+                variant="outline"
                 onClick={() => router.push("/new")}
-                className="flex flex-col items-center justify-center p-6 rounded-xl border-2 border-dashed border-border hover:border-primary/50 hover:bg-surface-hover/50 transition-all group h-full min-h-35"
+                className="flex flex-col items-center justify-center p-6 rounded-xl border-2 border-dashed border-border hover:border-primary/50 hover:bg-surface-hover/50 transition-all group h-full min-h-35 whitespace-normal"
               >
                 <div className="h-10 w-10 rounded-full bg-surface border border-border flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
                   <Plus className="h-5 w-5 text-text-secondary group-hover:text-primary" />
@@ -158,7 +160,7 @@ export default function DashboardPage() {
                 <span className="font-medium text-text-secondary group-hover:text-foreground">
                   Create New Trip
                 </span>
-              </button>
+              </Button>
             </div>
           </div>
         </main>

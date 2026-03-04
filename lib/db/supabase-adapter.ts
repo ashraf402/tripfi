@@ -56,7 +56,7 @@ function applyFilters(query: any, filters?: Filter[]) {
  */
 export function createSupabaseAdapter(client: SupabaseClient): DbAdapter {
   return {
-    // ── findOne ────────────────────────────────────────────
+    // findOne
     async findOne<T>(table: string, opts: FindOptions): Promise<DbResult<T>> {
       let query = client.from(table).select(opts.select ?? "*");
       query = applyFilters(query, opts.filters);
@@ -68,7 +68,7 @@ export function createSupabaseAdapter(client: SupabaseClient): DbAdapter {
       };
     },
 
-    // ── findMany ──────────────────────────────────────────
+    // findMany
     async findMany<T>(
       table: string,
       opts?: FindManyOptions,
@@ -100,7 +100,7 @@ export function createSupabaseAdapter(client: SupabaseClient): DbAdapter {
       };
     },
 
-    // ── create ─────────────────────────────────────────────
+    // create
     async create<T>(table: string, data: Partial<T>): Promise<DbResult<T>> {
       const { data: row, error } = await client
         .from(table)
@@ -114,7 +114,7 @@ export function createSupabaseAdapter(client: SupabaseClient): DbAdapter {
       };
     },
 
-    // ── update ─────────────────────────────────────────────
+    // update
     async update<T>(
       table: string,
       data: Partial<T>,
@@ -130,7 +130,7 @@ export function createSupabaseAdapter(client: SupabaseClient): DbAdapter {
       };
     },
 
-    // ── delete ─────────────────────────────────────────────
+    // delete
     async delete(table: string, opts: FilterOptions): Promise<DbResult<null>> {
       let query = client.from(table).delete();
       query = applyFilters(query, opts.filters);
@@ -142,7 +142,7 @@ export function createSupabaseAdapter(client: SupabaseClient): DbAdapter {
       };
     },
 
-    // ── upsert ─────────────────────────────────────────────
+    // upsert
     async upsert<T>(table: string, data: Partial<T>): Promise<DbResult<T>> {
       const { data: row, error } = await client
         .from(table)

@@ -7,6 +7,13 @@ export const MOCK_ITINERARY_DATA: ItineraryData = {
   endDate: "2025-03-15",
   totalDays: 5,
   travelers: 1,
+  costs: {
+    flightCost: 840,
+    hotelCost: 445,
+    activitiesCost: 120,
+    taxesAndFees: 435,
+    total: 1840,
+  },
   totalCostUsd: 1840,
   totalCostBch: 3.68,
   isSaved: false,

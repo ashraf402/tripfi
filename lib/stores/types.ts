@@ -1,6 +1,6 @@
 import type { Profile, Trip, Booking } from "@/lib/types";
 
-// ─── Cache Metadata ────────────────────────────────────────
+// Cache Metadata
 /** How long cached data is considered "fresh" (in milliseconds) */
 export const STALE_TIME = 5 * 60 * 1000; // 5 minutes
 
@@ -14,7 +14,7 @@ export function isStale(entry: CacheEntry): boolean {
   return Date.now() - entry.lastFetched > STALE_TIME;
 }
 
-// ─── Auth Store ────────────────────────────────────────────
+// Auth Store
 export interface AuthUser {
   id: string;
   email: string;
@@ -43,7 +43,7 @@ export interface AuthState {
   clearAuth: () => void;
 }
 
-// ─── Trip Store ────────────────────────────────────────────
+// Trip Store
 export interface TripState {
   // Data
   trips: Trip[];

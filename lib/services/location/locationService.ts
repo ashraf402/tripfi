@@ -9,7 +9,7 @@ export interface LocationResult {
   provider: string;
 }
 
-// ── Major Cities to IATA Map ───────────────────────────
+// Major Cities to IATA Map
 // At least 40 major global cities covering all regions
 
 const CITY_IATA_MAP: Record<string, string> = {
@@ -69,7 +69,7 @@ function getIataForCity(city: string): string | null {
   return CITY_IATA_MAP[normalized] ?? null;
 }
 
-// ── Providers ──────────────────────────────────────────
+// Providers
 
 const TIMEOUT_MS = 5000;
 
@@ -109,7 +109,7 @@ async function tryProvider(
   }
 }
 
-// ── Main Export ────────────────────────────────────────
+// Main Export
 
 export async function getUserLocationFromIP(): Promise<LocationResult | null> {
   console.log("[Location] Detecting user location...");

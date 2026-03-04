@@ -1,5 +1,6 @@
 "use client";
 
+import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export function HotelCardSkeleton() {
@@ -16,7 +17,8 @@ export function HotelCardSkeleton() {
           <Skeleton className="h-5 w-16 rounded-full" />
           <Skeleton className="h-5 w-10 rounded-full" />
         </div>
-        <div className="mt-4 flex items-end justify-between border-t border-border pt-3">
+        <Separator className="mt-4" />
+        <div className="flex items-end justify-between pt-3">
           <Skeleton className="h-3 w-20" />
           <div className="space-y-1">
             <Skeleton className="h-6 w-20 ml-auto" />

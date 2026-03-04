@@ -9,6 +9,7 @@ import { ChatScrollArea } from "./ChatScrollArea";
 import { EmptyState } from "./EmptyState";
 import { TypingIndicator } from "./TypingIndicator";
 import { MapPanel } from "../map/MapPanel";
+import { Button } from "@/components/ui/button";
 
 import { getConversationWithMessages } from "@/lib/actions/conversation";
 import {
@@ -18,14 +19,14 @@ import {
 import { useMapStore } from "@/lib/store/mapStore";
 import type { ChatMessage as ChatMessageType } from "@/lib/types/chat";
 
-// ── Types ──────────────────────────────────────────────
+// Types
 
 interface ChatRoomProps {
   conversationId?: string | null;
   initialMessages?: ChatMessageType[];
 }
 
-// ── Skeleton ───────────────────────────────────────────
+// Skeleton
 
 export function ChatRoomSkeleton() {
   return (
@@ -63,7 +64,7 @@ export function ChatRoomSkeleton() {
   );
 }
 
-// ── Main Component ─────────────────────────────────────
+// Main Component
 
 export function ChatRoom({
   conversationId,
@@ -126,7 +127,7 @@ export function ChatRoom({
   };
 
   return (
-    <div className="flex h-full max-h-dvh w-full bg-background relative overflow-hidden">
+    <div className="flex h-full max-h-dvh w-full bg-background relative">
       {/* Chat Area */}
       <div className="flex flex-col flex-1 min-w-0 h-full">
         {/* Header */}
@@ -183,12 +184,14 @@ export function ChatRoom({
                     <span className="text-red-400 text-sm font-medium">
                       {error}
                     </span>
-                    <button
+                    <Button
+                      variant="ghost"
+                      size="icon"
                       onClick={clearError}
-                      className="text-red-400 hover:text-red-300 transition-colors"
+                      className="text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-colors h-6 w-6 rounded-md"
                     >
                       ✕
-                    </button>
+                    </Button>
                   </div>
                 )}
 

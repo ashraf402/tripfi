@@ -1,5 +1,6 @@
 "use client";
 
+import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export function FlightCardSkeleton() {
@@ -26,7 +27,8 @@ export function FlightCardSkeleton() {
         </div>
         <Skeleton className="h-8 w-16" />
       </div>
-      <div className="mt-6 pt-3 border-t border-border flex justify-between">
+      <Separator className="mt-6" />
+      <div className="pt-3 flex justify-between">
         <Skeleton className="h-4 w-24" />
         <Skeleton className="h-4 w-20" />
       </div>

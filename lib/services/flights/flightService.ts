@@ -52,7 +52,7 @@ export interface FlightSearchParams {
   maxResults?: number;
 }
 
-// ── Amadeus (Primary) ──────────────────────────────────
+// Amadeus (Primary)
 
 async function searchFlightsAmadeus(
   params: FlightSearchParams,
@@ -146,7 +146,7 @@ async function searchFlightsAmadeus(
   };
 }
 
-// ── Kiwi (Activated when KIWI_ENABLED=true) ───────────
+// Kiwi (Activated when KIWI_ENABLED=true)
 
 async function searchFlightsKiwi(
   params: FlightSearchParams,
@@ -221,7 +221,7 @@ async function searchFlightsKiwi(
   };
 }
 
-// ── Main Export ────────────────────────────────────────
+// Main Export
 // Kiwi if enabled → Amadeus if Kiwi disabled/fails
 // No mock fallback. Ever.
 
@@ -247,7 +247,7 @@ export async function searchFlights(
   return await searchFlightsAmadeus(params);
 }
 
-// ── Airport Search ─────────────────────────────────────
+// Airport Search
 
 export async function searchAirports(keyword: string): Promise<
   {

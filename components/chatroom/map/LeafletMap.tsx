@@ -14,7 +14,7 @@ import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import type { MapData, MapMarker } from "@/lib/types/chat";
 
-// ── Custom marker icons per type ──────────────────────
+// Custom marker icons per type
 
 // Lucide SVG paths for each marker type (24x24 viewBox)
 const MARKER_ICONS: Record<
@@ -83,7 +83,7 @@ const markerIcons: Record<MapMarker["type"], L.DivIcon> = {
   restaurant: createMarkerIcon("restaurant"),
 };
 
-// ── Map center updater ────────────────────────────────
+// Map center updater
 
 function MapUpdater({
   center,
@@ -101,7 +101,7 @@ function MapUpdater({
   return null;
 }
 
-// ── Auto-fit bounds ───────────────────────────────────
+// Auto-fit bounds
 // Adjusts the map view to fit all markers
 
 function FitBounds({ markers }: { markers: MapData["markers"] }) {
@@ -118,7 +118,7 @@ function FitBounds({ markers }: { markers: MapData["markers"] }) {
   return null;
 }
 
-// ── Custom zoom controls ──────────────────────────────
+// Custom zoom controls
 
 function ZoomControls() {
   const map = useMap();
@@ -183,7 +183,7 @@ function ZoomControls() {
   );
 }
 
-// ── Main component ────────────────────────────────────
+// Main component
 
 interface LeafletMapProps {
   data: MapData;

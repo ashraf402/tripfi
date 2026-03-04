@@ -50,6 +50,11 @@ export async function getBchRate(): Promise<number> {
       console.log(`[BCHRate] Live rate: $${rate}`);
       return rate;
     })
+    .catch((error) => {
+      console.error("[BCHRate] Error fetching:", error);
+      // Fallback
+      return 450.0;
+    })
     .finally(() => {
       // Clear in-flight lock when done
       inFlightRequest = null;

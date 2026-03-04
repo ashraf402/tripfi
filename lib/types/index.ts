@@ -3,12 +3,6 @@ import { Database } from "./database";
 export type Profile = Database["public"]["Tables"]["profiles"]["Row"];
 export type Trip = Database["public"]["Tables"]["trips"]["Row"];
 export type Booking = Database["public"]["Tables"]["bookings"]["Row"];
-export type ItineraryItem =
-  Database["public"]["Tables"]["itinerary_items"]["Row"];
-export type SavedDestination =
-  Database["public"]["Tables"]["saved_destinations"]["Row"];
-export type PriceAlert = Database["public"]["Tables"]["price_alerts"]["Row"];
-export type Transaction = Database["public"]["Tables"]["transactions"]["Row"];
 
 // Insert types (for creating new records)
 export type ProfileInsert = Database["public"]["Tables"]["profiles"]["Insert"];

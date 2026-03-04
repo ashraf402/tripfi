@@ -1,6 +1,8 @@
 "use client";
 
 import { Logo } from "@/components/landing/Logo";
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
 import { createClient } from "@/lib/supabase/client";
 import { Menu, X } from "lucide-react";
 import { useTheme } from "next-themes";
@@ -233,11 +235,13 @@ export default function Navbar() {
           />
 
           {/* Hamburger — mobile only */}
-          <button
+          <Button
+            variant="ghost"
+            size="icon"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             className={`
               md:hidden transition-colors duration-300
-              ${current.hamburger}
+              ${current.hamburger} hover:bg-transparent
             `}
             aria-label="Toggle menu"
           >
@@ -246,7 +250,7 @@ export default function Navbar() {
             ) : (
               <Menu className="w-5 h-5" />
             )}
-          </button>
+          </Button>
         </div>
       </div>
 
@@ -269,7 +273,8 @@ export default function Navbar() {
             onLinkClick={() => setMobileMenuOpen(false)}
             className={`text-sm font-medium py-2 transition-colors duration-300 ${current.text} hover:text-primary`}
           />
-          <div className="flex flex-col gap-6 mt-2 border-t border-gray-100/10 pt-4">
+          <Separator className="mt-2 bg-gray-100/10" />
+          <div className="flex flex-col gap-6 pt-4">
             <AuthButtons
               isLoggedIn={isLoggedIn}
               onLinkClick={() => setMobileMenuOpen(false)}

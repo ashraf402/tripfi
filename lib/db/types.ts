@@ -1,10 +1,10 @@
-// ─── Standardized DB Result ────────────────────────────────
+// Standardized DB Result
 export interface DbResult<T> {
   data: T | null;
   error: string | null;
 }
 
-// ─── Filter / Query Options ───────────────────────────────
+// Filter / Query Options
 export interface Filter {
   column: string;
   operator:
@@ -40,7 +40,7 @@ export interface FilterOptions {
   filters: Filter[];
 }
 
-// ─── Database Adapter Interface ───────────────────────────
+// Database Adapter Interface
 export interface DbAdapter {
   /**
    * Fetch a single row from a table.

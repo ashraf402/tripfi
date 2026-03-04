@@ -1,0 +1,92 @@
+{
+  "id": "terms-of-service",
+  "title": "Terms of Service",
+  "lastUpdated": "2025-01-01",
+  "effectiveDate": "2025-01-01",
+  "contact": {
+    "email": "legal@tripfi.app",
+    "emailPostLaunch": "legal@tripfi.io",
+    "company": "TripFi, Inc."
+  },
+  "sections": [
+    {
+      "id": "acceptance",
+      "heading": "Acceptance of Terms",
+      "content": "By accessing or using TripFi's platform, website, or services (collectively, the \"Services\"), you agree to be bound by these Terms of Service (\"Terms\"). If you do not agree to these Terms, please do not use our Services. These Terms apply to all users, including visitors, registered users, and anyone who accesses or uses the Services."
+    },
+    {
+      "id": "description",
+      "heading": "Description of Services",
+      "content": "TripFi is a travel booking platform that enables users to search, compare, and book flights, hotels, and travel packages. Our platform uses artificial intelligence to provide personalised travel recommendations and accepts Bitcoin Cash (BCH) as a payment method alongside traditional payment options."
+    },
+    {
+      "id": "account",
+      "heading": "Account Registration",
+      "content": "To access certain features of our Services, you must create an account. You agree to:",
+      "list": [
+        "Provide accurate, current, and complete information during registration",
+        "Maintain and promptly update your account information",
+        "Maintain the security of your password and accept responsibility for all activities under your account",
+        "Notify us immediately of any unauthorised use of your account",
+        "Not create an account for anyone other than yourself without permission"
+      ]
+    },
+    {
+      "id": "bookings",
+      "heading": "Bookings and Payments",
+      "content": "When you make a booking through TripFi:",
+      "list": [
+        "You are entering into a contract with the relevant travel supplier (airline, hotel, etc.), not with TripFi",
+        "TripFi acts as a booking agent facilitating the transaction",
+        "All prices are displayed in USD unless otherwise stated",
+        "BCH payments are converted at the prevailing exchange rate at the time of booking",
+        "Bookings are subject to availability and confirmation by the travel supplier",
+        "You are responsible for ensuring traveller details are accurate"
+      ]
+    },
+    {
+      "id": "cancellations",
+      "heading": "Cancellations and Refunds",
+      "content": "Cancellation and refund policies vary by travel supplier. Please review the specific terms for your booking. For platform-level refund policies, please see our Refund and Cancellation Policy."
+    },
+    {
+      "id": "prohibited",
+      "heading": "Prohibited Uses",
+      "content": "You agree not to use the Services to:",
+      "list": [
+        "Violate any applicable laws or regulations",
+        "Make fraudulent bookings or provide false information",
+        "Scrape, crawl, or systematically extract data from our platform",
+        "Attempt to gain unauthorised access to any portion of the Services",
+        "Transmit any malware, viruses, or harmful code",
+        "Harass, abuse, or harm other users or TripFi personnel",
+        "Use the Services for any commercial purpose without our prior written consent"
+      ]
+    },
+    {
+      "id": "intellectual-property",
+      "heading": "Intellectual Property",
+      "content": "All content, features, and functionality of the Services, including text, graphics, logos, and software, are owned by TripFi, Inc. or its licensors and are protected by intellectual property laws. You may not reproduce, distribute, or create derivative works without our express written permission."
+    },
+    {
+      "id": "disclaimer",
+      "heading": "Disclaimer of Warranties",
+      "content": "The Services are provided on an \"as is\" and \"as available\" basis without warranties of any kind, either express or implied. TripFi does not warrant that the Services will be uninterrupted, error-free, or free of viruses or other harmful components."
+    },
+    {
+      "id": "limitation",
+      "heading": "Limitation of Liability",
+      "content": "To the maximum extent permitted by law, TripFi shall not be liable for any indirect, incidental, special, consequential, or punitive damages arising from your use of the Services. Our aggregate liability shall not exceed the amount you paid to TripFi in the twelve months preceding the claim."
+    },
+    {
+      "id": "governing-law",
+      "heading": "Governing Law",
+      "content": "These Terms are governed by and construed in accordance with applicable law. Any disputes arising under these Terms shall be resolved through binding arbitration, except where prohibited by law."
+    },
+    {
+      "id": "changes",
+      "heading": "Changes to Terms",
+      "content": "We reserve the right to modify these Terms at any time. We will notify users of material changes by email or by posting a notice on our platform. Your continued use of the Services after such notification constitutes your acceptance of the revised Terms."
+    }
+  ]
+}

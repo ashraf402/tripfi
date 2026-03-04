@@ -1,0 +1,93 @@
+{
+  "id": "cookie-policy",
+  "title": "Cookie Policy",
+  "lastUpdated": "2025-01-01",
+  "effectiveDate": "2025-01-01",
+  "contact": {
+    "email": "privacy@tripfi.app",
+    "emailPostLaunch": "privacy@tripfi.io",
+    "company": "TripFi, Inc."
+  },
+  "sections": [
+    {
+      "id": "introduction",
+      "heading": "Introduction",
+      "content": "This Cookie Policy explains how TripFi, Inc. (\"TripFi\", \"we\", \"our\", or \"us\") uses cookies and similar tracking technologies when you visit our website or use our services. By using our platform, you consent to the use of cookies as described in this policy."
+    },
+    {
+      "id": "what-are-cookies",
+      "heading": "What Are Cookies",
+      "content": "Cookies are small text files that are placed on your device by websites you visit. They are widely used to make websites work efficiently and to provide information to the website owner. Cookies can be \"persistent\" (remaining on your device until deleted) or \"session\" (deleted when you close your browser)."
+    },
+    {
+      "id": "types-of-cookies",
+      "heading": "Types of Cookies We Use",
+      "subsections": [
+        {
+          "heading": "Strictly Necessary Cookies",
+          "content": "These cookies are essential for the operation of our platform. They enable core functionality such as security, session management, and account authentication. Without these cookies, parts of the site cannot function.",
+          "list": [
+            "Authentication tokens to keep you signed in",
+            "Session identifiers for security purposes",
+            "CSRF protection tokens"
+          ]
+        },
+        {
+          "heading": "Functional Cookies",
+          "content": "These cookies allow us to remember choices you make and provide enhanced, personalised features.",
+          "list": [
+            "Your preferred language and currency",
+            "Your travel preferences and saved searches",
+            "Theme preferences (light/dark mode)"
+          ]
+        },
+        {
+          "heading": "Analytics Cookies",
+          "content": "These cookies help us understand how visitors use our platform, allowing us to improve our services.",
+          "list": [
+            "Pages visited and time spent on each page",
+            "How users navigate through the platform",
+            "Error reporting to identify and fix issues"
+          ]
+        },
+        {
+          "heading": "Marketing Cookies",
+          "content": "These cookies track your browsing habits to deliver targeted advertisements and measure the effectiveness of our marketing campaigns.",
+          "list": [
+            "Personalised travel deal recommendations",
+            "Retargeting advertisements on third-party sites",
+            "Conversion tracking for our marketing campaigns"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "third-party-cookies",
+      "heading": "Third-Party Cookies",
+      "content": "Some cookies on our platform are placed by third-party services, including:",
+      "list": [
+        "Analytics providers (e.g., Google Analytics) to measure site performance",
+        "Payment processors to handle secure transactions",
+        "Social media platforms if you choose to share content",
+        "Customer support tools for live chat functionality"
+      ]
+    },
+    {
+      "id": "managing-cookies",
+      "heading": "Managing Your Cookie Preferences",
+      "content": "You have several options for managing cookies:",
+      "list": [
+        "Browser settings: Most browsers allow you to control cookies through their settings",
+        "Opt-out tools: Use industry opt-out tools such as the Digital Advertising Alliance's opt-out page",
+        "Platform settings: Manage your preferences within your TripFi account settings",
+        "Deleting cookies: You can delete existing cookies through your browser settings"
+      ],
+      "footer": "Please note that disabling certain cookies may affect the functionality of our platform."
+    },
+    {
+      "id": "changes",
+      "heading": "Changes to This Policy",
+      "content": "We may update this Cookie Policy from time to time. We will notify you of any significant changes by posting the new Cookie Policy on this page. We encourage you to review this policy periodically."
+    }
+  ]
+}

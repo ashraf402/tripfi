@@ -1,11 +1,12 @@
 "use client";
 
-import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { ChevronDown } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { ItineraryItem } from "./ItineraryItem";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import type { DayData } from "@/lib/types/chat";
+import { cn } from "@/lib/utils";
+import { AnimatePresence, motion } from "framer-motion";
+import { ChevronDown } from "lucide-react";
+import { ItineraryItem } from "./ItineraryItem";
 
 interface DayCardProps {
   day: DayData;
@@ -16,15 +17,19 @@ interface DayCardProps {
 export function DayCard({ day, isExpanded = false, onToggle }: DayCardProps) {
   return (
     <div className="w-full rounded-xl border border-border bg-surface-card overflow-hidden transition-all duration-300 hover:border-border/80">
-      <button
+      <Button
+        variant="ghost"
         onClick={onToggle}
-        className="flex w-full items-center justify-between p-4 transition-colors hover:bg-surface-hover"
+        className="flex w-full h-auto rounded-none items-center justify-between p-4 transition-colors hover:bg-surface-hover"
       >
         <div className="flex items-center gap-3">
           <div className="flex h-10 w-10 flex-col items-center justify-center rounded-lg bg-surface border border-border text-center">
-            <span className="text-[10px] font-bold uppercase text-text-secondary">
+            <Badge
+              variant="outline"
+              className="border-0 px-0 text-[10px] font-bold uppercase text-text-secondary"
+            >
               Day
-            </span>
+            </Badge>
             <span className="text-lg font-bold leading-none text-foreground">
               {day.day}
             </span>
@@ -45,7 +50,7 @@ export function DayCard({ day, isExpanded = false, onToggle }: DayCardProps) {
             isExpanded && "rotate-180",
           )}
         />
-      </button>
+      </Button>
 
       <AnimatePresence initial={false}>
         {isExpanded && (

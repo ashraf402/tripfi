@@ -4,10 +4,10 @@ import type { Conversation, ChatMessage } from "@/lib/types/chat";
 import type { ConversationContext } from "@/lib/types/context";
 import { useShallow } from "zustand/react/shallow";
 
-// ── Types ──────────────────────────────────
+// Types
 
 interface ConversationCache {
-  // ── Persisted (survives refresh) ────────
+  // Persisted (survives refresh)
 
   // Sidebar conversation list
   // Stored in localStorage
@@ -22,7 +22,7 @@ interface ConversationCache {
   // loaded this session or from storage
   conversationListLoaded: boolean;
 
-  // ── Session only (in-memory) ────────────
+  // Session only (in-memory)
 
   // Map of conversationId → messages array
   // NOT persisted — too large for localStorage
@@ -36,7 +36,7 @@ interface ConversationCache {
   // an AI response (survives router.replace navigation)
   loadingConversations: Set<string>;
 
-  // ── Persisted (survives refresh) ────────
+  // Persisted (survives refresh)
 
   // Map of conversationId → context object
   // Persisted to localStorage so context
@@ -45,7 +45,7 @@ interface ConversationCache {
 }
 
 interface ConversationActions {
-  // ── Conversation list ──────────────────
+  // Conversation list
 
   setConversations: (conversations: Conversation[]) => void;
 
@@ -58,7 +58,7 @@ interface ConversationActions {
   // Bump to top of list after new message
   bumpConversation: (id: string) => void;
 
-  // ── Messages (session only) ────────────
+  // Messages (session only)
 
   setMessages: (conversationId: string, messages: ChatMessage[]) => void;
 
@@ -69,7 +69,7 @@ interface ConversationActions {
   // Mark/unmark a conversation as loading
   setConversationLoading: (id: string, loading: boolean) => void;
 
-  // ── Context (persisted) ───────────────
+  // Context (persisted)
 
   // Merge patch into existing context —
   // never overwrites unless new value given
@@ -81,7 +81,7 @@ interface ConversationActions {
   // Get context for a conversation
   getContext: (conversationId: string) => ConversationContext;
 
-  // ── Cache checks ───────────────────────
+  // Cache checks
 
   isConversationLoaded: (id: string) => boolean;
 
@@ -91,7 +91,7 @@ interface ConversationActions {
   // is fresh (fetched within last 5 minutes)
   isConversationListFresh: () => boolean;
 
-  // ── Reset ──────────────────────────────
+  // Reset
 
   // Full reset — call on sign out
   // Clears localStorage + memory
@@ -100,10 +100,10 @@ interface ConversationActions {
 
 type ConversationStore = ConversationCache & ConversationActions;
 
-// ── Cache TTL: 5 minutes ──────────────────
+// Cache TTL: 5 minutes
 const CACHE_TTL_MS = 5 * 60 * 1000;
 
-// ── Initial State ──────────────────────────
+// Initial State
 
 const initialState: ConversationCache = {
   // Persisted
@@ -117,14 +117,14 @@ const initialState: ConversationCache = {
   loadingConversations: new Set(),
 };
 
-// ── Store with Persistence ─────────────────
+// Store with Persistence
 
 export const useConversationStore = create<ConversationStore>()(
   persist(
     (set, get) => ({
       ...initialState,
 
-      // ── Conversation list ────────────────
+      // Conversation list
 
       setConversations: (conversations) =>
         set({
@@ -175,7 +175,7 @@ export const useConversationStore = create<ConversationStore>()(
           };
         }),
 
-      // ── Messages (session only) ──────────
+      // Messages (session only)
 
       setMessages: (conversationId, messages) =>
         set((state) => ({
@@ -216,7 +216,7 @@ export const useConversationStore = create<ConversationStore>()(
           return { loadingConversations: next };
         }),
 
-      // ── Context ───────────────────────────
+      // Context
 
       updateContext: (conversationId, patch) =>
         set((state) => ({
@@ -236,7 +236,7 @@ export const useConversationStore = create<ConversationStore>()(
 
       getContext: (conversationId) => get().contexts[conversationId] ?? {},
 
-      // ── Cache checks ─────────────────────
+      // Cache checks
 
       isConversationLoaded: (id) => get().loadedIds.has(id),
 
@@ -248,7 +248,7 @@ export const useConversationStore = create<ConversationStore>()(
         return Date.now() - last < CACHE_TTL_MS;
       },
 
-      // ── Reset ─────────────────────────────
+      // Reset
 
       reset: () => {
         // Clear localStorage partition
@@ -300,7 +300,7 @@ export const useConversationStore = create<ConversationStore>()(
   ),
 );
 
-// ── Selector hooks for performance ─────────
+// Selector hooks for performance
 // These prevent unnecessary re-renders by
 // only subscribing to specific store slices
 

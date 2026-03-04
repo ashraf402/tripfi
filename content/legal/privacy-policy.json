@@ -1,0 +1,106 @@
+{
+  "id": "privacy-policy",
+  "title": "Privacy Policy",
+  "lastUpdated": "2025-01-01",
+  "effectiveDate": "2025-01-01",
+  "contact": {
+    "email": "privacy@tripfi.app",
+    "emailPostLaunch": "privacy@tripfi.io",
+    "company": "TripFi, Inc."
+  },
+  "sections": [
+    {
+      "id": "introduction",
+      "heading": "Introduction",
+      "content": "TripFi, Inc. (\"TripFi\", \"we\", \"our\", or \"us\") is committed to protecting your personal information. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our platform, including our website and mobile applications."
+    },
+    {
+      "id": "information-we-collect",
+      "heading": "Information We Collect",
+      "content": "We collect information you provide directly to us, information we collect automatically when you use our services, and information from third parties.",
+      "subsections": [
+        {
+          "heading": "Information You Provide",
+          "content": "When you create an account, book travel, or contact us, you may provide:",
+          "list": [
+            "Name, email address, and password",
+            "Travel preferences and travel history",
+            "Payment information (processed securely via our payment partners)",
+            "Passport and identification details for booking purposes",
+            "Communications you send to us"
+          ]
+        },
+        {
+          "heading": "Information Collected Automatically",
+          "content": "When you use TripFi, we automatically collect:",
+          "list": [
+            "Log data including your IP address, browser type, pages visited, and timestamps",
+            "Device information such as hardware model and operating system",
+            "Location data if you grant permission",
+            "Cookies and similar tracking technologies"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "how-we-use-information",
+      "heading": "How We Use Your Information",
+      "content": "We use the information we collect to:",
+      "list": [
+        "Provide, maintain, and improve our travel booking services",
+        "Process transactions and send related information including purchase confirmations",
+        "Send promotional communications (you may opt out at any time)",
+        "Respond to comments, questions, and provide customer support",
+        "Monitor and analyse trends, usage, and activities to improve our platform",
+        "Detect, investigate, and prevent fraudulent transactions and other illegal activities",
+        "Personalise your experience using AI-powered travel recommendations"
+      ]
+    },
+    {
+      "id": "information-sharing",
+      "heading": "Information Sharing",
+      "content": "We do not sell your personal information. We may share your information in the following circumstances:",
+      "list": [
+        "With airlines, hotels, and other travel providers necessary to fulfil your bookings",
+        "With service providers who assist us in operating our platform",
+        "In response to legal process or to comply with applicable law",
+        "In connection with a merger, acquisition, or sale of all or a portion of our assets",
+        "With your consent or at your direction"
+      ]
+    },
+    {
+      "id": "data-retention",
+      "heading": "Data Retention",
+      "content": "We retain your personal information for as long as necessary to provide our services, comply with our legal obligations, resolve disputes, and enforce our agreements. When we no longer need your data, we securely delete or anonymise it."
+    },
+    {
+      "id": "security",
+      "heading": "Security",
+      "content": "We implement appropriate technical and organisational measures to protect your personal information against unauthorised access, alteration, disclosure, or destruction. However, no method of transmission over the internet is 100% secure, and we cannot guarantee absolute security."
+    },
+    {
+      "id": "your-rights",
+      "heading": "Your Rights",
+      "content": "Depending on your location, you may have the following rights regarding your personal information:",
+      "list": [
+        "Access: Request a copy of the personal information we hold about you",
+        "Correction: Request that we correct inaccurate or incomplete information",
+        "Deletion: Request that we delete your personal information",
+        "Portability: Request a machine-readable copy of your data",
+        "Objection: Object to certain processing of your information",
+        "Restriction: Request that we restrict processing of your information"
+      ],
+      "footer": "To exercise any of these rights, please contact us at the email address below."
+    },
+    {
+      "id": "cookies",
+      "heading": "Cookies",
+      "content": "We use cookies and similar tracking technologies to collect and use personal information about you. For more details about the types of cookies we use and your choices, please see our Cookie Policy."
+    },
+    {
+      "id": "changes",
+      "heading": "Changes to This Policy",
+      "content": "We may update this Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page and updating the \"Last updated\" date. We encourage you to review this Privacy Policy periodically."
+    }
+  ]
+}

@@ -5,6 +5,8 @@ import { Bot } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import type { ChatMessage } from "@/lib/types/chat";
 import { StreamingText } from "./StreamingText";
+import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
 
 interface AssistantMessageProps {
   message: ChatMessage;
@@ -37,16 +39,19 @@ export function AssistantMessage({
 
   return (
     <div className="flex w-full max-w-full gap-4">
-      <div className="flex-1 space-y-2 overflow-hidden">
+      <div className="flex-1 space-y-2">
         {/* Name + Avatar */}
         <div className="flex items-center gap-2">
           <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/10 border border-primary/20 mt-1">
             <Bot className="h-4 w-4 text-primary" />
           </div>
           <span className="text-sm font-semibold text-foreground">TripFi</span>
-          <span className="rounded-full bg-surface-card px-2 py-0.5 text-[10px] uppercase font-bold text-text-secondary border border-border">
+          <Badge
+            variant="outline"
+            className="rounded-full bg-surface-card px-2 py-0.5 text-[10px] uppercase font-bold text-text-secondary border border-border"
+          >
             AI
-          </span>
+          </Badge>
         </div>
 
         {/* Message text */}
@@ -118,7 +123,7 @@ export function AssistantMessage({
                   </code>
                 ),
                 // Horizontal rule
-                hr: () => <hr className="border-border my-4" />,
+                hr: () => <Separator className="my-4" />,
                 // Links
                 a: ({ href, children }) => (
                   <a

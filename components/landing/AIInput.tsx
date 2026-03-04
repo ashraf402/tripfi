@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { Sparkles, ArrowRight, Loader2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 interface AIInputProps {
   onSubmit: (prompt: string) => void;
@@ -47,25 +49,25 @@ export function AIInput({
         <div className="pl-4 text-primary">
           <Sparkles className="w-5 h-5 animate-pulse" />
         </div>
-        <input
+        <Input
           type="text"
           value={prompt}
           onChange={(e) => setPrompt(e.target.value)}
           placeholder={currentPlaceholder}
           disabled={isLoading}
-          className="w-full bg-transparent text-white placeholder-gray-500 px-4 py-3 focus:outline-none text-lg disabled:opacity-50 transition-all duration-500"
+          className="w-full border-0 bg-transparent text-white placeholder-gray-500 focus-visible:ring-0 text-lg disabled:opacity-50 transition-all duration-500 h-12 box-shadow-none"
         />
-        <button
+        <Button
           type="submit"
           disabled={isLoading}
-          className="bg-primary hover:bg-primary-hover text-black p-3 rounded-xl transition-all hover:scale-105 active:scale-95 disabled:hover:scale-100 disabled:opacity-70 flex items-center justify-center min-w-11 min-h-11"
+          className="bg-primary hover:bg-primary-hover text-black p-3 rounded-xl transition-all hover:scale-105 active:scale-95 disabled:hover:scale-100 disabled:opacity-70 flex items-center justify-center min-w-11 min-h-11 h-auto"
         >
           {isLoading ? (
             <Loader2 className="w-5 h-5 animate-spin" />
           ) : (
             <ArrowRight className="w-5 h-5" />
           )}
-        </button>
+        </Button>
       </div>
     </form>
   );

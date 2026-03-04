@@ -13,6 +13,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 // import { AgentStatusBadge } from "./AgentStatusBadge";
+import { TestnetBadge } from "@/components/shared/TestnetBadge";
 
 interface ChatHeaderProps {
   title?: string;
@@ -49,6 +50,7 @@ export function ChatHeader({
               {title}
             </h1>
             {/* <AgentStatusBadge status={status} /> */}
+            <TestnetBadge />
           </div>
         </div>
       </div>
@@ -58,10 +60,12 @@ export function ChatHeader({
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
-                <button
+                <Button
+                  variant="outline"
+                  size="icon"
                   onClick={onToggleMap}
                   className={`
-                    p-2 rounded-full transition-all duration-200
+                    rounded-full transition-all duration-200
                     ${
                       isMapOpen
                         ? "bg-[rgba(0,208,132,0.1)] border border-primary text-primary"
@@ -70,7 +74,7 @@ export function ChatHeader({
                   `}
                 >
                   <MapIcon className="h-4 w-4" />
-                </button>
+                </Button>
               </TooltipTrigger>
               <TooltipContent>
                 <p>{isMapOpen ? "Hide Map" : "Show Map"}</p>

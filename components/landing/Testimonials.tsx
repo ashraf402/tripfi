@@ -1,5 +1,6 @@
 "use client";
 
+import { Card } from "@/components/ui/card";
 import { Star } from "lucide-react";
 
 const testimonials = [
@@ -36,9 +37,9 @@ export default function Testimonials() {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {testimonials.map((t, i) => (
-            <div
+            <Card
               key={i}
-              className="bg-surface-card backdrop-blur-sm border border-border p-8 rounded-2xl hover:border-border-hover transition-colors"
+              className="bg-surface-card backdrop-blur-sm border-border p-8 rounded-2xl hover:border-border-hover transition-colors"
             >
               <div className="flex gap-1 text-yellow-500 mb-4">
                 {[...Array(t.stars)].map((_, i) => (
@@ -50,7 +51,7 @@ export default function Testimonials() {
                 <p className="text-foreground font-semibold">{t.name}</p>
                 <p className="text-sm text-text-secondary/70">{t.role}</p>
               </div>
-            </div>
+            </Card>
           ))}
         </div>
       </div>

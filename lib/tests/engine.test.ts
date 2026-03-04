@@ -12,7 +12,7 @@ import {
 import { getBchRate } from "@/lib/services/bchRate";
 import { orchestrate } from "@/lib/ai/orchestrator";
 
-// ── Environment Verification ───────────────────────────
+// Environment Verification
 
 describe("Environment Setup", () => {
   it("should have all required API keys", () => {
@@ -24,7 +24,7 @@ describe("Environment Setup", () => {
   });
 });
 
-// ── Location Service ───────────────────────────────────
+// Location Service
 
 describe("Location Service", () => {
   it("should detect user location (or return null gracefully)", async () => {
@@ -45,7 +45,7 @@ describe("Location Service", () => {
   });
 });
 
-// ── BCH Rate Service ───────────────────────────────────
+// BCH Rate Service
 
 describe("BCH Rate Service", () => {
   it("should fetch live BCH price", async () => {
@@ -55,7 +55,7 @@ describe("BCH Rate Service", () => {
   });
 });
 
-// ── Flight Service (Real API) ──────────────────────────
+// Flight Service (Real API)
 
 describe("Flight Service", () => {
   it("should search airports by keyword", async () => {
@@ -84,7 +84,7 @@ describe("Flight Service", () => {
   }, 30000); // 30s timeout for Amadeus
 });
 
-// ── Hotel Service (Real API) ───────────────────────────
+// Hotel Service (Real API)
 
 describe("Hotel Service", () => {
   it("should find hotels in Paris", async () => {
@@ -109,7 +109,7 @@ describe("Hotel Service", () => {
   }, 30000);
 });
 
-// ── Activity Service (Real API) ────────────────────────
+// Activity Service (Real API)
 
 describe("Activity Service", () => {
   it('should geocode "Barcelona"', async () => {
@@ -131,7 +131,7 @@ describe("Activity Service", () => {
   }, 30000);
 });
 
-// ── AI Orchestrator (Integration) ──────────────────────
+// AI Orchestrator (Integration)
 
 describe("AI Orchestrator", () => {
   it('should handle "flight status" intent', async () => {

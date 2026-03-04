@@ -1,5 +1,6 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
 import { Check } from "lucide-react";
 
 export default function Pricing() {
@@ -38,9 +39,12 @@ export default function Pricing() {
                 <Check className="w-5 h-5 text-primary" /> Basic Support
               </li>
             </ul>
-            <button className="w-full py-3 rounded-full border border-border text-foreground font-semibold hover:bg-surface transition-colors cursor-pointer">
+            <Button
+              variant="outline"
+              className="w-full py-6 rounded-full text-foreground font-semibold hover:bg-surface transition-colors cursor-pointer text-base"
+            >
               Get Started
-            </button>
+            </Button>
           </div>
 
           {/* Premium Plan */}
@@ -70,9 +74,9 @@ export default function Pricing() {
                 <Check className="w-5 h-5 text-primary" /> Priority Support
               </li>
             </ul>
-            <button className="w-full py-3 rounded-full bg-primary text-black font-semibold hover:bg-primary-hover transition-colors shadow-lg shadow-primary/20 cursor-pointer">
+            <Button className="w-full py-6 rounded-full bg-primary text-black font-semibold hover:bg-primary-hover transition-colors shadow-lg shadow-primary/20 cursor-pointer text-base">
               Start Free Trial
-            </button>
+            </Button>
           </div>
 
           {/* Pro Plan */}
@@ -95,9 +99,12 @@ export default function Pricing() {
                 <Check className="w-5 h-5 text-primary" /> API Access
               </li>
             </ul>
-            <button className="w-full py-3 rounded-full border border-border text-foreground font-semibold hover:bg-surface transition-colors cursor-pointer">
+            <Button
+              variant="outline"
+              className="w-full py-6 rounded-full text-foreground font-semibold hover:bg-surface transition-colors cursor-pointer text-base"
+            >
               Contact Sales
-            </button>
+            </Button>
           </div>
         </div>
       </div>

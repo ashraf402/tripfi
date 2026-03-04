@@ -1,9 +1,9 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
-import { Code } from "lucide-react";
-import Icon from "../ui/icons/Icon";
 import Image from "next/image";
+import Icon from "../ui/icons/Icon";
 
 export function AboutHero() {
   return (
@@ -31,13 +31,16 @@ export function AboutHero() {
             Experience borderless travel planning with zero friction.
           </p>
           <div className="flex flex-wrap gap-4 pt-4">
-            <button className="h-12 px-8 rounded-full bg-primary text-background font-bold hover:bg-primary-hover transition-colors">
+            <Button className="h-12 px-8 rounded-full bg-primary text-background font-bold hover:bg-primary-hover transition-colors">
               Start Planning
-            </button>
-            <button className="h-12 px-8 rounded-full border border-border bg-transparent text-foreground font-medium hover:border-primary hover:text-primary transition-all flex items-center gap-2">
+            </Button>
+            <Button
+              variant="outline"
+              className="h-12 px-8 rounded-full border-border bg-transparent text-foreground font-medium hover:border-primary hover:text-primary transition-all flex items-center gap-2"
+            >
               <Icon name="code" className="size-4" />
               View Source
-            </button>
+            </Button>
           </div>
         </motion.div>
 

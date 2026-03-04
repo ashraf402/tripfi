@@ -3,6 +3,8 @@
 import { Logo } from "@/components/landing/Logo";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Card, CardContent } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
 import { AlertCircle, ArrowLeft, Loader2, Mail } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
@@ -51,15 +53,17 @@ export function VerifyEmailForm() {
   }, [countdown]);
 
   const handleChange = (index: number, value: string) => {
-    // Only allow numbers
-    if (!/^\d*$/.test(value)) return;
+    // Strip anything that is not 0-9
+    const cleaned = value.replace(/[^0-9]/g, "").slice(0, 1);
+
+    if (!cleaned && value) return;
 
     const newOtp = [...otp];
-    newOtp[index] = value;
+    newOtp[index] = cleaned;
     setOtp(newOtp);
 
     // Auto-advance
-    if (value && index < 5) {
+    if (cleaned && index < 5) {
       inputRefs.current[index + 1]?.focus();
     }
   };
@@ -76,8 +80,11 @@ export function VerifyEmailForm() {
 
   const handlePaste = (e: React.ClipboardEvent) => {
     e.preventDefault();
-    const pastedData = e.clipboardData.getData("text").slice(0, 6);
-    if (!/^\d+$/.test(pastedData)) return;
+    const pastedData = e.clipboardData
+      .getData("text")
+      .replace(/[^0-9]/g, "")
+      .slice(0, 6);
+    if (!pastedData) return;
 
     const newOtp = [...otp];
     pastedData.split("").forEach((char, index) => {
@@ -159,83 +166,84 @@ export function VerifyEmailForm() {
 
       {/* Main Content */}
       <main className="flex-1 flex items-center justify-center px-2 sm:px-4 py-12 relative z-10 w-full">
-        <div className="bg-surface backdrop-blur-md border border-border rounded-2xl p-8 md:p-12 shadow-2xl flex flex-col items-center text-center w-full max-w-120">
-          {/* Icon */}
-          <div className="mb-8 relative">
-            <div className="absolute inset-0 bg-primary/20 blur-2xl rounded-full" />
-            <div className="bg-primary/10 border border-primary/20 w-20 h-20 rounded-2xl flex items-center justify-center relative shadow-[0_0_15px_rgba(0,209,132,0.4)]">
-              <Mail className="w-10 h-10 text-primary" />
+        <Card className="bg-surface backdrop-blur-md border border-border rounded-2xl p-8 md:p-12 shadow-2xl flex flex-col items-center text-center w-full max-w-120">
+          <CardContent className="p-0 flex flex-col items-center w-full">
+            {/* Icon */}
+            <div className="mb-8 relative">
+              <div className="absolute inset-0 bg-primary/20 blur-2xl rounded-full" />
+              <div className="bg-primary/10 border border-primary/20 w-20 h-20 rounded-2xl flex items-center justify-center relative shadow-[0_0_15px_rgba(0,209,132,0.4)]">
+                <Mail className="w-10 h-10 text-primary" />
+              </div>
             </div>
-          </div>
 
-          {/* Heading & Subtext */}
-          <h1 className="text-3xl font-bold mb-3 tracking-tight text-foreground">
-            Verify your email
-          </h1>
-          <p className="text-text-secondary text-base leading-relaxed mb-10 max-w-[320px]">
-            We sent a 6-digit code to{" "}
-            <span className="text-foreground font-semibold">
-              {email || "your email"}
-            </span>
-            . Please enter it below.
-          </p>
-
-          {/* OTP Input */}
-          <div className="max-w-full mb-10">
-            <div className="flex justify-center gap-3 md:gap-4">
-              {otp.map((digit, index) => (
-                <Input
-                  key={index}
-                  ref={(el) => {
-                    inputRefs.current[index] = el;
-                  }}
-                  type="text"
-                  maxLength={1}
-                  value={digit}
-                  onChange={(e) => handleChange(index, e.target.value)}
-                  onKeyDown={(e) => handleKeyDown(index, e)}
-                  onPaste={handlePaste}
-                  className="size-10 sm:size-12 md:size-14 text-center text-xl font-bold bg-surface border-border rounded-lg focus-visible:ring-0 focus-visible:border-primary focus-visible:shadow-[0_0_0_3px_rgba(0,208,132,0.1)] transition-all duration-200 text-foreground"
-                  placeholder="•"
-                />
-              ))}
-            </div>
-          </div>
-
-          {/* Error Message */}
-          {error && (
-            <p className="text-red-400 text-sm text-center mb-4 -mt-6">
-              {error}
-            </p>
-          )}
-
-          {/* Verify Button */}
-          <Button
-            onClick={handleVerify}
-            disabled={
-              isVerifying || otp.join("").length < 6 || otp.includes("")
-            }
-            className="w-full bg-primary hover:bg-primary-hover text-black font-bold font-heading py-6 rounded-xl transition-all duration-200 text-lg shadow-lg shadow-[rgba(0,208,132,0.2)] mb-8 active:scale-[0.98]"
-          >
-            {isVerifying ? (
-              <span className="flex items-center gap-2 justify-center">
-                <Loader2 className="w-4 h-4 animate-spin" />
-                Verifying...
+            {/* Heading & Subtext */}
+            <h1 className="text-3xl font-bold mb-3 tracking-tight text-foreground">
+              Verify your email
+            </h1>
+            <p className="text-text-secondary text-base leading-relaxed mb-10 max-w-[320px]">
+              We sent a 6-digit code to{" "}
+              <span className="text-foreground font-semibold">
+                {email || "your email"}
               </span>
-            ) : (
-              "Verify"
-            )}
-          </Button>
+              . Please enter it below.
+            </p>
 
-          {/* Links */}
-          <div className="flex flex-col gap-4 w-full">
-            <div className="text-text-secondary text-sm">
-              Don&apos;t receive the code?
-              <Button
-                variant="ghost"
-                onClick={handleResend}
-                disabled={!canResend || isResending}
-                className={`
+            {/* OTP Input */}
+            <div className="max-w-full mb-10">
+              <div className="flex justify-center gap-3 md:gap-4">
+                {otp.map((digit, index) => (
+                  <Input
+                    key={index}
+                    ref={(el) => {
+                      inputRefs.current[index] = el;
+                    }}
+                    type="text"
+                    maxLength={1}
+                    value={digit}
+                    onChange={(e) => handleChange(index, e.target.value)}
+                    onKeyDown={(e) => handleKeyDown(index, e)}
+                    onPaste={handlePaste}
+                    className="size-10 sm:size-12 md:size-14 text-center text-xl font-bold bg-surface border-border rounded-lg focus-visible:ring-0 focus-visible:border-primary focus-visible:shadow-[0_0_0_3px_rgba(0,208,132,0.1)] transition-all duration-200 text-foreground"
+                    placeholder="•"
+                  />
+                ))}
+              </div>
+            </div>
+
+            {/* Error Message */}
+            {error && (
+              <p className="text-red-400 text-sm text-center mb-4 -mt-6">
+                {error}
+              </p>
+            )}
+
+            {/* Verify Button */}
+            <Button
+              onClick={handleVerify}
+              disabled={
+                isVerifying || otp.join("").length < 6 || otp.includes("")
+              }
+              className="w-full bg-primary hover:bg-primary-hover text-black font-bold font-heading py-6 rounded-xl transition-all duration-200 text-lg shadow-lg shadow-[rgba(0,208,132,0.2)] mb-8 active:scale-[0.98]"
+            >
+              {isVerifying ? (
+                <span className="flex items-center gap-2 justify-center">
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  Verifying...
+                </span>
+              ) : (
+                "Verify"
+              )}
+            </Button>
+
+            {/* Links */}
+            <div className="flex flex-col gap-4 w-full">
+              <div className="text-text-secondary text-sm">
+                Don&apos;t receive the code?
+                <Button
+                  variant="ghost"
+                  onClick={handleResend}
+                  disabled={!canResend || isResending}
+                  className={`
                   ml-1 font-medium hover:bg-transparent p-0 h-auto transition-all
                   ${
                     canResend
@@ -243,25 +251,26 @@ export function VerifyEmailForm() {
                       : "text-primary opacity-50 cursor-not-allowed"
                   }
                 `}
-              >
-                {isResending
-                  ? "Sending..."
-                  : canResend
-                    ? "Resend code"
-                    : `Resend code (${countdown}s)`}
-              </Button>
+                >
+                  {isResending
+                    ? "Sending..."
+                    : canResend
+                      ? "Resend code"
+                      : `Resend code (${countdown}s)`}
+                </Button>
+              </div>
+              <Separator className="mt-4 pt-4 border-t border-border w-full flex justify-center">
+                <Link
+                  href="/signup"
+                  className="flex items-center justify-center gap-2 text-text-secondary hover:text-foreground transition-colors text-sm font-medium"
+                >
+                  <ArrowLeft className="w-4 h-4" />
+                  Wrong email? Go back
+                </Link>
+              </Separator>
             </div>
-            <div className="pt-4 border-t border-border w-full">
-              <Link
-                href="/signup"
-                className="flex items-center justify-center gap-2 text-text-secondary hover:text-foreground transition-colors text-sm font-medium"
-              >
-                <ArrowLeft className="w-4 h-4" />
-                Wrong email? Go back
-              </Link>
-            </div>
-          </div>
-        </div>
+          </CardContent>
+        </Card>
       </main>
     </div>
   );

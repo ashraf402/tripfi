@@ -1,8 +1,11 @@
 # ✈️ TripFi
 
+![Next.js](https://img.shields.io/badge/Next.js-14-black?logo=next.js)
+![Bitcoin Cash](https://img.shields.io/badge/Payments-Bitcoin_Cash-0AC18E?logo=bitcoin-cash)
+
 > **Travel smarter. Pay faster. Explore freely.**
 
-TripFi is an AI-powered travel platform that plans your entire trip through natural conversation — from destination discovery to day-by-day itineraries — with interactive maps and real-time flight and hotel data. Built for the hackathon with a vision to integrate Bitcoin Cash (BCH) payments for sub-cent booking fees.
+TripFi is an AI-powered travel platform that plans your entire trip through natural conversation — from destination discovery to day-by-day itineraries — with interactive maps and real-time flight and hotel data. Built for the BCH-1 Hackcelerator with a vision to integrate Bitcoin Cash (BCH) payments for sub-cent booking fees.
 
 ---
 
@@ -20,33 +23,19 @@ TripFi brings everything into one conversational interface, powered by AI. Just 
 
 ## ✨ Features
 
-### 🤖 AI Travel Assistant
-- **Conversational trip planning** — Chat naturally to plan trips. "Plan a 5-day trip to Bali" just works.
-- **Intent detection engine** — Automatically understands what you need: destination suggestions, flight searches, hotel searches, itinerary building, weather, or general chat.
-- **Smart context memory** — Remembers your origin, dates, budget, and preferences across the conversation.
-
-### 🗺️ Spatial Map Triggers
-- **MacroMap** — When suggesting destinations, the AI automatically shows all options on a map relative to your starting point.
-- **RouteMap** — After building an itinerary, a route map of Day 1 appears with all waypoints connected.
-- **RadiusMap** — Ask "What's near my hotel?" and get a neighborhood map centered on your accommodation.
-- **Interactive Leaflet maps** — Custom SVG markers color-coded by type (hotel, activity, airport, restaurant), auto-fit bounds, route polylines, and custom zoom controls on dark CARTO tiles.
-
-### ✈️ Real-Time Travel Data
-- **Flight search** — Live pricing via Kiwi and flight status via Aviationstack.
-- **Hotel search** — Real availability and pricing for destinations worldwide.
-- **Activity discovery** — Curated activities and experiences per destination.
-- **Weather data** — Current conditions and forecasts for trip planning.
-
-### 🎨 Premium Chat Experience
-- **Rich component cards** — Flights, hotels, itineraries, weather, destinations, and maps render as interactive cards in the chat.
-- **Quick pick chips** — AI suggests tappable destination options for instant planning.
-- **Markdown rendering** — AI responses render beautifully with headings, lists, bold, and inline code.
-- **Typing indicator** — Smooth loading states while the AI thinks.
-
-### 🔐 Auth & Persistence
-- **Supabase authentication** — Email/password login with protected routes.
-- **Chat persistence** — All conversations and messages saved to the database.
-- **Conversation sidebar** — Browse and resume past trip conversations.
+- **AI travel assistant** (Groq + Gemini)
+- **Real flight and hotel search** (Amadeus)
+- **Interactive map with route and radius**
+- **BCH payment processing** (HD wallet)
+- **Testnet and mainnet support via env var**
+- **Google OAuth + email/password auth**
+- **Account linking** (Google + email)
+- **Randomized demo prices for testnet**
+- **Trip dashboard with booking history**
+- **Six dynamic legal pages (JSON-driven)**
+- **Input sanitization** (XSS, prompt injection)
+- **Encrypted wallet mnemonic** (AES-256-GCM)
+- **Testnet badges across the UI**
 
 ---
 
@@ -54,20 +43,42 @@ TripFi brings everything into one conversational interface, powered by AI. Just 
 
 | Layer | Technology |
 |---|---|
-| Framework | Next.js 16 (App Router) |
-| Language | TypeScript |
-| Styling | Tailwind CSS v4.0 |
-| UI Components | shadcn/ui |
-| Animations | Framer Motion |
-| Icons | Lucide React, MingCute Icons |
-| Maps | Leaflet + react-leaflet |
-| AI (Primary) | Google Gemini 2.5 Flash |
-| AI (Fallback) | Groq (Llama) |
-| Auth & Database | Supabase |
-| State Management | Zustand |
-| Flights | Kiwi API + Aviationstack |
-| Images | Unsplash + Pexels (fallback chain) |
-| Deployment | Vercel |
+| **Frontend** | Next.js 14, TypeScript, Tailwind v4, shadcn/ui, Framer Motion |
+| **Backend** | Supabase (auth + database) |
+| **AI** | Groq, Google Gemini |
+| **Travel** | Amadeus Travel API |
+| **Maps** | OpenStreetMap |
+| **Payments** | Bitcoin Cash (BCH), bitcoincashjs-lib, bip39 |
+| **Auth** | Supabase + Google OAuth |
+
+---
+
+## ⚙️ Environment Variables
+
+Create a `.env.local` file with the following keys.
+
+```env
+# App
+NEXT_PUBLIC_APP_URL=               # Your application local or production URL
+
+# Supabase
+NEXT_PUBLIC_SUPABASE_URL=          # Your Supabase project URL
+NEXT_PUBLIC_SUPABASE_ANON_KEY=     # Supabase public anonymous key
+SUPABASE_SERVICE_ROLE_KEY=         # Supabase service role key
+
+# AI
+GROQ_API_KEY=                      # Groq API key for Llama model
+GEMINI_API_KEY=                    # Google Gemini API key
+
+# Travel
+AMADEUS_CLIENT_ID=                 # Amadeus travel API public key
+AMADEUS_CLIENT_SECRET=             # Amadeus travel API secret key
+
+# BCH Payments
+BCH_NETWORK=testnet                # Network mode: testnet or mainnet
+BCH_ENCRYPTION_KEY=                # 32-byte hex key for encryption (from setupWallet.js)
+BCH_WALLET_MNEMONIC_ENCRYPTED=     # Encrypted wallet mnemonic (from setupWallet.js)
+```
 
 ---
 
@@ -78,52 +89,63 @@ TripFi brings everything into one conversational interface, powered by AI. Just 
 - Node.js 18+
 - npm or pnpm
 - A Supabase project
-- API keys for the services listed below
+- API keys for the services listed above
 
 ### Installation
 
-```bash
-# Clone the repository
-git clone https://github.com/ashraf402/tripfi.git
-cd tripfi
+1. **Clone the repo**
+   ```bash
+   git clone https://github.com/ashraf402/tripfi.git
+   cd tripfi
+   ```
 
-# Install dependencies
-npm install
+2. **npm install**
+   ```bash
+   npm install
+   ```
 
-# Set up environment variables
-cp .env.example .env.local
-```
+3. **Set up environment variables**
+   Copy `.env.local.example` to `.env.local` and fill in the values:
+   ```bash
+   cp .env.local.example .env.local
+   ```
 
-### Environment Variables
+4. **Initialize BCH Wallet**
+   Run the setup script to generate an encrypted mnemonic:
+   ```bash
+   node scripts/setupWallet.js
+   ```
 
-Create a `.env.local` file in the root:
+5. **Run Supabase migrations**
+   Apply the database schema to your Supabase instance:
+   ```bash
+   npx supabase db push
+   ```
 
-```env
-# Supabase
-NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+6. **npm run dev**
+   Start the development server:
+   ```bash
+   npm run dev
+   ```
+   Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-# AI
-GOOGLE_AI_KEY=your_gemini_api_key
-GROQ_API_KEY=your_groq_api_key
+---
 
-# Flights
-KIWI_API_KEY=your_kiwi_api_key
-KIWI_ENABLED=true
-AVIATIONSTACK_API_KEY=your_aviationstack_api_key
+## 💳 BCH Payment Setup
 
-# Images
-UNSPLASH_ACCESS_KEY=your_unsplash_access_key
-PEXELS_API_KEY=your_pexels_api_key
-```
+TripFi includes an integrated HD wallet for processing cryptocurrency payments securely. To set up the payment stack:
 
-### Run the Development Server
+- Run `node scripts/setupWallet.js` in your terminal.
+- Copy the generated `BCH_ENCRYPTION_KEY` and `BCH_WALLET_MNEMONIC_ENCRYPTED` values to your `.env.local` file.
+- **For testnet:** Get testnet BCH (tBCH) from [tbch.googol.cash](https://tbch.googol.cash) to fund the generated wallet.
+- **Switch to mainnet:** Set `BCH_NETWORK=mainnet` in your `.env.local` file (no code changes needed).
 
-```bash
-npm run dev
-```
+### Network Modes
 
-Open [http://localhost:3000](http://localhost:3000) in your browser.
+| BCH_NETWORK | Mode       | Prices       |
+|-------------|------------|--------------|
+| `testnet`   | Test       | Randomized   |
+| `mainnet`   | Production | Real prices  |
 
 ---
 
@@ -146,35 +168,13 @@ User Message → Intent Detection → Pipeline Execution → Response + Componen
 
 ## 📁 Project Structure
 
-```
+```text
 tripfi/
-├── app/                        # Next.js App Router
-│   ├── layout.tsx              # Root layout with ThemeProvider
-│   ├── page.tsx                # Landing page
-│   ├── new/                    # New chat page
-│   ├── chat/[id]/              # Chat conversation page
-│   ├── login/ & signup/        # Auth pages
-│   └── api/chat/               # Chat API route
-├── components/
-│   ├── chatroom/
-│   │   ├── core/               # ChatRoom, ChatMessage, ChatInput, etc.
-│   │   ├── map/                # MapPanel, TripMap, LeafletMap, MapPopup
-│   │   ├── maps/               # MacroMap, RouteMap, RadiusMap cards
-│   │   ├── flights/            # FlightSearchResults
-│   │   ├── hotels/             # HotelSearchResults
-│   │   ├── itinerary/          # ItineraryCard
-│   │   ├── weather/            # WeatherCard
-│   │   └── destinations/       # DestinationGrid
-│   ├── landing/                # Landing page sections
-│   └── ui/                     # shadcn/ui components
-├── lib/
-│   ├── ai/                     # Orchestrator, Gemini, Groq clients
-│   ├── services/               # Flight, hotel, activity, image services
-│   ├── store/                  # Zustand stores (conversation, map, auth)
-│   ├── supabase/               # Supabase client & middleware
-│   ├── types/                  # TypeScript type definitions
-│   └── hooks/                  # Custom React hooks
-└── public/                     # Static assets
+├── app/          # Next.js routes
+├── components/   # UI components
+├── content/      # Legal JSON files
+├── lib/          # Services, utils, types
+└── scripts/      # One-time setup scripts
 ```
 
 ---
@@ -191,37 +191,9 @@ Map markers use custom SVG icons from Lucide, color-coded:
 
 ---
 
-## 💳 BCH Payments (Coming Soon)
+## ⚖️ Legal
 
-BCH payment integration is actively in development. The planned flow:
-
-1. User selects a booking and proceeds to checkout
-2. TripFi generates a BCH payment address
-3. User sends BCH from their wallet
-4. Transaction confirmed on-chain (typically under 2 seconds)
-5. Booking confirmed with a blockchain receipt
-6. Sub-$0.01 transaction fees — no hidden costs
-
----
-
-## 🗺️ Roadmap
-
-- [x] Landing page with theme switching
-- [x] Supabase auth (login/signup)
-- [x] AI chat assistant with intent detection
-- [x] Flight search (Kiwi + Aviationstack)
-- [x] Hotel search
-- [x] Activity search
-- [x] AI trip planner with full itinerary generation
-- [x] Weather integration
-- [x] Interactive maps with custom markers
-- [x] Spatial map triggers (MacroMap, RouteMap, RadiusMap)
-- [x] Chat persistence with conversation history
-- [x] Image service with Unsplash + Pexels fallback
-- [ ] BCH checkout flow
-- [ ] User dashboard with booking history
-- [ ] Group travel mode
-- [ ] Mobile app (React Native)
+Six dynamic legal pages are driven by JSON files in `/content/legal/` and can be updated without any code changes.
 
 ---
 

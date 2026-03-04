@@ -47,7 +47,7 @@ export function useChat(options: UseChatOptions = {}): UseChatReturn {
       : "ssr",
   );
 
-  // ── Store Integration ─────────────────────
+  // Store Integration
   const messages = useConversationMessages(conversationIdRef.current ?? "");
   const context = useConversationContext(conversationIdRef.current ?? "");
 
@@ -70,7 +70,7 @@ export function useChat(options: UseChatOptions = {}): UseChatReturn {
     conversationIdRef.current ?? "",
   );
 
-  // ── Seed store on mount ──────────────────
+  // Seed store on mount
   useEffect(() => {
     const id = options.conversationId;
     if (id && !isConversationLoaded(id) && options.initialMessages?.length) {

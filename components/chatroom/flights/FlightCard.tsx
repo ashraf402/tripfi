@@ -1,9 +1,10 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { Plane, Clock, User, ChevronDown } from "lucide-react";
-import { getAirlineLogoUrl } from "@/lib/utils/imageHelpers";
+import { Button } from "@/components/ui/button";
 import type { Flight } from "@/lib/types/chat";
+import { getAirlineLogoUrl } from "@/lib/utils/imageHelpers";
+import { motion } from "framer-motion";
+import { ChevronDown, Plane, User } from "lucide-react";
 
 interface FlightCardProps {
   flight: Flight;
@@ -112,9 +113,12 @@ export function FlightCard({ flight }: FlightCardProps) {
             </span>
           )}
         </div>
-        <button className="text-sm font-medium text-primary hover:text-primary-hover transition-colors flex items-center gap-1">
+        <Button
+          variant="ghost"
+          className="text-sm font-medium text-primary hover:text-primary-hover hover:bg-transparent px-0 h-auto transition-colors flex items-center gap-1"
+        >
           View Details <ChevronDown className="h-4 w-4" />
-        </button>
+        </Button>
       </div>
     </motion.div>
   );

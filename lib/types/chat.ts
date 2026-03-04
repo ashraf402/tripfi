@@ -1,4 +1,4 @@
-// ── Message Types ──────────────────────────────────────
+// Message Types
 
 export type MessageRole = "user" | "assistant";
 
@@ -50,7 +50,7 @@ export interface Conversation {
   messages: ChatMessage[];
 }
 
-// ── Flight Types ───────────────────────────────────────
+// Flight Types
 
 export interface Flight {
   id: string;
@@ -83,7 +83,7 @@ export interface FlightData {
   };
 }
 
-// ── Hotel Types ────────────────────────────────────────
+// Hotel Types
 
 export interface Hotel {
   id: string;
@@ -115,7 +115,7 @@ export interface HotelData {
   };
 }
 
-// ── Itinerary Types ────────────────────────────────────
+// Itinerary Types
 
 export type ItineraryItemType =
   | "flight"
@@ -147,21 +147,31 @@ export interface DayData {
   totalCostUsd: number;
 }
 
-export interface ItineraryData {
-  tripId?: string;
-  title: string;
-  destination: string;
-  startDate: string;
-  endDate: string;
-  totalDays: number;
-  travelers: number;
-  days: DayData[];
-  totalCostUsd: number;
-  totalCostBch: number;
-  isSaved?: boolean;
+export interface ItineraryCostBreakdown {
+  flightCost: number
+  hotelCost: number
+  activitiesCost: number
+  taxesAndFees: number
+  total: number
 }
 
-// ── Destination Types ──────────────────────────────────
+export interface ItineraryData {
+  tripId?: string
+  title: string
+  origin?: string
+  destination: string
+  startDate: string
+  endDate: string
+  totalDays: number
+  travelers: number
+  days: DayData[]
+  costs: ItineraryCostBreakdown  // ← replaces flat fields
+  totalCostUsd: number           // ← keep for backwards compat
+  totalCostBch: number           // ← keep for backwards compat
+  isSaved?: boolean
+}
+
+// Destination Types
 
 export interface Destination {
   id: string;
@@ -183,7 +193,7 @@ export interface DestinationData {
   destinations: Destination[];
 }
 
-// ── Activity Types ─────────────────────────────────────
+// Activity Types
 
 export interface Activity {
   id: string;
@@ -204,7 +214,7 @@ export interface ActivityData {
   destination: string;
 }
 
-// ── Price Types ────────────────────────────────────────
+// Price Types
 
 export interface PriceItem {
   label: string;
@@ -221,7 +231,7 @@ export interface PriceData {
   currency: string;
 }
 
-// ── Weather Types ──────────────────────────────────────
+// Weather Types
 
 export interface WeatherDay {
   date: string;
@@ -242,7 +252,7 @@ export interface WeatherData {
   forecast: WeatherDay[];
 }
 
-// ── Map Types ──────────────────────────────────────────
+// Map Types
 
 export interface MapMarker {
   id: string;
@@ -261,7 +271,7 @@ export interface MapData {
   markers: MapMarker[];
 }
 
-// ── Spatial Map Types ──────────────────────────────────
+// Spatial Map Types
 
 // Shown when suggesting multiple destinations
 // so user can see them on a globe/region map
@@ -309,7 +319,7 @@ export interface RadiusMapData {
   poiTypes: string[]; // ["cafe", "restaurant", "pharmacy", "atm"]
 }
 
-// ── Chat Store Types ───────────────────────────────────
+// Chat Store Types
 
 export interface ChatStore {
   conversations: Conversation[];
@@ -319,7 +329,7 @@ export interface ChatStore {
   error: string | null;
 }
 
-// ── Quick Action Types ─────────────────────────────────
+// Quick Action Types
 
 export interface QuickAction {
   id: string;
@@ -330,7 +340,7 @@ export interface QuickAction {
   description?: string;
 }
 
-// ── Flight Status Types ────────────────────────────────
+// Flight Status Types
 
 export interface FlightStatusData {
   flightNumber: string;

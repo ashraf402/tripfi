@@ -137,7 +137,7 @@ export async function searchActivities(
   };
 }
 
-// ── Geocode city → real coordinates ───────────────────
+// Geocode city → real coordinates
 // Uses Nominatim (OSM) — free, no key needed
 
 export async function geocodeCity(cityName: string): Promise<{

@@ -3,10 +3,11 @@ import { orchestrate } from "@/lib/ai/orchestrator";
 import { getUserLocationFromIP } from "@/lib/services/location/locationService";
 import { saveMessage } from "@/lib/services/chat/chatService";
 import { extractContext } from "@/lib/ai/contextExtractor";
+import { sanitizeChat } from "@/lib/utils/sanitize";
 
 export const maxDuration = 30; // Allow 30s for complex trip plans
 
-// ── Location cache (per session) ──────────────────────
+// Location cache (per session)
 // Store in module scope — persists across requests
 // in the same server instance
 const locationCache = new Map<
@@ -31,7 +32,7 @@ export async function POST(req: NextRequest) {
       sessionId,
     } = body;
 
-    // ── Location: read from cache first ───────────────
+    // Location: read from cache first
     let locationData = null;
 
     if (!messages || !Array.isArray(messages) || messages.length === 0) {
@@ -44,10 +45,32 @@ export async function POST(req: NextRequest) {
     const lastMessage = messages[messages.length - 1];
     const history = messages.slice(0, -1);
 
+    // Sanitize the user message — server-side defense before orchestrator
+    const {
+      value: cleanContent,
+      isClean,
+      threat,
+    } = sanitizeChat(lastMessage.content ?? "");
+
+    if (!cleanContent) {
+      return NextResponse.json(
+        {
+          error:
+            threat === "prompt_injection"
+              ? "Message contains disallowed content."
+              : "Invalid message.",
+        },
+        { status: 400 },
+      );
+    }
+
+    // Use sanitized message going forward
+    const safeLastMessage = { ...lastMessage, content: cleanContent };
+
     // 0. Save User Message (if part of existing convo)
     if (conversationId && !skipUserMessageSave) {
       await saveMessage(conversationId, {
-        ...lastMessage,
+        ...safeLastMessage,
         role: "user",
         timestamp: new Date(),
       }).catch((err) =>
@@ -90,7 +113,7 @@ export async function POST(req: NextRequest) {
 
     // 2. Orchestrate with location context
     const response = await orchestrate(
-      lastMessage.content,
+      safeLastMessage.content,
       history,
       location?.iataCode ?? undefined,
       context ?? {},
@@ -98,7 +121,7 @@ export async function POST(req: NextRequest) {
 
     // 3. Extract additional context from exchange (runs async, non-blocking on errors)
     const extractedContext = await extractContext(
-      lastMessage.content,
+      safeLastMessage.content,
       response.message,
       context ?? {},
     ).catch(() => ({}));

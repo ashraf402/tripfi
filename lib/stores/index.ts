@@ -1,10 +1,10 @@
-// ─── Store Exports ─────────────────────────────────────────
+// Store Exports
 export { useAuthStore } from "./auth-store";
 export { useTripStore } from "./trip-store";
 export { isStale, STALE_TIME } from "./types";
 export type { AuthState, AuthUser, TripState } from "./types";
 
-// ─── Selector Hooks ────────────────────────────────────────
+// Selector Hooks
 // Granular selectors prevent unnecessary re-renders.
 // Components subscribe only to the specific slice they need.
 
