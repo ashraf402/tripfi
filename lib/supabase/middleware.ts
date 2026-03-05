@@ -28,7 +28,34 @@ export async function updateSession(request: NextRequest) {
   // Refresh session — DO NOT remove this
   const {
     data: { user },
+    error,
   } = await supabase.auth.getUser();
+
+  // Terminate request or fail login if the refresh token is invalid
+  if (error) {
+    if (request.nextUrl.pathname.startsWith("/api/")) {
+      return NextResponse.json(
+        { error: "Authentication failed: " + error.message },
+        { status: 401 },
+      );
+    }
+
+    if (!request.nextUrl.pathname.startsWith("/login")) {
+      const url = request.nextUrl.clone();
+      url.pathname = "/login";
+      url.searchParams.set("error", "session_expired");
+      url.searchParams.set("next", request.nextUrl.pathname);
+
+      const redirectResponse = NextResponse.redirect(url);
+
+      // Preserve any cookie clearing applied by Supabase internally
+      supabaseResponse.cookies.getAll().forEach((cookie) => {
+        redirectResponse.cookies.set(cookie.name, cookie.value, cookie);
+      });
+
+      return redirectResponse;
+    }
+  }
 
   // Protect dashboard routes
   if (
@@ -40,6 +67,7 @@ export async function updateSession(request: NextRequest) {
   ) {
     const url = request.nextUrl.clone();
     url.pathname = "/login";
+    url.searchParams.set("next", request.nextUrl.pathname);
     return NextResponse.redirect(url);
   }
 

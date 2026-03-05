@@ -124,8 +124,17 @@ export async function checkAddressReceived(
   address: string,
   expectedBch: number,
 ): Promise<PaymentStatus> {
+  console.log(`\n[BCH CHECK] ---> Checking address: ${address}`);
+  console.log(`[BCH CHECK] ---> Expected amount:  ${expectedBch} BCH`);
+  console.log(
+    `[BCH CHECK] ---> Network type:     ${NETWORK} (IS_TESTNET=${IS_TESTNET})`,
+  );
+  console.log(`[BCH CHECK] ---> MIN_CONFIRMATIONS: ${MIN_CONFIRMATIONS}`);
+
   try {
     const { balance, history } = await queryElectrum(address);
+    console.log(`[BCH CHECK] Balance from Electrum:`, balance);
+    console.log(`[BCH CHECK] Recent history:`, history?.slice(0, 2));
 
     const confirmedSat = balance.confirmed ?? 0;
     const unconfirmedSat = balance.unconfirmed ?? 0;
@@ -137,6 +146,9 @@ export async function checkAddressReceived(
 
     const receivedBch = totalSat / 1e8;
     const effectiveBch = effectiveSat / 1e8;
+
+    // Add small tolerance (e.g. 100 satoshis or small float issues) for float comparisons if needed,
+    // though for exact satoshis matching >= should work fine.
     const confirmed = effectiveBch >= expectedBch;
 
     // Most recent tx — height > 0 = mined
@@ -145,11 +157,14 @@ export async function checkAddressReceived(
     const isMined = latestTx?.height != null && latestTx.height > 0;
 
     console.info(
-      `[BCH] Payment check: ` +
-        `received=${receivedBch.toFixed(8)} BCH, ` +
-        `expected=${expectedBch} BCH, ` +
-        `mined=${isMined}, ` +
-        `confirmed=${confirmed}`,
+      `[BCH CHECK] Math evaluation:\n` +
+        `  - totalSat:      ${totalSat}\n` +
+        `  - effectiveSat:  ${effectiveSat}\n` +
+        `  - receivedBch:   ${receivedBch.toFixed(8)} BCH\n` +
+        `  - effectiveBch:  ${effectiveBch.toFixed(8)} BCH\n` +
+        `  - expectedBch:   ${expectedBch.toFixed(8)} BCH\n` +
+        `  - isMined:       ${isMined}\n` +
+        `  - isConfirmed:   ${confirmed}`,
     );
 
     return {

@@ -26,6 +26,7 @@ import { useMapStore } from "@/lib/store/mapStore";
 import type { MapMarker } from "@/lib/types/chat";
 import { DayCard } from "@/components/chatroom/itinerary/DayCard";
 import { TestnetBadge } from "@/components/shared/TestnetBadge";
+import { AppHeader } from "@/components/layout/AppHeader";
 
 const STATUS_CONFIG = {
   upcoming: {
@@ -147,17 +148,24 @@ export function TripDetail({ trip }: { trip: any }) {
 
   return (
     <div className="min-h-screen bg-background pb-20">
-      <div className="max-w-4xl mx-auto px-4 py-8 space-y-8">
-        {/* BACK BUTTON */}
-        <Button
-          variant="ghost"
-          onClick={() => router.push("/trips")}
-          className="gap-2 text-secondary hover:text-foreground pl-0 group"
-        >
-          <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
-          My Trips
-        </Button>
-
+      <AppHeader
+        title="Trip Details"
+        onOpenSidebar={() =>
+          window.dispatchEvent(new CustomEvent("toggleMobileSidebar"))
+        }
+        rightContent={
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => router.push("/trips")}
+            className="text-secondary hover:text-foreground hover:bg-surface-hover gap-1.5 px-3"
+          >
+            <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
+            <span className="hidden sm:inline font-medium">My Trips</span>
+          </Button>
+        }
+      />
+      <div className="max-w-4xl mx-auto px-4 py-8 space-y-8 pt-6">
         {/* HERO SECTION */}
         <div className="relative w-full h-64 md:h-80 rounded-3xl overflow-hidden mt-4 bg-surface-hover">
           {imageUrl && (
@@ -176,7 +184,7 @@ export function TripDetail({ trip }: { trip: any }) {
           <div className="absolute bottom-0 left-0 p-6 md:p-8 w-full">
             <div className="flex flex-wrap items-center gap-2 mb-3">
               <Badge
-                className={`border px-2.5 py-1 text-xs ${statusConfig.class}`}
+                className={`border px-2.5 py-1 text-xs ${statusConfig.class} shadow-md`}
               >
                 {statusConfig.label}
               </Badge>

@@ -5,7 +5,12 @@ export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
   const bookingId = searchParams.get("booking_id");
 
+  console.log(
+    `\n[POLL API] --- New poll request for booking_id: ${bookingId} ---`,
+  );
+
   if (!bookingId) {
+    console.log(`[POLL API] Error: Missing booking_id`);
     return Response.json({ error: "Missing booking_id" }, { status: 400 });
   }
 
@@ -17,24 +22,73 @@ export async function GET(req: Request) {
     .eq("booking_id", bookingId)
     .single();
 
-  if (!tx || !tx.payment_id || tx.amount_bch == null) {
+  console.log(
+    `[POLL API] DB transaction record:`,
+    tx
+      ? {
+          id: tx.id,
+          status: tx.status,
+          payment_id: tx.payment_id,
+          amount_bch: tx.amount_bch,
+        }
+      : "NOT FOUND",
+  );
+
+  let paymentAddress = tx?.payment_id;
+  let amountBch = tx?.amount_bch;
+  let isTxConfirmed = tx?.status === "confirmed";
+  let txId = tx?.id;
+
+  if (!paymentAddress || amountBch == null) {
+    console.log(
+      `[POLL API] Transaction missing or incomplete. Checking bookings table fallback...`,
+    );
+    const { data: bookingFallback } = (await supabase
+      .from("bookings")
+      .select("payment_address, amount_bch, status")
+      .eq("id", bookingId)
+      .single()) as { data: any };
+
+    if (bookingFallback) {
+      paymentAddress = bookingFallback.payment_address;
+      amountBch = bookingFallback.amount_bch;
+      isTxConfirmed = bookingFallback.status === "confirmed";
+      console.log(`[POLL API] Fallback booking data:`, bookingFallback);
+    }
+  }
+
+  if (!paymentAddress || amountBch == null) {
+    console.log(
+      `[POLL API] Exiting early: insufficient transaction data in both tables.`,
+    );
     return Response.json({ status: "pending" });
   }
 
-  if (tx.status === "confirmed") {
+  if (isTxConfirmed) {
+    console.log(
+      `[POLL API] Exiting early: Transaction already confirmed in DB.`,
+    );
     return Response.json({ status: "confirmed" });
   }
 
-  const result = await checkAddressReceived(tx.payment_id, tx.amount_bch);
+  console.log(
+    `[POLL API] Calling checkAddressReceived for address: ${paymentAddress}, expectedBch: ${amountBch}`,
+  );
+  const result = await checkAddressReceived(paymentAddress, amountBch);
+  console.log(`[POLL API] getAddressReceived result:`, result);
 
   if (result.status === "confirmed") {
-    await supabase
-      .from("payment_transactions")
-      .update({
-        status: "confirmed",
-        confirmed_at: new Date().toISOString(),
-      })
-      .eq("id", tx.id);
+    console.log(`[POLL API] Payment CONFIRMED! Updating database...`);
+
+    if (txId) {
+      await supabase
+        .from("payment_transactions")
+        .update({
+          status: "confirmed",
+          confirmed_at: new Date().toISOString(),
+        })
+        .eq("id", txId);
+    }
 
     await supabase
       .from("bookings")
@@ -104,6 +158,9 @@ export async function GET(req: Request) {
       }
     }
 
+    console.log(
+      `[POLL API] Successfully finalized trip creation. Returning confirmed status to client.`,
+    );
     return Response.json({
       status: "confirmed",
       tripId: trip.id,
@@ -112,6 +169,7 @@ export async function GET(req: Request) {
     });
   }
 
+  console.log(`[POLL API] Payment STILL PENDING. Returning to client.`);
   return Response.json({
     status: result.status,
     receivedBch: result.receivedBch,

@@ -3,25 +3,28 @@
 import { BookingModal } from "@/components/chatroom/booking/BookingModal";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import {
+  useConversationMessages,
+  useConversationStore,
+} from "@/lib/store/conversationStore";
 import type { ItineraryData } from "@/lib/types/chat";
 import { getDestinationImage } from "@/lib/utils/imageHelpers";
+import axios from "axios";
 import { motion } from "framer-motion";
 import {
-  ExternalLink,
   Bitcoin,
-  Plane,
+  ExternalLink,
   Hotel,
   MapPin,
+  Plane,
   Receipt,
 } from "lucide-react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 import { DayCard } from "./DayCard";
 import { SaveItineraryButton } from "./SaveItineraryButton";
-import axios from "axios";
-import { toast } from "sonner";
-import { useConversationStore } from "@/lib/store/conversationStore";
-import { useRouter } from "next/navigation";
 
 interface ItineraryCardProps {
   data: ItineraryData;
@@ -38,12 +41,27 @@ export function ItineraryCard({ data, onSave }: ItineraryCardProps) {
   const [isSaving, setIsSaving] = useState(false);
   const router = useRouter();
 
+  // Find the exact message data in the live store to ensure re-renders
+  // when bookedTripId is updated by the BookingModal polling success.
+  const messages = useConversationMessages(data.tripId ?? "");
+  const liveDataRow = messages.find(
+    (m) =>
+      m.component === "ItineraryCard" &&
+      m.data &&
+      (m.data as ItineraryData).tripId === data.tripId,
+  );
+
+  // Create a merged version preferring the live store data
+  const liveData: ItineraryData = liveDataRow?.data
+    ? { ...data, ...(liveDataRow.data as ItineraryData) }
+    : data;
+
   useEffect(() => {
-    getDestinationImage(data.destination).then((url) => {
+    getDestinationImage(liveData.destination).then((url) => {
       setHeroImage(url);
       setImageLoaded(true);
     });
-  }, [data.destination]);
+  }, [liveData.destination]);
 
   const handleSave = async () => {
     if (data.isSaved || isSaving) return;
@@ -53,14 +71,14 @@ export function ItineraryCard({ data, onSave }: ItineraryCardProps) {
         itinerary: data,
         conversationId: data.tripId,
       });
-      if (data.tripId) {
+      if (liveData.tripId) {
         const store = useConversationStore.getState();
-        const currentMessages = store.messages[data.tripId] || [];
+        const currentMessages = store.messages[liveData.tripId] || [];
         const newMessages = currentMessages.map((m) => {
           if (
             m.data &&
             "tripId" in m.data &&
-            (m.data as ItineraryData).tripId === data.tripId
+            (m.data as ItineraryData).tripId === liveData.tripId
           ) {
             return {
               ...m,
@@ -72,7 +90,7 @@ export function ItineraryCard({ data, onSave }: ItineraryCardProps) {
           }
           return m;
         });
-        store.setMessages(data.tripId, newMessages);
+        store.setMessages(liveData.tripId, newMessages);
       }
       if (onSave) onSave();
       toast.success("Itinerary saved successfully!");
@@ -88,16 +106,16 @@ export function ItineraryCard({ data, onSave }: ItineraryCardProps) {
     <div className="flex w-full flex-col gap-4 max-w-full lg:max-w-lg rounded-2xl border border-border bg-surface-card p-4 sm:p-5 overflow-hidden">
       <div className="flex items-center justify-between">
         <h2 className="font-heading text-xl font-bold bg-linear-to-r from-primary to-primary-hover bg-clip-text text-transparent">
-          {data.title}
+          {liveData.title}
         </h2>
-        <SaveItineraryButton isSaved={data.isSaved} onSave={handleSave} />
+        <SaveItineraryButton isSaved={liveData.isSaved} onSave={handleSave} />
       </div>
 
       {/* Hero Image Section */}
       <div className="relative w-full h-32 rounded-xl overflow-hidden mt-1 mb-1">
         <Image
           src={heroImage}
-          alt={data.destination}
+          alt={liveData.destination}
           fill
           sizes="(max-width: 1024px) 100vw, 512px"
           className={`object-cover transition-opacity duration-500 ${imageLoaded ? "opacity-100" : "opacity-70"}`}
@@ -110,7 +128,7 @@ export function ItineraryCard({ data, onSave }: ItineraryCardProps) {
 
       {/* Timeline */}
       <div className="space-y-4 relative sm:pl-2 sm:border-l sm:border-border sm:ml-2">
-        {data.days.map((day) => (
+        {liveData.days.map((day) => (
           <motion.div
             key={day.day}
             initial={{ opacity: 0, x: -10 }}
@@ -132,56 +150,58 @@ export function ItineraryCard({ data, onSave }: ItineraryCardProps) {
       </div>
 
       {/* Footer Actions */}
-      {data.costs && (
+      {liveData.costs && (
         <div className="mt-4 pt-4 border-t border-border space-y-2.5 px-4">
           <p className="text-secondary text-xs font-semibold uppercase tracking-wider">
             Cost Estimate
           </p>
 
-          {data.costs.flightCost > 0 && (
+          {liveData.costs.flightCost > 0 && (
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2 text-secondary">
                 <Plane className="w-3.5 h-3.5" />
                 <span className="text-sm">Flights</span>
               </div>
               <span className="text-foreground text-sm font-medium">
-                ${data.costs.flightCost.toFixed(2)}
+                ${liveData.costs.flightCost.toFixed(2)}
               </span>
             </div>
           )}
 
-          {data.costs.hotelCost > 0 && (
+          {liveData.costs.hotelCost > 0 && (
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2 text-secondary">
                 <Hotel className="w-3.5 h-3.5" />
-                <span className="text-sm">Hotel ({data.totalDays} nights)</span>
+                <span className="text-sm">
+                  Hotel ({liveData.totalDays} nights)
+                </span>
               </div>
               <span className="text-foreground text-sm font-medium">
-                ${data.costs.hotelCost.toFixed(2)}
+                ${liveData.costs.hotelCost.toFixed(2)}
               </span>
             </div>
           )}
 
-          {data.costs.activitiesCost > 0 && (
+          {liveData.costs.activitiesCost > 0 && (
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2 text-secondary">
                 <MapPin className="w-3.5 h-3.5" />
                 <span className="text-sm">Activities</span>
               </div>
               <span className="text-foreground text-sm font-medium">
-                ${data.costs.activitiesCost.toFixed(2)}
+                ${liveData.costs.activitiesCost.toFixed(2)}
               </span>
             </div>
           )}
 
-          {data.costs.taxesAndFees > 0 && (
+          {liveData.costs.taxesAndFees > 0 && (
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2 text-secondary">
                 <Receipt className="w-3.5 h-3.5" />
                 <span className="text-sm">Taxes and fees (est.)</span>
               </div>
               <span className="text-foreground text-sm font-medium">
-                ${data.costs.taxesAndFees.toFixed(2)}
+                ${liveData.costs.taxesAndFees.toFixed(2)}
               </span>
             </div>
           )}
@@ -192,26 +212,26 @@ export function ItineraryCard({ data, onSave }: ItineraryCardProps) {
             <span className="text-foreground font-bold text-sm">Total</span>
             <div className="text-right">
               <p className="text-foreground font-bold">
-                ${data.costs.total.toFixed(2)}
+                ${liveData.costs.total.toFixed(2)}
               </p>
               <p className="text-primary text-xs font-medium">
-                {data.totalCostBch.toFixed(8)} BCH
+                {liveData.totalCostBch.toFixed(8)} BCH
               </p>
             </div>
           </div>
         </div>
       )}
 
-      {!data.costs && data.totalCostUsd > 0 && (
+      {!liveData.costs && liveData.totalCostUsd > 0 && (
         <div className="mt-4 pt-4 border-t border-border px-4 pb-1">
           <div className="flex items-center justify-between">
             <span className="text-foreground font-bold text-sm">Total</span>
             <div className="text-right">
               <p className="text-foreground font-bold">
-                ${data.totalCostUsd.toFixed(2)}
+                ${liveData.totalCostUsd.toFixed(2)}
               </p>
               <p className="text-primary text-xs">
-                {data.totalCostBch.toFixed(8)} BCH
+                {liveData.totalCostBch.toFixed(8)} BCH
               </p>
             </div>
           </div>
@@ -219,9 +239,9 @@ export function ItineraryCard({ data, onSave }: ItineraryCardProps) {
       )}
 
       <div className="w-full flex justify-end gap-2 pt-2">
-        {data.bookedTripId ? (
+        {liveData.bookedTripId ? (
           <Button
-            onClick={() => router.push(`/trips/${data.bookedTripId}`)}
+            onClick={() => router.push(`/trips/${liveData.bookedTripId}`)}
             className="gap-2 bg-secondary text-secondary-foreground hover:bg-secondary/80 font-bold h-10 px-4"
           >
             <ExternalLink className="w-4 h-4" />
@@ -241,8 +261,8 @@ export function ItineraryCard({ data, onSave }: ItineraryCardProps) {
       <BookingModal
         isOpen={isBookingOpen}
         onClose={() => setIsBookingOpen(false)}
-        itinerary={data}
-        conversationId={data.tripId ?? ""}
+        itinerary={liveData}
+        conversationId={liveData.tripId ?? ""}
       />
     </div>
   );

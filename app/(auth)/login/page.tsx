@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { BrandPanel } from "@/components/auth/BrandPanel";
 import { LoginForm } from "@/components/auth/LoginForm";
+import { PageLoader } from "@/components/shared/PageLoader";
 
 export const metadata: Metadata = {
   title: "Login — TripFi",
@@ -14,7 +16,9 @@ export default function LoginPage() {
     <ScrollArea className="h-screen w-full">
       <div className="flex min-h-screen flex-col lg:flex-row">
         <BrandPanel />
-        <LoginForm />
+        <Suspense fallback={<PageLoader />}>
+          <LoginForm />
+        </Suspense>
       </div>
     </ScrollArea>
   );

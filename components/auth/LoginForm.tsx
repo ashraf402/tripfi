@@ -55,6 +55,9 @@ export function LoginForm() {
 
   const { isSubmitting } = form.formState;
 
+  const searchParams = useSearchParams();
+  const nextUrl = searchParams.get("next");
+
   const onSubmit = async (values: LoginFormData) => {
     setServerError("");
 
@@ -68,6 +71,10 @@ export function LoginForm() {
     const formData = new FormData();
     formData.append("email", cleanEmail);
     formData.append("password", values.password); // never sanitize passwords
+
+    if (nextUrl) {
+      formData.append("nextUrl", nextUrl);
+    }
 
     const result = await signIn(formData);
     // signIn redirects on success, result only returns on error
