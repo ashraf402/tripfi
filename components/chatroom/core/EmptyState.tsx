@@ -1,11 +1,10 @@
 "use client";
 
+import { VibeCheck } from "@/components/chatroom/core/VibeCheck";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { motion } from "framer-motion";
 import { Plane } from "lucide-react";
 import { ChatInput } from "./ChatInput";
-import { TestnetBadge } from "@/components/shared/TestnetBadge";
-import { VibeCheck } from "@/components/chatroom/core/VibeCheck";
-import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface EmptyStateProps {
   onSend: (message: string) => Promise<void> | void;
@@ -15,17 +14,7 @@ interface EmptyStateProps {
 
 export function EmptyState({ onSend, isLoading, userName }: EmptyStateProps) {
   return (
-    <>
-      {/* Background */}
-      <div className="absolute inset-0 z-0">
-        <img
-          src="https://picsum.photos/seed/tripfi-bg/1920/1080"
-          alt=""
-          className="w-full h-full object-cover opacity-10 blur-sm"
-        />
-        <div className="absolute inset-0 bg-background/80" />
-      </div>
-
+    <div className="relative flex-1 flex flex-col w-full h-full min-h-0">
       {/* Body: header scrolls, input stays pinned */}
       <div className="flex-1 flex flex-col relative z-10 w-full min-h-0">
         {/* Scrollable top section */}
@@ -47,7 +36,6 @@ export function EmptyState({ onSend, isLoading, userName }: EmptyStateProps) {
                 <h1 className="text-3xl sm:text-4xl font-bold text-foreground px-2">
                   {userName ? `Hey ${userName} 👋` : "Hey there 👋"}
                 </h1>
-                <TestnetBadge />
               </div>
             </motion.div>
 
@@ -83,19 +71,8 @@ export function EmptyState({ onSend, isLoading, userName }: EmptyStateProps) {
               hasMessages={false}
             />
           </motion.div>
-
-          {/* Disclaimer */}
-          {/* <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.5 }}
-            className="text-secondary/50 text-[10px] sm:text-xs text-center px-4 w-full"
-          >
-            AI can make mistakes. Verify flight and payment details before
-            booking.
-          </motion.p> */}
         </div>
       </div>
-    </>
+    </div>
   );
 }

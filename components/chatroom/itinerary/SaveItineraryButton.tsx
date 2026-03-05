@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Check, Edit, Save, Share2 } from "lucide-react";
+import { Check, Edit, Save } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface SaveItineraryButtonProps {
@@ -17,6 +17,7 @@ export function SaveItineraryButton({
     <div className="flex gap-2">
       <Button
         onClick={onSave}
+        disabled={isSaved}
         variant={isSaved ? "outline" : "default"}
         className={
           isSaved
@@ -27,7 +28,7 @@ export function SaveItineraryButton({
         {isSaved ? (
           <>
             <Check className="sm:mr-2 h-4 w-4" />
-            <span className="hidden sm:block">Saved to Trips</span>
+            <span className="hidden sm:block">Saved ✓</span>
           </>
         ) : (
           <>
@@ -35,14 +36,6 @@ export function SaveItineraryButton({
             <span className="hidden sm:block">Save Itinerary</span>
           </>
         )}
-      </Button>
-
-      <Button
-        variant="outline"
-        size="icon"
-        className="border-border text-text-secondary hover:text-foreground"
-      >
-        <Share2 className="h-4 w-4" />
       </Button>
     </div>
   );

@@ -1,6 +1,6 @@
 {
   "name": "tripfi",
-  "version": "0.3.1",
+  "version": "0.4.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -11,6 +11,7 @@
   "dependencies": {
     "@google/generative-ai": "^0.24.1",
     "@hookform/resolvers": "^5.2.2",
+    "@keep-network/electrum-client-js": "github:keep-network/electrum-client-js",
     "@radix-ui/react-avatar": "^1.1.11",
     "@radix-ui/react-checkbox": "^1.3.3",
     "@radix-ui/react-dialog": "^1.1.15",
@@ -31,6 +32,7 @@
     "@types/uuid": "^10.0.0",
     "amadeus": "^11.0.0",
     "axios": "^1.13.6",
+    "bchaddrjs": "^0.5.2",
     "bip39": "^3.1.0",
     "bitcoincashjs-lib": "^3.3.3",
     "class-variance-authority": "^0.7.1",
@@ -49,6 +51,7 @@
     "react-hook-form": "^7.71.1",
     "react-leaflet": "^5.0.0",
     "react-markdown": "^10.1.0",
+    "sonner": "^2.0.7",
     "tailwind-merge": "^3.4.1",
     "tailwindcss-animate": "^1.0.7",
     "uuid": "^13.0.0",
@@ -57,6 +60,7 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
+    "@types/bchaddrjs": "^0.4.3",
     "@types/dompurify": "^3.0.5",
     "@types/node": "^20",
     "@types/react": "^19",

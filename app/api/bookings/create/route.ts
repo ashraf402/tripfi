@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import {
   buildPaymentInvoice,
+  buildBCHPaymentURI,
   IS_TESTNET,
 } from "@/lib/services/payment/bchPayment";
 import { sanitizeText } from "@/lib/utils/sanitize";
@@ -18,6 +19,7 @@ export async function POST(req: Request) {
 
   const body = await req.json();
   const {
+    itineraryId,
     conversationId,
     origin,
     destination,
@@ -44,16 +46,36 @@ export async function POST(req: Request) {
   const cleanTravelStyle = sanitizeText(travelStyle ?? "").value;
 
   try {
-    // 1. Get live BCH rate
+    // 1. Get total bookings count to generate a unique HD wallet index
+    const { count } = await supabase
+      .from("bookings")
+      .select("*", { count: "exact", head: true });
+
+    const bookingIndex = count ?? 0;
+
+    // 2. Get live BCH rate and build invoice (address + amount)
     const { getBchRate } = await import("@/lib/services/bchRate");
     const bchRate = await getBchRate();
     const totalBch = totalUsd / bchRate;
 
-    // 2. Create booking in Supabase
+    const invoice = await buildPaymentInvoice(
+      "temp", // placeholder — replaced below after booking row created
+      bookingIndex,
+      totalUsd,
+    );
+
+    const paymentUri = buildBCHPaymentURI(
+      invoice.paymentAddress,
+      invoice.amountBch,
+      "TripFi booking",
+    );
+
+    // 3. Create booking row — persist address so it can be restored later
     const { data: booking, error: bookingError } = await supabase
       .from("bookings")
       .insert({
         user_id: user.id,
+        itinerary_id: itineraryId ?? null,
         conversation_id: conversationId,
         origin: cleanOrigin,
         destination: cleanDestination,
@@ -69,29 +91,19 @@ export async function POST(req: Request) {
         hotel_cost: hotelCost ?? 0,
         activities_cost: activitiesCost ?? 0,
         taxes_and_fees: taxesAndFees ?? 0,
-        bch_rate_at_booking: bchRate,
+        bch_rate_at_booking: invoice.bchRate,
+        payment_address: invoice.paymentAddress,
+        amount_bch: invoice.amountBch,
+        payment_uri: paymentUri,
         flight_data: flightData,
         hotel_data: hotelData,
         itinerary_data: itineraryData,
-        status: "payment_pending",
+        status: "pending",
       })
       .select()
       .single();
 
     if (bookingError) throw bookingError;
-
-    // 3. Get total bookings count to generate a unique index for address
-    const { count } = await supabase
-      .from("bookings")
-      .select("*", { count: "exact", head: true });
-
-    const bookingIndex = count ?? 0;
-
-    const invoice = await buildPaymentInvoice(
-      booking.id,
-      bookingIndex,
-      totalUsd,
-    );
 
     // 4. Save payment transaction
     await supabase.from("payment_transactions").insert({
@@ -106,13 +118,21 @@ export async function POST(req: Request) {
     });
 
     return Response.json({
-      bookingId: invoice.bookingId,
+      bookingId: booking.id,
       paymentAddress: invoice.paymentAddress,
       amountBch: invoice.amountBch,
       amountUsd: invoice.amountUsd,
       bchRate: invoice.bchRate,
+      paymentUri,
       network: invoice.network,
       networkLabel: invoice.networkLabel,
+      costs: {
+        flightCost: flightCost ?? 0,
+        hotelCost: hotelCost ?? 0,
+        activitiesCost: activitiesCost ?? 0,
+        taxesAndFees: taxesAndFees ?? 0,
+        total: totalUsd,
+      },
     });
   } catch (error: any) {
     console.error("[Booking] Error:", error);

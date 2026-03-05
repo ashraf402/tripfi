@@ -823,6 +823,7 @@ async function buildItinerary(
     totalDays: days,
     travelers: params.adults ?? 1,
     days: dayCards,
+    tripId: crypto.randomUUID(),
     costs,
     totalCostUsd: costs.total, // keep in sync
     totalCostBch: Math.round((costs.total / bchRateValue) * 1e8) / 1e8,

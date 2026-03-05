@@ -1,5 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
-import { checkAddressReceived } from "@/lib/services/payment/bchPayment";
+import { checkAddressReceived } from "@/lib/services/payment/blockchain";
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
@@ -70,6 +70,38 @@ export async function GET(req: Request) {
 
     if (!trip) {
       throw new Error("Failed to create trip");
+    }
+
+    if (booking.conversation_id) {
+      const { data: msgs } = await supabase
+        .from("messages")
+        .select("*")
+        .eq("conversation_id", booking.conversation_id)
+        .eq("component", "ItineraryCard");
+
+      if (msgs) {
+        for (const msg of msgs) {
+          const msgData = msg.data as any;
+          if (!msgData) continue;
+
+          const msgItineraryId =
+            msgData.tripId ??
+            `${msgData.destination}-${msgData.startDate}-${msgData.endDate}-${msgData.travelers ?? 1}`;
+
+          // @ts-ignore
+          if (msgItineraryId === booking.itinerary_id) {
+            await supabase
+              .from("messages")
+              .update({
+                data: {
+                  ...msgData,
+                  bookedTripId: trip.id,
+                },
+              })
+              .eq("id", msg.id);
+          }
+        }
+      }
     }
 
     return Response.json({

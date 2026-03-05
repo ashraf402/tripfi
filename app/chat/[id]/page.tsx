@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import { redirect } from "next/navigation";
-import { ChatSidebar } from "@/components/chatroom/core/ChatSidebar";
+import { AppSidebar } from "@/components/layout/AppSidebar";
 import { ChatRoom } from "@/components/chatroom/core/ChatRoom";
 import { ChatRoomSkeleton } from "@/components/chatroom/core/ChatRoom";
 import { getConversationWithMessages } from "@/lib/actions/conversation";
@@ -23,7 +23,7 @@ export default async function ChatPage({ params }: PageProps) {
   return (
     <div className="flex h-dvh bg-background overflow-hidden">
       {/* Sidebar always renders instantly */}
-      <ChatSidebar activeId={id} />
+      <AppSidebar activeId={id} />
 
       {/* ChatRoom streams in while skeleton shows */}
       <main className="flex-1 min-w-0 h-dvh">

@@ -23,6 +23,7 @@ import {
   Plane,
   Hotel,
   Receipt,
+  RefreshCw,
 } from "lucide-react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
@@ -34,8 +35,27 @@ import {
 } from "@/lib/services/payment/bchPayment";
 import { TestnetBadge } from "@/components/shared/TestnetBadge";
 import { AnimatePresence, motion } from "framer-motion";
+import { useConversationStore } from "@/lib/store/conversationStore";
 
 type Step = "summary" | "payment" | "polling" | "confirmed";
+
+interface PaymentInvoiceState {
+  bookingId: string;
+  paymentAddress: string;
+  amountBch: number;
+  amountUsd: number;
+  bchRate: number;
+  paymentUri?: string;
+  networkLabel?: string;
+  costs?: {
+    flightCost: number;
+    hotelCost: number;
+    activitiesCost: number;
+    taxesAndFees: number;
+    total: number;
+  };
+  wasRestored?: boolean;
+}
 
 interface BookingModalProps {
   isOpen: boolean;
@@ -51,10 +71,7 @@ export function BookingModal({
   conversationId,
 }: BookingModalProps) {
   const [step, setStep] = useState<Step>("summary");
-  const [bookingId, setBookingId] = useState("");
-  const [paymentAddress, setPaymentAddress] = useState("");
-  const [amountBch, setAmountBch] = useState(0);
-  const [networkLabel, setNetworkLabel] = useState("");
+  const [invoice, setInvoice] = useState<PaymentInvoiceState | null>(null);
   const [txHash, setTxHash] = useState<string | undefined>();
   const [explorerUrl, setExplorerUrl] = useState<string | undefined>();
   const [copied, setCopied] = useState(false);
@@ -74,12 +91,50 @@ export function BookingModal({
   const totalUsd = costs.total;
   const totalBchCalculated = bchRate ? totalUsd / bchRate : 0;
 
+  // The stable identifier for this specific itinerary.
+  // tripId is set by the orchestrator when the itinerary is built.
+  // const itineraryId = itinerary.tripId ?? null;
+  const itineraryId =
+    itinerary.tripId ??
+    `${itinerary.destination}-${itinerary.startDate}-${itinerary.endDate}-${itinerary.travelers ?? 1}`;
+
+  // Check Supabase for an existing pending booking for this itinerary.
+  // Returns the invoice if found, null otherwise.
+  async function checkForExistingBooking(
+    id: string,
+  ): Promise<PaymentInvoiceState | null> {
+    try {
+      const res = await axios.get("/api/bookings/pending", {
+        params: { itinerary_id: id },
+      });
+      if (res.data.exists) {
+        return res.data.invoice as PaymentInvoiceState;
+      }
+      return null;
+    } catch {
+      return null;
+    }
+  }
+
   async function handleCreateInvoice() {
     setIsLoading(true);
     setError("");
 
     try {
+      // Check for an existing pending booking BEFORE creating a new one
+      if (itineraryId) {
+        const existingInvoice = await checkForExistingBooking(itineraryId);
+        if (existingInvoice) {
+          // Restore existing invoice — no new booking, no new address
+          setInvoice({ ...existingInvoice, wasRestored: true });
+          setStep("payment");
+          return;
+        }
+      }
+
+      // No existing booking found — create a new one
       const res = await axios.post("/api/bookings/create", {
+        itineraryId,
         conversationId,
         origin: itinerary.origin ?? "Unknown",
         destination: itinerary.destination,
@@ -97,10 +152,17 @@ export function BookingModal({
         itineraryData: itinerary,
       });
 
-      setBookingId(res.data.bookingId);
-      setPaymentAddress(res.data.paymentAddress);
-      setAmountBch(res.data.amountBch);
-      setNetworkLabel(res.data.networkLabel);
+      setInvoice({
+        bookingId: res.data.bookingId,
+        paymentAddress: res.data.paymentAddress,
+        amountBch: res.data.amountBch,
+        amountUsd: res.data.amountUsd,
+        bchRate: res.data.bchRate,
+        paymentUri: res.data.paymentUri,
+        networkLabel: res.data.networkLabel,
+        costs: res.data.costs,
+        wasRestored: false,
+      });
       setStep("payment");
     } catch (err: any) {
       setError(
@@ -112,12 +174,14 @@ export function BookingModal({
   }
 
   async function handleCopyAddress() {
-    await navigator.clipboard.writeText(paymentAddress);
+    if (!invoice?.paymentAddress) return;
+    await navigator.clipboard.writeText(invoice.paymentAddress);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   }
 
   async function handleStartPolling() {
+    if (!invoice?.bookingId) return;
     setStep("polling");
     setError("");
 
@@ -127,7 +191,7 @@ export function BookingModal({
     const poll = async () => {
       try {
         const res = await axios.get(
-          `/api/bookings/poll?booking_id=${bookingId}`,
+          `/api/bookings/poll?booking_id=${invoice.bookingId}`,
         );
 
         if (res.data.status === "confirmed") {
@@ -135,8 +199,31 @@ export function BookingModal({
           setExplorerUrl(res.data.explorerUrl);
           setStep("confirmed");
 
+          // Update store with bookedTripId
+          if (conversationId) {
+            const store = useConversationStore.getState();
+            const currentMessages = store.messages[conversationId] || [];
+            const newMessages = currentMessages.map((m) => {
+              if (
+                m.data &&
+                "tripId" in m.data &&
+                (m.data as ItineraryData).tripId === itinerary.tripId
+              ) {
+                return {
+                  ...m,
+                  data: {
+                    ...m.data,
+                    bookedTripId: res.data.tripId,
+                  },
+                };
+              }
+              return m;
+            });
+            store.setMessages(conversationId, newMessages);
+          }
+
           setTimeout(() => {
-            router.replace(`/trips?confirmed=${bookingId}`);
+            router.replace(`/trips?confirmed=${invoice.bookingId}`);
           }, 3000);
           return;
         }
@@ -161,9 +248,16 @@ export function BookingModal({
     poll();
   }
 
-  const qrValue = paymentAddress
-    ? buildBCHPaymentURI(paymentAddress, amountBch, "TripFi booking")
-    : "";
+  // Build QR value: prefer the stored paymentUri, fall back to computing it
+  const qrValue = invoice?.paymentUri
+    ? invoice.paymentUri
+    : invoice?.paymentAddress
+      ? buildBCHPaymentURI(
+          invoice.paymentAddress,
+          invoice.amountBch,
+          "TripFi booking",
+        )
+      : "";
 
   return (
     <Sheet
@@ -302,7 +396,7 @@ export function BookingModal({
             </motion.div>
           )}
 
-          {step === "payment" && (
+          {step === "payment" && invoice && (
             <motion.div
               key="payment"
               initial={{ opacity: 0, x: 20 }}
@@ -332,9 +426,20 @@ export function BookingModal({
                     {" "}
                     {IS_TESTNET
                       ? `Testnet mode — prices are randomized for demo purposes`
-                      : `${networkLabel} — real BCH will be charged`}
+                      : `${invoice.networkLabel ?? activeNetwork.label} — real BCH will be charged`}
                   </p>
                 </div>
+
+                {/* Restore banner — shown when a previous address was recovered */}
+                {invoice.wasRestored && (
+                  <div className="flex items-center gap-2 bg-blue-500/10 border border-blue-500/20 rounded-xl px-3 py-2">
+                    <RefreshCw className="w-3.5 h-3.5 text-blue-400 shrink-0" />
+                    <p className="text-blue-400 text-xs">
+                      Previous payment address restored. Send to the same
+                      address shown below.
+                    </p>
+                  </div>
+                )}
 
                 <div className="bg-white p-4 rounded-2xl w-max mx-auto">
                   <QRCodeSVG
@@ -349,7 +454,7 @@ export function BookingModal({
                   <p className="text-sm text-secondary">Amount</p>
                   <p className="text-3xl font-bold text-foreground">
                     {" "}
-                    {amountBch.toFixed(8)}{" "}
+                    {invoice.amountBch.toFixed(8)}{" "}
                     <span className="text-lg text-primary ml-2">BCH</span>
                   </p>
                 </div>
@@ -360,7 +465,7 @@ export function BookingModal({
                     {" "}
                     <p className="text-xs font-mono text-foreground truncate flex-1">
                       {" "}
-                      {paymentAddress}{" "}
+                      {invoice.paymentAddress}{" "}
                     </p>{" "}
                     <Button
                       variant="ghost"
@@ -393,7 +498,8 @@ export function BookingModal({
                   I have sent the payment
                 </Button>
                 <p className="text-center text-xs text-secondary">
-                  Send exactly {amountBch.toFixed(8)} BCH to this address
+                  Send exactly {invoice.amountBch.toFixed(8)} BCH to this
+                  address
                 </p>
               </div>
             </motion.div>

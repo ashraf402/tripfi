@@ -1,37 +1,32 @@
-import { Menu, MoreVertical, Map as MapIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-// import { AgentStatusBadge } from "./AgentStatusBadge";
+import { Map as MapIcon, Menu } from "lucide-react";
 import { TestnetBadge } from "@/components/shared/TestnetBadge";
 
-interface ChatHeaderProps {
+interface AppHeaderProps {
   title?: string;
   status?: "online" | "thinking" | "offline";
   onOpenSidebar: () => void;
   showMapToggle?: boolean;
   isMapOpen?: boolean;
   onToggleMap?: () => void;
+  rightContent?: React.ReactNode;
 }
 
-export function ChatHeader({
+export function AppHeader({
   title = "New Conversation",
   status = "online",
   onOpenSidebar,
   showMapToggle = false,
   isMapOpen = false,
   onToggleMap,
-}: ChatHeaderProps) {
+  rightContent,
+}: AppHeaderProps) {
   return (
     <header className="sticky top-0 z-10 flex h-16 w-full items-center justify-between border-b border-border bg-background/80 px-4 backdrop-blur-md">
       <div className="flex items-center gap-3">
@@ -83,25 +78,7 @@ export function ChatHeader({
           </TooltipProvider>
         )}
 
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="text-text-secondary hover:text-foreground"
-            >
-              <MoreVertical className="h-5 w-5" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="bg-surface border-border">
-            <DropdownMenuItem className="text-foreground focus:bg-surface-hover cursor-pointer">
-              Rename Conversation
-            </DropdownMenuItem>
-            <DropdownMenuItem className="text-red-500 focus:bg-red-500/10 focus:text-red-500 cursor-pointer">
-              Delete Conversation
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        {rightContent}
       </div>
     </header>
   );

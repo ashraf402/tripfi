@@ -7,6 +7,7 @@ import { Plane, Plus, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { TripCard } from "@/components/trips/TripCard";
 import { TestnetBadge } from "@/components/shared/TestnetBadge";
+import { AppHeader } from "@/components/layout/AppHeader";
 
 interface TripsDashboardProps {
   trips: any[];
@@ -29,6 +30,21 @@ export function TripsDashboard({ trips, confirmedId }: TripsDashboardProps) {
 
   return (
     <div className="min-h-screen bg-background">
+      <AppHeader
+        title="My Trips"
+        onOpenSidebar={() =>
+          window.dispatchEvent(new CustomEvent("toggleMobileSidebar"))
+        }
+        rightContent={
+          <Button
+            onClick={() => router.push("/new")}
+            className="gap-2 rounded-full font-bold text-black"
+          >
+            <Plus className="w-4 h-4 hidden sm:block" />
+            New trip
+          </Button>
+        }
+      />
       <div className="max-w-4xl mx-auto px-4 py-8 space-y-8">
         {/* Success banner */}
         <AnimatePresence>
@@ -46,30 +62,6 @@ export function TripsDashboard({ trips, confirmedId }: TripsDashboardProps) {
             </motion.div>
           )}
         </AnimatePresence>
-
-        {/* Header */}
-        <div className="flex items-center justify-between">
-          <div>
-            <div className="flex items-center gap-2">
-              <h1 className="text-foreground text-2xl font-bold">My Trips</h1>
-              <TestnetBadge />
-            </div>
-            <p className="text-secondary text-sm mt-1">
-              {trips.length === 0
-                ? "No trips yet"
-                : `${trips.length} trip${
-                    trips.length !== 1 ? "s" : ""
-                  } planned`}
-            </p>
-          </div>
-          <Button
-            onClick={() => router.push("/new")}
-            className="gap-2 rounded-full font-bold text-black"
-          >
-            <Plus className="w-4 h-4" />
-            New trip
-          </Button>
-        </div>
 
         {/* Empty state */}
         {trips.length === 0 && (

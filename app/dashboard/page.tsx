@@ -1,6 +1,6 @@
 "use client";
 
-import { ChatSidebar } from "@/components/chatroom/core/ChatSidebar";
+import { AppSidebar } from "@/components/layout/AppSidebar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -41,14 +41,14 @@ export default function DashboardPage() {
     <div className="flex h-screen bg-background overflow-hidden">
       {/* Desktop Sidebar */}
       <div className="hidden md:flex h-full">
-        <ChatSidebar activeId="" className="border-r border-border" />
+        <AppSidebar activeId="" className="border-r border-border" />
       </div>
 
       {/* Mobile Sidebar */}
       <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
         <SheetContent side="left" className="p-0 w-80">
           <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
-          <ChatSidebar
+          <AppSidebar
             activeId=""
             onClose={() => setMobileMenuOpen(false)}
             className="w-full border-r-0"

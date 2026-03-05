@@ -16,7 +16,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
 const AUTH_ERROR_MESSAGES: Record<string, string> = {
@@ -24,12 +24,24 @@ const AUTH_ERROR_MESSAGES: Record<string, string> = {
   missing_code: "Authentication was cancelled.",
 };
 
+function AuthError() {
+  const searchParams = useSearchParams();
+  const authError = searchParams.get("error");
+
+  if (!authError) return null;
+
+  return (
+    <div className="bg-red-500/10 border border-red-500/30 rounded-xl px-4 py-3 mb-6">
+      <p className="text-red-400 text-sm">
+        {AUTH_ERROR_MESSAGES[authError] ?? "Something went wrong."}
+      </p>
+    </div>
+  );
+}
+
 export function LoginForm() {
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const [serverError, setServerError] = useState("");
-
-  const searchParams = useSearchParams();
-  const authError = searchParams.get("error");
 
   const form = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
@@ -109,13 +121,9 @@ export function LoginForm() {
             </div>
 
             {/* OAuth callback error (e.g. ?error=auth_failed) */}
-            {authError && (
-              <div className="bg-red-500/10 border border-red-500/30 rounded-xl px-4 py-3 mb-6">
-                <p className="text-red-400 text-sm">
-                  {AUTH_ERROR_MESSAGES[authError] ?? "Something went wrong."}
-                </p>
-              </div>
-            )}
+            <Suspense fallback={null}>
+              <AuthError />
+            </Suspense>
 
             {/* Server error */}
             {serverError && (

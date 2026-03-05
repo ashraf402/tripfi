@@ -148,27 +148,28 @@ export interface DayData {
 }
 
 export interface ItineraryCostBreakdown {
-  flightCost: number
-  hotelCost: number
-  activitiesCost: number
-  taxesAndFees: number
-  total: number
+  flightCost: number;
+  hotelCost: number;
+  activitiesCost: number;
+  taxesAndFees: number;
+  total: number;
 }
 
 export interface ItineraryData {
-  tripId?: string
-  title: string
-  origin?: string
-  destination: string
-  startDate: string
-  endDate: string
-  totalDays: number
-  travelers: number
-  days: DayData[]
-  costs: ItineraryCostBreakdown  // ← replaces flat fields
-  totalCostUsd: number           // ← keep for backwards compat
-  totalCostBch: number           // ← keep for backwards compat
-  isSaved?: boolean
+  tripId?: string;
+  title: string;
+  origin?: string;
+  destination: string;
+  startDate: string;
+  endDate: string;
+  totalDays: number;
+  travelers: number;
+  days: DayData[];
+  costs: ItineraryCostBreakdown; // ← replaces flat fields
+  totalCostUsd: number; // ← keep for backwards compat
+  totalCostBch: number; // ← keep for backwards compat
+  isSaved?: boolean;
+  bookedTripId?: string;
 }
 
 // Destination Types

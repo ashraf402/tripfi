@@ -1,4 +1,6 @@
-import { ChatSidebar } from "@/components/chatroom/core/ChatSidebar";
+"use client";
+
+import { AppSidebar } from "@/components/layout/AppSidebar";
 
 export default function TripsLayout({
   children,
@@ -7,8 +9,12 @@ export default function TripsLayout({
 }) {
   return (
     <div className="flex h-dvh bg-background overflow-hidden">
-      <ChatSidebar />
-      <main className="flex-1 min-w-0 h-dvh overflow-y-auto">{children}</main>
+      <AppSidebar />
+      <div className="flex flex-col flex-1 min-w-0 h-dvh">
+        <main className="flex-1 min-h-0 overflow-y-auto relative">
+          {children}
+        </main>
+      </div>
     </div>
   );
 }

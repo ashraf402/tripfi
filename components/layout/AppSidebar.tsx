@@ -1,36 +1,35 @@
 "use client";
 
 import { Logo } from "@/components/landing/Logo";
-import { TestnetBadge } from "@/components/shared/TestnetBadge";
 import { ThemeToggle } from "@/components/landing/ThemeToggle";
+import { Button } from "@/components/ui/button";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Separator } from "@/components/ui/separator";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { signOut } from "@/lib/actions/auth";
 import {
   deleteConversation,
   getConversations,
 } from "@/lib/actions/conversation";
-import { signOut } from "@/lib/actions/auth";
 import {
   useConversationActions,
   useConversations,
   useConversationStore,
 } from "@/lib/store/conversationStore";
+import { useAuthStore } from "@/lib/stores/auth-store";
 import type { Conversation } from "@/lib/types/chat";
-import { ChevronLeft, ChevronRight, LogOut, Plus, Plane } from "lucide-react";
+import { getRelativeTime } from "@/utils/time";
+import { ChevronLeft, ChevronRight, LogOut, Plane, Plus } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useEffect } from "react";
-import Image from "next/image";
-import { useAuthStore } from "@/lib/stores/auth-store";
-import { getRelativeTime } from "@/utils/time";
-import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
 
 // Limit visual length of titles
 function truncate(str: string, length: number) {
@@ -38,13 +37,13 @@ function truncate(str: string, length: number) {
   return str.slice(0, length) + "...";
 }
 
-interface ChatSidebarProps {
+interface AppSidebarProps {
   activeId?: string;
   className?: string;
   onClose?: () => void;
 }
 
-export function ChatSidebar({ activeId, className }: ChatSidebarProps) {
+export function AppSidebar({ activeId, className }: AppSidebarProps) {
   const router = useRouter();
   const [isLoggingOut, setIsLoggingOut] = React.useState(false);
   const [showLogoutConfirm, setShowLogoutConfirm] = React.useState(false);
@@ -184,7 +183,6 @@ export function ChatSidebar({ activeId, className }: ChatSidebarProps) {
           {!effectivelyCollapsed && (
             <Link href="/" className="flex items-center gap-2">
               <Logo className="h-6 w-auto pl-1" />
-              <TestnetBadge />
             </Link>
           )}
 
@@ -234,7 +232,7 @@ export function ChatSidebar({ activeId, className }: ChatSidebarProps) {
                 </Button>
               </TooltipTrigger>
               {effectivelyCollapsed && (
-                <TooltipContent side="right" className="z-50">
+                <TooltipContent side="right" sideOffset={15} className="z-100">
                   <p>New Trip</p>
                 </TooltipContent>
               )}
@@ -270,7 +268,7 @@ export function ChatSidebar({ activeId, className }: ChatSidebarProps) {
                 </Link>
               </TooltipTrigger>
               {effectivelyCollapsed && (
-                <TooltipContent side="right" className="z-50">
+                <TooltipContent side="right" sideOffset={15} className="z-100">
                   <p>My Trips</p>
                 </TooltipContent>
               )}
@@ -439,7 +437,11 @@ export function ChatSidebar({ activeId, className }: ChatSidebarProps) {
                   />
                 </TooltipTrigger>
                 {effectivelyCollapsed && (
-                  <TooltipContent side="right" className="z-50">
+                  <TooltipContent
+                    side="right"
+                    sideOffset={15}
+                    className="z-100"
+                  >
                     <p>Log out</p>
                   </TooltipContent>
                 )}

@@ -1,16 +1,16 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { ArrowRight } from "lucide-react";
 import { VibeCard } from "@/components/chatroom/core/VibeCard";
+import { Button } from "@/components/ui/button";
 import {
-  VIBE_OPTIONS,
   DURATION_OPTIONS,
   MONTH_OPTIONS,
+  VIBE_OPTIONS,
   type VibeOption,
 } from "@/lib/types/vibe";
-import { Button } from "@/components/ui/button";
+import { AnimatePresence, motion } from "framer-motion";
+import { ArrowRight } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 
 interface VibeCheckProps {
   onSend: (message: string) => Promise<void>;
@@ -99,7 +99,7 @@ export function VibeCheck({ onSend, isLoading }: VibeCheckProps) {
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.25 }}
-            className="space-y-4 overflow-hidden"
+            className="space-y-4"
           >
             {/* Duration picker */}
             <div className="space-y-2">

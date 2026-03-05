@@ -1,6 +1,7 @@
 import { SessionProvider } from "@/components/providers/SessionProvider";
 import type { Metadata } from "next";
 import { ThemeProvider } from "next-themes";
+import { Toaster } from "@/components/ui/sonner";
 import { Inter } from "next/font/google"; // 1. Import fonts
 import "./globals.css";
 
@@ -43,6 +44,7 @@ export default function RootLayout({
       >
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
           <SessionProvider>{children}</SessionProvider>
+          <Toaster />
         </ThemeProvider>
       </body>
     </html>

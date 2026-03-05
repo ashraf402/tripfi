@@ -6,11 +6,22 @@ import { Separator } from "@/components/ui/separator";
 import type { ItineraryData } from "@/lib/types/chat";
 import { getDestinationImage } from "@/lib/utils/imageHelpers";
 import { motion } from "framer-motion";
-import { Bitcoin, Plane, Hotel, MapPin, Receipt } from "lucide-react";
+import {
+  ExternalLink,
+  Bitcoin,
+  Plane,
+  Hotel,
+  MapPin,
+  Receipt,
+} from "lucide-react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { DayCard } from "./DayCard";
 import { SaveItineraryButton } from "./SaveItineraryButton";
+import axios from "axios";
+import { toast } from "sonner";
+import { useConversationStore } from "@/lib/store/conversationStore";
+import { useRouter } from "next/navigation";
 
 interface ItineraryCardProps {
   data: ItineraryData;
@@ -24,6 +35,8 @@ export function ItineraryCard({ data, onSave }: ItineraryCardProps) {
   );
   const [imageLoaded, setImageLoaded] = useState(false);
   const [isBookingOpen, setIsBookingOpen] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     getDestinationImage(data.destination).then((url) => {
@@ -32,16 +45,52 @@ export function ItineraryCard({ data, onSave }: ItineraryCardProps) {
     });
   }, [data.destination]);
 
+  const handleSave = async () => {
+    if (data.isSaved || isSaving) return;
+    setIsSaving(true);
+    try {
+      await axios.post("/api/itineraries/save", {
+        itinerary: data,
+        conversationId: data.tripId,
+      });
+      if (data.tripId) {
+        const store = useConversationStore.getState();
+        const currentMessages = store.messages[data.tripId] || [];
+        const newMessages = currentMessages.map((m) => {
+          if (
+            m.data &&
+            "tripId" in m.data &&
+            (m.data as ItineraryData).tripId === data.tripId
+          ) {
+            return {
+              ...m,
+              data: {
+                ...m.data,
+                isSaved: true,
+              },
+            };
+          }
+          return m;
+        });
+        store.setMessages(data.tripId, newMessages);
+      }
+      if (onSave) onSave();
+      toast.success("Itinerary saved successfully!");
+    } catch (err) {
+      console.error("Failed to save itinerary:", err);
+      toast.error("Failed to save itinerary. Please try again.");
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
   return (
     <div className="flex w-full flex-col gap-4 max-w-full lg:max-w-lg rounded-2xl border border-border bg-surface-card p-4 sm:p-5 overflow-hidden">
       <div className="flex items-center justify-between">
         <h2 className="font-heading text-xl font-bold bg-linear-to-r from-primary to-primary-hover bg-clip-text text-transparent">
           {data.title}
         </h2>
-        <SaveItineraryButton
-          isSaved={data.isSaved}
-          onSave={onSave || (() => {})}
-        />
+        <SaveItineraryButton isSaved={data.isSaved} onSave={handleSave} />
       </div>
 
       {/* Hero Image Section */}
@@ -170,19 +219,23 @@ export function ItineraryCard({ data, onSave }: ItineraryCardProps) {
       )}
 
       <div className="w-full flex justify-end gap-2 pt-2">
-        <Button
-          variant="outline"
-          className="border-border bg-transparent text-foreground hover:bg-surface-hover h-10 px-4"
-        >
-          Save Plan
-        </Button>
-        <Button
-          onClick={() => setIsBookingOpen(true)}
-          className="bg-primary text-black hover:bg-primary-hover font-bold h-10 px-4 gap-2 shadow-[0_0_15px_rgba(0,208,132,0.3)]"
-        >
-          <Bitcoin className="h-4 w-4" />
-          Book this trip
-        </Button>
+        {data.bookedTripId ? (
+          <Button
+            onClick={() => router.push(`/trips/${data.bookedTripId}`)}
+            className="gap-2 bg-secondary text-secondary-foreground hover:bg-secondary/80 font-bold h-10 px-4"
+          >
+            <ExternalLink className="w-4 h-4" />
+            View trip →
+          </Button>
+        ) : (
+          <Button
+            onClick={() => setIsBookingOpen(true)}
+            className="bg-primary text-black hover:bg-primary-hover font-bold h-10 px-4 gap-2 shadow-[0_0_15px_rgba(0,208,132,0.3)]"
+          >
+            <Bitcoin className="h-4 w-4" />
+            Book this trip
+          </Button>
+        )}
       </div>
 
       <BookingModal

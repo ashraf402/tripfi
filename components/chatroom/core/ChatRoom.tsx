@@ -1,20 +1,35 @@
 "use client";
 
+import { AppHeader } from "@/components/layout/AppHeader";
+import { Button } from "@/components/ui/button";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { RenameDialog } from "@/components/ui/rename-dialog";
+import {
+  deleteConversation,
+  updateConversationTitle,
+} from "@/lib/actions/conversation";
 import { useChat } from "@/lib/hooks/useChat";
-import { useEffect, useRef } from "react";
-import { ChatHeader } from "./ChatHeader";
+import { MoreVertical, Pencil, Trash2 } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
+import { MapPanel } from "../map/MapPanel";
 import { ChatInput } from "./ChatInput";
 import { ChatMessage } from "./ChatMessage";
 import { ChatScrollArea } from "./ChatScrollArea";
 import { EmptyState } from "./EmptyState";
 import { TypingIndicator } from "./TypingIndicator";
-import { MapPanel } from "../map/MapPanel";
-import { Button } from "@/components/ui/button";
 
 import { getConversationWithMessages } from "@/lib/actions/conversation";
 import {
   useConversationActions,
   useConversationMessages,
+  useConversations,
 } from "@/lib/store/conversationStore";
 import { useMapStore } from "@/lib/store/mapStore";
 import type { ChatMessage as ChatMessageType } from "@/lib/types/chat";
@@ -30,7 +45,7 @@ interface ChatRoomProps {
 
 export function ChatRoomSkeleton() {
   return (
-    <div className="flex-1 flex flex-col h-full bg-background">
+    <div className="flex-1 flex flex-col size-full bg-background sm:max-w-3xl mx-auto">
       {/* Header skeleton */}
       <div className="h-16 border-b border-white/5 flex items-center px-4">
         <div className="h-8 w-32 bg-surface animate-pulse rounded-lg" />
@@ -71,10 +86,23 @@ export function ChatRoom({
   initialMessages = [],
 }: ChatRoomProps) {
   const bottomRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
+
+  // Dialog state
+  const [renameOpen, setRenameOpen] = useState(false);
+  const [renameInitialValue, setRenameInitialValue] = useState("");
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
 
   // Store Integration
   const messages = useConversationMessages(conversationId ?? "");
-  const { isConversationLoaded, setMessages } = useConversationActions();
+  const {
+    isConversationLoaded,
+    setMessages,
+    updateConversationTitle: updateTitleInStore,
+    removeConversation,
+  } = useConversationActions();
+  const conversations = useConversations();
 
   // Map store
   const mapState = useMapStore();
@@ -107,6 +135,37 @@ export function ChatRoom({
     });
   }, [conversationId]);
 
+  // Handlers
+  const handleRenameOpen = () => {
+    const currentConv = conversations.find((c) => c.id === conversationId);
+    setRenameInitialValue(currentConv?.title ?? "");
+    setRenameOpen(true);
+  };
+
+  const handleRenameSubmit = async (trimmedName: string) => {
+    if (!conversationId) return;
+    try {
+      await updateConversationTitle(conversationId, trimmedName);
+      updateTitleInStore(conversationId, trimmedName);
+    } catch (e) {
+      console.error("Failed to rename:", e);
+      throw e; // re-throw so the dialog can catch and log if needed
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!conversationId) return;
+    setIsDeleting(true);
+    try {
+      removeConversation(conversationId);
+      router.replace("/new");
+      await deleteConversation(conversationId);
+    } catch (e) {
+      console.error("Failed to delete:", e);
+      setIsDeleting(false);
+    }
+  };
+
   // Use useChat (which also uses store)
   // Ignoring `messages` from useChat as we consume directly from store above
   const { isLoading, error, sendMessage, clearError } = useChat({
@@ -131,7 +190,7 @@ export function ChatRoom({
       {/* Chat Area */}
       <div className="flex flex-col flex-1 min-w-0 h-full">
         {/* Header */}
-        <ChatHeader
+        <AppHeader
           title={conversationId ? "Trip Plan" : "New Trip"}
           status={isLoading ? "thinking" : "online"}
           onOpenSidebar={() =>
@@ -149,6 +208,66 @@ export function ChatRoom({
                   markers: mapState.markers,
                   zoom: mapState.zoom,
                 })
+          }
+          rightContent={
+            conversationId ? (
+              <>
+                {/* Rename Dialog */}
+                <RenameDialog
+                  open={renameOpen}
+                  onOpenChange={setRenameOpen}
+                  initialValue={renameInitialValue}
+                  onRename={handleRenameSubmit}
+                  title="Rename conversation"
+                  description="Enter a new name for this conversation."
+                />
+
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="text-text-secondary hover:text-foreground"
+                    >
+                      <MoreVertical className="h-5 w-5" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent
+                    align="end"
+                    className="bg-surface border-border"
+                  >
+                    <DropdownMenuItem
+                      onClick={handleRenameOpen}
+                      className="text-foreground focus:bg-surface-hover cursor-pointer gap-2"
+                    >
+                      <Pencil className="w-4 h-4" />
+                      Rename conversation
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => setDeleteConfirmOpen(true)}
+                      className="text-red-500 focus:bg-red-500/10 focus:text-red-500 cursor-pointer gap-2"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                      Delete conversation
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+
+                {/* Delete confirm — controlled, no trigger */}
+                <ConfirmDialog
+                  trigger={<span />}
+                  title="Delete conversation?"
+                  description="This will permanently delete this conversation and all its messages. This cannot be undone."
+                  confirmLabel="Delete"
+                  loadingLabel="Deleting…"
+                  variant="destructive"
+                  isLoading={isDeleting}
+                  open={deleteConfirmOpen}
+                  onOpenChange={setDeleteConfirmOpen}
+                  onConfirm={handleDelete}
+                />
+              </>
+            ) : null
           }
         />
 
