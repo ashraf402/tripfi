@@ -9,6 +9,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { RenameDialog } from "@/components/ui/rename-dialog";
+import { cn } from "@/lib/utils";
 import { MoreVertical, Pencil, Trash2 } from "lucide-react";
 import { useState } from "react";
 
@@ -17,6 +18,7 @@ interface ConversationOptionsProps {
   currentTitle: string;
   onRename: (id: string, name: string) => Promise<void>;
   onDelete: (id: string) => Promise<void>;
+  isInSidebar?: boolean;
 }
 
 export function ConversationOptions({
@@ -24,6 +26,7 @@ export function ConversationOptions({
   currentTitle,
   onRename,
   onDelete,
+  isInSidebar,
 }: ConversationOptionsProps) {
   const [renameOpen, setRenameOpen] = useState(false);
   const [renameInitialValue, setRenameInitialValue] = useState("");
@@ -73,13 +76,16 @@ export function ConversationOptions({
           <Button
             variant="ghost"
             size="icon"
-            className="text-text-secondary hover:text-foreground h-8 w-8 md:h-9 md:w-9"
+            className={cn(
+              "text-text-secondary hover:text-foreground",
+              isInSidebar ? "size-6" : "size-8 md:size-9",
+            )}
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();
             }}
           >
-            <MoreVertical className="h-5 w-5" />
+            <MoreVertical className={cn(isInSidebar ? "size-4" : "size-5")} />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="bg-surface border-border">

@@ -325,6 +325,7 @@ export function AppSidebar({ activeId, className }: AppSidebarProps) {
                         <ConversationOptions
                           conversationId={conv.id}
                           currentTitle={conv.title}
+                          isInSidebar
                           onRename={async (id, name) => {
                             await updateConversationTitle(id, name);
                             updateTitleInStore(id, name);
