@@ -86,6 +86,7 @@ export function ChatRoom({
   initialMessages = [],
 }: ChatRoomProps) {
   const bottomRef = useRef<HTMLDivElement>(null);
+  const aiResumedRef = useRef(false);
   const router = useRouter();
 
   // Dialog state
@@ -135,6 +136,19 @@ export function ChatRoom({
     });
   }, [conversationId]);
 
+  // Auto-trigger AI if last message is from user (navigated from /new)
+  // useEffect(() => {
+  //   if (!conversationId) return;
+  //   if (!isConversationLoaded(conversationId)) return;
+  //   if (messages.length === 0) return;
+
+  //   const last = messages[messages.length - 1];
+  //   if (last.role !== "user") return;
+
+  //   // Last message is user with no AI reply — fire the call
+  //   sendMessage("__resume__");
+  // }, [conversationId, isConversationLoaded(conversationId ?? "")]);
+
   // Handlers
   const handleRenameOpen = () => {
     const currentConv = conversations.find((c) => c.id === conversationId);
@@ -168,10 +182,25 @@ export function ChatRoom({
 
   // Use useChat (which also uses store)
   // Ignoring `messages` from useChat as we consume directly from store above
-  const { isLoading, error, sendMessage, clearError } = useChat({
+  const { isLoading, error, sendMessage, clearError, resumeAI } = useChat({
     conversationId: conversationId ?? undefined,
     initialMessages,
   });
+
+  useEffect(() => {
+    if (!conversationId) return;
+    if (!messages.length) return;
+    if (aiResumedRef.current) return;
+
+    const last = messages[messages.length - 1];
+    if (last.role !== "user") return; // AI already responded, do nothing
+
+    // Check store isn't already loading for this conversation
+    if (isLoading) return;
+
+    aiResumedRef.current = true;
+    resumeAI();
+  }, [conversationId]); // <- only run once on mount, not on every messages change
 
   // Auto-scroll to bottom on new messages
   useEffect(() => {

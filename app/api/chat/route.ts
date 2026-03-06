@@ -165,3 +165,7 @@ export async function POST(req: NextRequest) {
     );
   }
 }
+
+export async function GET() {
+  return new Response(null, { status: 405 });
+}

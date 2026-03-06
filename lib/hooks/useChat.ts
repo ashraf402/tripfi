@@ -27,6 +27,7 @@ interface UseChatReturn {
   error: string | null;
   sendMessage: (content: string) => Promise<void>;
   clearError: () => void;
+  resumeAI: () => Promise<void>;
 }
 
 export function useChat(options: UseChatOptions = {}): UseChatReturn {
@@ -136,6 +137,12 @@ export function useChat(options: UseChatOptions = {}): UseChatReturn {
         // avoids the production race condition
         // where the refresh invalidates the
         // in-flight request.
+        if (isNewConversation && conversationId) {
+          router.replace(`/chat/${conversationId}`, {
+            scroll: false,
+          });
+        }
+
         const { data } = await axios.post("/api/chat", {
           messages: [...messages, userMessage].slice(-20),
           conversationId: conversationId,
@@ -172,11 +179,6 @@ export function useChat(options: UseChatOptions = {}): UseChatReturn {
         // Safe to do here — response is already
         // in hand so middleware refresh cannot
         // interrupt anything.
-        if (isNewConversation && conversationId) {
-          router.replace(`/chat/${conversationId}`, {
-            scroll: false,
-          });
-        }
       } catch (err: any) {
         const errorMessage =
           err.response?.data?.error ??
@@ -214,11 +216,57 @@ export function useChat(options: UseChatOptions = {}): UseChatReturn {
     setError(null);
   }, []);
 
+  const resumeAI = useCallback(async () => {
+    if (!conversationIdRef.current || isLoading) return;
+    const convId = conversationIdRef.current;
+    const allMessages = messages; // already has user message in store
+    if (
+      !allMessages.length ||
+      allMessages[allMessages.length - 1].role !== "user"
+    )
+      return;
+
+    setIsLoading(true);
+    setConversationLoading(convId, true);
+    try {
+      const { data } = await axios.post("/api/chat", {
+        messages: allMessages.slice(-20),
+        conversationId: convId,
+        skipUserMessageSave: true, // already saved optimistically
+        context,
+        sessionId: sessionIdRef.current,
+      });
+      const assistantMessage: ChatMessage = {
+        id: `assistant-${Date.now()}`,
+        role: "assistant",
+        content: data.message,
+        component: data.component ?? null,
+        data: data.data ?? null,
+        secondaryComponent: data.secondaryComponent ?? null,
+        secondaryData: data.secondaryData ?? null,
+        timestamp: new Date(),
+      };
+      appendMessage(convId, assistantMessage);
+      bumpConversation(convId);
+      if (data.contextUpdate && Object.keys(data.contextUpdate).length > 0) {
+        updateContext(convId, data.contextUpdate);
+      }
+    } catch (err: any) {
+      setError(
+        err.response?.data?.error ?? err.message ?? "Something went wrong.",
+      );
+    } finally {
+      setIsLoading(false);
+      setConversationLoading(convId, false);
+    }
+  }, [isLoading, messages, context]);
+
   return {
     messages,
     isLoading: isLoading || storeIsLoading,
     error,
     sendMessage,
     clearError,
+    resumeAI,
   };
 }
