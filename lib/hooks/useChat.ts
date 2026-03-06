@@ -130,12 +130,6 @@ export function useChat(options: UseChatOptions = {}): UseChatReturn {
         // Update URL without unmounting.
         // DO NOT return here.
         // Execution must continue to axios.post.
-        if (isNewConversation && conversationId) {
-          router.replace(`/chat/${conversationId}`, {
-            scroll: false,
-          });
-        }
-
         const { data } = await axios.post("/api/chat", {
           messages: [...messages, userMessage].slice(-20),
           conversationId: conversationId,
@@ -143,6 +137,12 @@ export function useChat(options: UseChatOptions = {}): UseChatReturn {
           context,
           sessionId: sessionIdRef.current,
         });
+
+        if (isNewConversation && conversationId) {
+          router.replace(`/chat/${conversationId}`, {
+            scroll: false,
+          });
+        }
 
         const assistantMessage: ChatMessage = {
           id: `assistant-${Date.now()}`,
