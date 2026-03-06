@@ -537,7 +537,7 @@ export function TripDetail({ trip }: { trip: any }) {
           <Button
             variant="outline"
             className="flex-1 md:flex-none gap-2 rounded-xl border-border"
-            onClick={() => router.push("/new")}
+            onClick={() => router.push("/chat")}
           >
             <Plus className="w-4 h-4 text-secondary" />
             Plan another trip

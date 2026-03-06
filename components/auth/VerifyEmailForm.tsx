@@ -125,7 +125,7 @@ export function VerifyEmailForm() {
 
     // Success — clear storage and redirect
     sessionStorage.removeItem("tripfi-pending-email");
-    router.replace("/new");
+    router.replace("/chat");
   };
 
   const handleResend = async () => {

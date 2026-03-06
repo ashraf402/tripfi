@@ -19,7 +19,7 @@ function PaymentSuccessContent() {
 
   useEffect(() => {
     if (!bookingId) {
-      router.replace("/new");
+      router.replace("/chat");
       return;
     }
 

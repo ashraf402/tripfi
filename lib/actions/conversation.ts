@@ -139,5 +139,5 @@ export async function deleteConversation(
   const supabase = (await createClient()) as any;
   await supabase.from("conversations").delete().eq("id", conversationId);
 
-  redirect("/new");
+  redirect("/chat");
 }

@@ -18,7 +18,6 @@ import {
 
 interface UseChatOptions {
   conversationId?: string;
-  initialMessages?: ChatMessage[];
 }
 
 interface UseChatReturn {
@@ -27,7 +26,6 @@ interface UseChatReturn {
   error: string | null;
   sendMessage: (content: string) => Promise<void>;
   clearError: () => void;
-  resumeAI: () => Promise<void>;
 }
 
 export function useChat(options: UseChatOptions = {}): UseChatReturn {
@@ -74,8 +72,8 @@ export function useChat(options: UseChatOptions = {}): UseChatReturn {
   // Seed store on mount
   useEffect(() => {
     const id = options.conversationId;
-    if (id && !isConversationLoaded(id) && options.initialMessages?.length) {
-      setMessages(id, options.initialMessages);
+    if (id && !isConversationLoaded(id)) {
+      setMessages(id, []);
     }
   }, []);
 
@@ -129,14 +127,9 @@ export function useChat(options: UseChatOptions = {}): UseChatReturn {
           appendMessage(conversationId, userMessage);
         }
 
-        // Call AI engine BEFORE navigating.
-        // This ensures the API call uses the
-        // current valid session cookies.
-        // Navigation triggers middleware token
-        // refresh — doing it after the call
-        // avoids the production race condition
-        // where the refresh invalidates the
-        // in-flight request.
+        // Update URL without unmounting.
+        // DO NOT return here.
+        // Execution must continue to axios.post.
         if (isNewConversation && conversationId) {
           router.replace(`/chat/${conversationId}`, {
             scroll: false,
@@ -216,57 +209,11 @@ export function useChat(options: UseChatOptions = {}): UseChatReturn {
     setError(null);
   }, []);
 
-  const resumeAI = useCallback(async () => {
-    if (!conversationIdRef.current || isLoading) return;
-    const convId = conversationIdRef.current;
-    const allMessages = messages; // already has user message in store
-    if (
-      !allMessages.length ||
-      allMessages[allMessages.length - 1].role !== "user"
-    )
-      return;
-
-    setIsLoading(true);
-    setConversationLoading(convId, true);
-    try {
-      const { data } = await axios.post("/api/chat", {
-        messages: allMessages.slice(-20),
-        conversationId: convId,
-        skipUserMessageSave: true, // already saved optimistically
-        context,
-        sessionId: sessionIdRef.current,
-      });
-      const assistantMessage: ChatMessage = {
-        id: `assistant-${Date.now()}`,
-        role: "assistant",
-        content: data.message,
-        component: data.component ?? null,
-        data: data.data ?? null,
-        secondaryComponent: data.secondaryComponent ?? null,
-        secondaryData: data.secondaryData ?? null,
-        timestamp: new Date(),
-      };
-      appendMessage(convId, assistantMessage);
-      bumpConversation(convId);
-      if (data.contextUpdate && Object.keys(data.contextUpdate).length > 0) {
-        updateContext(convId, data.contextUpdate);
-      }
-    } catch (err: any) {
-      setError(
-        err.response?.data?.error ?? err.message ?? "Something went wrong.",
-      );
-    } finally {
-      setIsLoading(false);
-      setConversationLoading(convId, false);
-    }
-  }, [isLoading, messages, context]);
-
   return {
     messages,
     isLoading: isLoading || storeIsLoading,
     error,
     sendMessage,
     clearError,
-    resumeAI,
   };
 }

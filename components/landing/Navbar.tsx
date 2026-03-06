@@ -85,7 +85,7 @@ const NavLinksGroup = ({
   ];
 
   const loggedInLinks = [
-    { label: "My Trips", href: "/new" },
+    { label: "My Trips", href: "/chat" },
     { label: "Dashboard", href: "/dashboard" },
     { label: "History", href: "/dashboard" },
   ];
@@ -127,7 +127,7 @@ const AuthButtons = ({
         </NavItem>
       )}
       <NavItem
-        href={isLoggedIn ? "/new" : "/signup"}
+        href={isLoggedIn ? "/chat" : "/signup"}
         onClick={onLinkClick}
         className={btnClassName}
       >

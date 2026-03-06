@@ -37,7 +37,7 @@ export function TripsDashboard({ trips, confirmedId }: TripsDashboardProps) {
         }
         rightContent={
           <Button
-            onClick={() => router.push("/new")}
+            onClick={() => router.push("/chat")}
             className="gap-2 rounded-full font-bold text-black"
           >
             <Plus className="w-4 h-4 hidden sm:block" />
@@ -74,7 +74,7 @@ export function TripsDashboard({ trips, confirmedId }: TripsDashboardProps) {
               Plan your first trip with AI and pay with BCH
             </p>
             <Button
-              onClick={() => router.push("/new")}
+              onClick={() => router.push("/chat")}
               className="rounded-full mt-4 font-bold text-black"
             >
               Start planning

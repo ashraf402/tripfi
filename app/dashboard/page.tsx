@@ -72,7 +72,7 @@ export default function DashboardPage() {
             <h1 className="font-heading font-bold text-lg">Dashboard</h1>
           </div>
           <Button
-            onClick={() => router.push("/new")}
+            onClick={() => router.push("/chat")}
             size="sm"
             className="gap-2 bg-primary text-black hover:bg-primary-hover"
           >
@@ -151,7 +151,7 @@ export default function DashboardPage() {
 
               <Button
                 variant="outline"
-                onClick={() => router.push("/new")}
+                onClick={() => router.push("/chat")}
                 className="flex flex-col items-center justify-center p-6 rounded-xl border-2 border-dashed border-border hover:border-primary/50 hover:bg-surface-hover/50 transition-all group h-full min-h-35 whitespace-normal"
               >
                 <div className="h-10 w-10 rounded-full bg-surface border border-border flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">

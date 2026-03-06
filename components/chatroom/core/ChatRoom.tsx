@@ -38,55 +38,12 @@ import type { ChatMessage as ChatMessageType } from "@/lib/types/chat";
 
 interface ChatRoomProps {
   conversationId?: string | null;
-  initialMessages?: ChatMessageType[];
-}
-
-// Skeleton
-
-export function ChatRoomSkeleton() {
-  return (
-    <div className="flex-1 flex flex-col size-full bg-background sm:max-w-3xl mx-auto">
-      {/* Header skeleton */}
-      <div className="h-16 border-b border-white/5 flex items-center px-4">
-        <div className="h-8 w-32 bg-surface animate-pulse rounded-lg" />
-      </div>
-
-      {/* Messages skeleton */}
-      <div className="flex-1 p-4 space-y-6 overflow-hidden">
-        {/* User message right */}
-        <div className="flex justify-end">
-          <div className="h-12 w-48 bg-primary/10 animate-pulse rounded-2xl rounded-tr-none" />
-        </div>
-
-        {/* Assistant message left */}
-        <div className="flex gap-3">
-          <div className="h-8 w-8 rounded-full bg-surface animate-pulse" />
-          <div className="space-y-2">
-            <div className="h-4 w-32 bg-surface animate-pulse rounded" />
-            <div className="h-20 w-64 bg-surface animate-pulse rounded-2xl rounded-tl-none" />
-          </div>
-        </div>
-
-        {/* Rich card skeleton */}
-        <div className="ml-11 h-48 w-full max-w-sm bg-surface animate-pulse rounded-2xl" />
-      </div>
-
-      {/* Input skeleton */}
-      <div className="p-4">
-        <div className="h-14 w-full bg-surface animate-pulse rounded-2xl" />
-      </div>
-    </div>
-  );
 }
 
 // Main Component
 
-export function ChatRoom({
-  conversationId,
-  initialMessages = [],
-}: ChatRoomProps) {
+export function ChatRoom({ conversationId }: ChatRoomProps) {
   const bottomRef = useRef<HTMLDivElement>(null);
-  const aiResumedRef = useRef(false);
   const router = useRouter();
 
   // Dialog state
@@ -182,25 +139,9 @@ export function ChatRoom({
 
   // Use useChat (which also uses store)
   // Ignoring `messages` from useChat as we consume directly from store above
-  const { isLoading, error, sendMessage, clearError, resumeAI } = useChat({
+  const { isLoading, error, sendMessage, clearError } = useChat({
     conversationId: conversationId ?? undefined,
-    initialMessages,
   });
-
-  useEffect(() => {
-    if (!conversationId) return;
-    if (!messages.length) return;
-    if (aiResumedRef.current) return;
-
-    const last = messages[messages.length - 1];
-    if (last.role !== "user") return; // AI already responded, do nothing
-
-    // Check store isn't already loading for this conversation
-    if (isLoading) return;
-
-    aiResumedRef.current = true;
-    resumeAI();
-  }, [conversationId]); // <- only run once on mount, not on every messages change
 
   // Auto-scroll to bottom on new messages
   useEffect(() => {
@@ -301,9 +242,10 @@ export function ChatRoom({
         />
 
         {/* Main Area */}
-        {messages.length === 0 ? (
+        {messages.length === 0 &&
+        !conversations.some((c) => c.id === conversationId) ? (
           <EmptyState onSend={sendMessage} isLoading={isLoading} />
-        ) : (
+        ) : messages.length === 0 ? null : (
           <>
             <div className="flex-1 min-h-0 relative">
               <ChatScrollArea>

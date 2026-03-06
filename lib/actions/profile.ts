@@ -46,7 +46,7 @@ export async function completeOnboarding(bchWalletAddress?: string) {
   if (error) return { error };
 
   revalidatePath("/", "layout");
-  redirect("/new");
+  redirect("/chat");
 }
 
 // GET CURRENT USER PROFILE
@@ -87,6 +87,6 @@ export async function updateProfile(updates: {
 
   if (error) return { error };
 
-  revalidatePath("/new");
+  revalidatePath("/chat");
   return { success: true };
 }

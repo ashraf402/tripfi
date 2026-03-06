@@ -7,11 +7,6 @@ import socials from "@/data/socials.json";
 import Link from "next/link";
 import Icon from "../ui/icons/Icon";
 
-const footerLinks = {
-  Platform: ["Destinations", "Flights", "Hotels", "Price Alerts"],
-  Company: ["About Us", "Careers", "Blog", "Partners"],
-  Legal: ["Privacy Policy", "Terms of Service", "Cookie Policy"],
-};
 
 export default function Footer() {
   return (
@@ -54,17 +49,26 @@ export default function Footer() {
             </h3>
             <ul className="space-y-3 text-sm text-text-secondary">
               <li>
-                <a href="/new" className="hover:text-primary transition-colors">
+                <a
+                  href="/chat"
+                  className="hover:text-primary transition-colors"
+                >
                   Flights
                 </a>
               </li>
               <li>
-                <a href="/new" className="hover:text-primary transition-colors">
+                <a
+                  href="/chat"
+                  className="hover:text-primary transition-colors"
+                >
                   Hotels
                 </a>
               </li>
               <li>
-                <a href="/new" className="hover:text-primary transition-colors">
+                <a
+                  href="/chat"
+                  className="hover:text-primary transition-colors"
+                >
                   AI Planner
                 </a>
               </li>

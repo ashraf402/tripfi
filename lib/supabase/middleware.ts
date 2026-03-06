@@ -117,7 +117,7 @@ export async function updateSession(request: NextRequest) {
     !user &&
     !isPublicRoute(pathname) &&
     !pathname.startsWith("/api/") &&
-    (pathname.startsWith("/new") ||
+    (pathname.startsWith("/chat") ||
       pathname.startsWith("/chat") ||
       pathname.startsWith("/trips") ||
       pathname.startsWith("/dashboard") ||
@@ -138,7 +138,7 @@ export async function updateSession(request: NextRequest) {
       pathname.startsWith("/verify-email"))
   ) {
     const url = request.nextUrl.clone();
-    url.pathname = "/new";
+    url.pathname = "/chat";
     return NextResponse.redirect(url);
   }
 
@@ -148,9 +148,9 @@ export async function updateSession(request: NextRequest) {
   // Skip if coming from /chat (mid-session).
   // This prevents the DB query racing with
   // the stream in production.
-  if (user && pathname === "/new" && request.method === "GET") {
+  if (user && pathname === "/chat" && request.method === "GET") {
     const referer = request.headers.get("referer") ?? "";
-    const isFromChat = referer.includes("/chat") || referer.includes("/new");
+    const isFromChat = referer.includes("/chat");
 
     // Skip onboarding check if navigating
     // within the app — only check on fresh

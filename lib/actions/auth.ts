@@ -48,7 +48,7 @@ export async function signIn(formData: FormData) {
   if (nextUrl && nextUrl.startsWith("/")) {
     redirect(nextUrl);
   } else {
-    redirect("/new");
+    redirect("/chat");
   }
 }
 
@@ -81,7 +81,7 @@ export async function updatePassword(formData: FormData) {
   const { error } = await supabase.auth.updateUser({ password });
 
   if (error) return { error: error.message };
-  redirect("/new");
+  redirect("/chat");
 }
 
 // VERIFY OTP

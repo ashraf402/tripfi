@@ -149,7 +149,7 @@ export function AppSidebar({ activeId, className }: AppSidebarProps) {
     e.stopPropagation();
 
     removeConversation(id);
-    if (activeId === id) router.push("/new");
+    if (activeId === id) router.push("/chat");
     await deleteConversation(id);
   };
 
@@ -211,7 +211,7 @@ export function AppSidebar({ activeId, className }: AppSidebarProps) {
               <TooltipTrigger asChild>
                 <Button
                   onClick={() => {
-                    router.push("/new");
+                    router.push("/chat");
                     if (isMobileOpen) setIsMobileOpen(false);
                   }}
                   title={effectivelyCollapsed ? "New Trip" : ""}
