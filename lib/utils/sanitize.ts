@@ -1,15 +1,20 @@
-import { JSDOM } from 'jsdom';
-import DOMPurify from 'dompurify';
-
-const window = new JSDOM('').window;
-const purify = DOMPurify(window);
-
 export type SanitizeContext = "text" | "email" | "name" | "chat" | "search";
 
 export interface SanitizeResult {
   value: string;
   isClean: boolean;
   threat?: string;
+}
+
+function stripHtml(input: string): string {
+  return input
+    .replace(/<script[\s\S]*?>[\s\S]*?<\/script>/gi, "")
+    .replace(/<style[\s\S]*?>[\s\S]*?<\/style>/gi, "")
+    .replace(/<[^>]+>/g, "")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&amp;/g, "&")
+    .trim();
 }
 
 const PROMPT_INJECTION_PATTERNS = [
@@ -33,7 +38,10 @@ const SQL_INJECTION_PATTERNS = [
   /'\s*(OR|AND)\s*'?\d/i,
 ];
 
-const PATH_TRAVERSAL_PATTERNS = [/\.\.(\/|\\)/, /%2e%2e(%2f|%5c)/i];
+const PATH_TRAVERSAL_PATTERNS = [
+  /\.\.(\/|\\)/,
+  /%2e%2e(%2f|%5c)/i,
+];
 
 export function sanitize(
   input: string,
@@ -43,11 +51,8 @@ export function sanitize(
     return { value: "", isClean: true };
   }
 
-  // Step 1: Strip HTML and scripts via DOMPurify
-  let clean = purify.sanitize(input, {
-    ALLOWED_TAGS: [],
-    ALLOWED_ATTR: [],
-  }).trim();
+  // Step 1: Strip HTML and scripts
+  let clean = stripHtml(input);
 
   // Step 2: Context-specific handling
   switch (context) {
