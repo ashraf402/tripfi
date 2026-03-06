@@ -25,6 +25,7 @@ import {
 } from "@/lib/store/conversationStore";
 import { useAuthStore } from "@/lib/stores/auth-store";
 import type { Conversation } from "@/lib/types/chat";
+import { cn } from "@/lib/utils";
 import { getRelativeTime } from "@/utils/time";
 import { ChevronLeft, ChevronRight, LogOut, Plane, Plus } from "lucide-react";
 import Image from "next/image";
@@ -247,15 +248,12 @@ export function AppSidebar({ activeId, className }: AppSidebarProps) {
                     if (isMobileOpen) setIsMobileOpen(false);
                   }}
                   title={effectivelyCollapsed ? "My Trips" : ""}
-                  className={`
-                    flex items-center gap-2 text-primary font-semibold rounded-xl
-                    transition-all duration-200 hover:bg-surface-hover border border-transparent hover:border-border/50
-                    ${
-                      effectivelyCollapsed
-                        ? "w-10 h-10 justify-center mx-auto"
-                        : "w-full px-3 py-2.5 justify-start"
-                    }
-                  `}
+                  className={cn(
+                    "flex items-center gap-2 text-primary font-semibold rounded-xl transition-all duration-200 hover:bg-surface-hover border border-transparent hover:border-border/50",
+                    effectivelyCollapsed
+                      ? "w-10 h-10 justify-center mx-auto"
+                      : "w-full px-3 py-2.5 justify-start",
+                  )}
                 >
                   <Plane className="w-4 h-4 shrink-0" />
                   {!effectivelyCollapsed && (
@@ -302,22 +300,21 @@ export function AppSidebar({ activeId, className }: AppSidebarProps) {
                       href={`/chat/${conv.id}`}
                       prefetch={true}
                       onClick={() => setIsMobileOpen(false)}
-                      className={`
-                        group relative w-full flex flex-col gap-0.5 p-2.5 rounded-xl
-                        transition-colors border-l-2
-                        ${
-                          isActive
-                            ? "bg-[rgba(0,208,132,0.05)] border-primary hover:bg-[rgba(0,208,132,0.08)]"
-                            : "border-transparent hover:bg-surface-hover"
-                        }
-                      `}
+                      className={cn(
+                        "group relative w-full flex flex-col gap-0.5 p-2.5 rounded-xl transition-colors border-l-2",
+                        isActive
+                          ? "bg-[rgba(0,208,132,0.05)] border-primary hover:bg-[rgba(0,208,132,0.08)]"
+                          : "border-transparent hover:bg-surface-hover",
+                      )}
                     >
                       <div className="flex justify-between items-start gap-2">
                         <span
-                          className={`
-                            text-sm font-medium leading-tight line-clamp-1 pr-6
-                            ${isActive ? "text-foreground" : "text-secondary group-hover:text-foreground"}
-                          `}
+                          className={cn(
+                            "text-sm font-medium leading-tight line-clamp-1 pr-6 flex-1",
+                            isActive
+                              ? "text-foreground"
+                              : "text-secondary group-hover:text-foreground",
+                          )}
                         >
                           {conv.title}
                         </span>
