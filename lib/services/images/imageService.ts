@@ -1,3 +1,5 @@
+"use server";
+
 import axios from "axios";
 
 const ACCESS_KEY = process.env.UNSPLASH_ACCESS_KEY;
@@ -232,11 +234,4 @@ export async function getFlightImage(airlineCode?: string): Promise<string> {
   );
 }
 
-// Airline logo (airhex — free, no key)
-
-export function getAirlineLogoUrl(airlineCode: string): string {
-  return (
-    `https://content.airhex.com/content/logos/` +
-    `airlines_${airlineCode}_35_35_s.png`
-  );
-}
+// Airline logo utility removed and moved to imageHelpers.ts
