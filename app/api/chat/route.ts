@@ -21,6 +21,11 @@ const locationCache = new Map<
 
 const LOCATION_CACHE_TTL = 30 * 60 * 1000; // 30 minutes
 
+export async function GET() {
+  return new Response(null, { status: 405 });
+}
+
+
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
@@ -164,8 +169,4 @@ export async function POST(req: NextRequest) {
       { status: 500 },
     );
   }
-}
-
-export async function GET() {
-  return new Response(null, { status: 405 });
 }
