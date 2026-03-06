@@ -1,4 +1,8 @@
-import DOMPurify from "isomorphic-dompurify";
+import { JSDOM } from 'jsdom';
+import DOMPurify from 'dompurify';
+
+const window = new JSDOM('').window;
+const purify = DOMPurify(window);
 
 export type SanitizeContext = "text" | "email" | "name" | "chat" | "search";
 
@@ -40,7 +44,7 @@ export function sanitize(
   }
 
   // Step 1: Strip HTML and scripts via DOMPurify
-  let clean = DOMPurify.sanitize(input, {
+  let clean = purify.sanitize(input, {
     ALLOWED_TAGS: [],
     ALLOWED_ATTR: [],
   }).trim();
