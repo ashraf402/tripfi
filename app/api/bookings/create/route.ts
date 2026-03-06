@@ -6,6 +6,10 @@ import {
 } from "@/lib/services/payment/bchPayment";
 import { sanitizeText } from "@/lib/utils/sanitize";
 
+export async function GET() {
+  return new Response(null, { status: 405 });
+}
+
 export async function POST(req: Request) {
   const supabase = await createClient();
 
