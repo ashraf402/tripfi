@@ -1,6 +1,6 @@
 {
   "name": "tripfi",
-  "version": "0.4.8",
+  "version": "0.4.9",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -33,11 +33,13 @@
     "amadeus": "^11.0.0",
     "axios": "^1.13.6",
     "bchaddrjs": "^0.5.2",
+    "bip32": "^5.0.1",
     "bip39": "^3.1.0",
-    "bitcoincashjs-lib": "^3.3.3",
+    "bitcoinjs-lib": "^7.0.1",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
+    "ecpair": "^3.0.1",
     "framer-motion": "^12.34.4",
     "groq-sdk": "^0.37.0",
     "leaflet": "^1.9.4",
@@ -53,6 +55,7 @@
     "sonner": "^2.0.7",
     "tailwind-merge": "^3.4.1",
     "tailwindcss-animate": "^1.0.7",
+    "tiny-secp256k1": "^2.2.4",
     "uuid": "^13.0.0",
     "zod": "^4.3.6",
     "zustand": "^5.0.11"

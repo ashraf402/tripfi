@@ -1,6 +1,8 @@
 import bchaddr from "bchaddrjs";
 import * as bip39 from "bip39";
-import * as bitcoin from "bitcoincashjs-lib";
+import BIP32Factory from "bip32";
+import * as ecc from "tiny-secp256k1";
+import { payments, networks } from "bitcoinjs-lib";
 import { getMnemonic } from "./crypto";
 import { getEndpoints } from "./endpoints";
 
@@ -14,15 +16,20 @@ export const NETWORK: BCHNetwork =
 export const IS_TESTNET = NETWORK === "testnet";
 
 const NETWORK_CONFIG = {
-  testnet: {
-    network: bitcoin.networks.testnet,
-    label: "Testnet",
-  },
-  mainnet: {
-    network: bitcoin.networks.bitcoin,
-    label: "Mainnet",
-  },
+  testnet: { label: "Testnet" },
+  mainnet: { label: "Mainnet" },
 } as const;
+
+// const NETWORK_CONFIG = {
+//   testnet: {
+//     network: bitcoin.networks.testnet,
+//     label: "Testnet",
+//   },
+//   mainnet: {
+//     network: bitcoin.networks.bitcoin,
+//     label: "Mainnet",
+//   },
+// } as const;
 
 export const activeNetwork = NETWORK_CONFIG[NETWORK];
 
@@ -30,6 +37,7 @@ export function getActiveEndpoints() {
   return getEndpoints(IS_TESTNET);
 }
 
+const bip32 = BIP32Factory(ecc);
 // Types
 
 export interface PaymentAddress {
@@ -79,22 +87,16 @@ export async function generatePaymentAddress(
   bookingIndex: number,
 ): Promise<PaymentAddress> {
   const mnemonic = getMnemonic();
-
   const seed = await bip39.mnemonicToSeed(mnemonic);
-
-  const root = bitcoin.HDNode.fromSeedBuffer(seed, activeNetwork.network);
-
+  const root = bip32.fromSeed(seed);
   const path = `m/44'/145'/0'/0/${bookingIndex}`;
   const child = root.derivePath(path);
-
-  const legacyAddress = child.getAddress();
-  const cashAddress = legacyToCashAddr(legacyAddress);
-
-  return {
-    address: cashAddress,
-    derivationPath: path,
-    network: NETWORK,
-  };
+  const { address: legacyAddress } = payments.p2pkh({
+    pubkey: Buffer.from(child.publicKey),
+    network: IS_TESTNET ? networks.testnet : networks.bitcoin,
+  });
+  const cashAddress = legacyToCashAddr(legacyAddress!);
+  return { address: cashAddress, derivationPath: path, network: NETWORK };
 }
 
 // Address Validation
