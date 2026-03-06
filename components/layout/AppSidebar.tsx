@@ -16,6 +16,7 @@ import { signOut } from "@/lib/actions/auth";
 import {
   deleteConversation,
   getConversations,
+  updateConversationTitle,
 } from "@/lib/actions/conversation";
 import {
   useConversationActions,
@@ -30,6 +31,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useEffect } from "react";
+import { ConversationOptions } from "../chatroom/core/ConversationOptions";
 
 // Limit visual length of titles
 function truncate(str: string, length: number) {
@@ -57,8 +59,12 @@ export function AppSidebar({ activeId, className }: AppSidebarProps) {
 
   // Store integration
   const conversations = useConversations();
-  const { setConversations, removeConversation, isConversationListFresh } =
-    useConversationActions();
+  const {
+    setConversations,
+    removeConversation,
+    isConversationListFresh,
+    updateConversationTitle: updateTitleInStore,
+  } = useConversationActions();
   const conversationListLoaded = useConversationStore(
     (s) => s.conversationListLoaded,
   );
@@ -142,16 +148,6 @@ export function AppSidebar({ activeId, className }: AppSidebarProps) {
     return () =>
       window.removeEventListener("toggleMobileSidebar", handleToggleMobile);
   }, []);
-
-  // Optimistic delete
-  const handleDelete = async (e: React.MouseEvent, id: string) => {
-    e.preventDefault();
-    e.stopPropagation();
-
-    removeConversation(id);
-    if (activeId === id) router.push("/chat");
-    await deleteConversation(id);
-  };
 
   return (
     <>
@@ -326,18 +322,21 @@ export function AppSidebar({ activeId, className }: AppSidebarProps) {
                           {conv.title}
                         </span>
 
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={(e) => handleDelete(e, conv.id)}
-                          className="absolute right-2 top-2 opacity-0 group-hover:opacity-100
-                                    text-secondary hover:text-red-400
-                                    transition-all h-6 w-6 rounded-md
-                                    hover:bg-red-500/10"
-                          title="Delete trip"
-                        >
-                          ×
-                        </Button>
+                        <ConversationOptions
+                          conversationId={conv.id}
+                          currentTitle={conv.title}
+                          onRename={async (id, name) => {
+                            await updateConversationTitle(id, name);
+                            updateTitleInStore(id, name);
+                          }}
+                          onDelete={async (id) => {
+                            removeConversation(id);
+                            if (activeId === id) {
+                              router.replace("/chat");
+                            }
+                            await deleteConversation(id);
+                          }}
+                        />
                       </div>
 
                       <span className="text-[10px] text-secondary/50 font-light">

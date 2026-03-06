@@ -2,26 +2,19 @@
 
 import { AppHeader } from "@/components/layout/AppHeader";
 import { Button } from "@/components/ui/button";
-import { ConfirmDialog } from "@/components/ui/confirm-dialog";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { RenameDialog } from "@/components/ui/rename-dialog";
 import {
   deleteConversation,
   updateConversationTitle,
 } from "@/lib/actions/conversation";
 import { useChat } from "@/lib/hooks/useChat";
-import { MoreVertical, Pencil, Trash2 } from "lucide-react";
+import { MoreVertical } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { MapPanel } from "../map/MapPanel";
 import { ChatInput } from "./ChatInput";
 import { ChatMessage } from "./ChatMessage";
 import { ChatScrollArea } from "./ChatScrollArea";
+import { ConversationOptions } from "./ConversationOptions";
 import { EmptyState } from "./EmptyState";
 import { TypingIndicator } from "./TypingIndicator";
 
@@ -45,12 +38,6 @@ interface ChatRoomProps {
 export function ChatRoom({ conversationId }: ChatRoomProps) {
   const bottomRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
-
-  // Dialog state
-  const [renameOpen, setRenameOpen] = useState(false);
-  const [renameInitialValue, setRenameInitialValue] = useState("");
-  const [isDeleting, setIsDeleting] = useState(false);
-  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
 
   // Store Integration
   const messages = useConversationMessages(conversationId ?? "");
@@ -93,50 +80,6 @@ export function ChatRoom({ conversationId }: ChatRoomProps) {
     });
   }, [conversationId]);
 
-  // Auto-trigger AI if last message is from user (navigated from /new)
-  // useEffect(() => {
-  //   if (!conversationId) return;
-  //   if (!isConversationLoaded(conversationId)) return;
-  //   if (messages.length === 0) return;
-
-  //   const last = messages[messages.length - 1];
-  //   if (last.role !== "user") return;
-
-  //   // Last message is user with no AI reply — fire the call
-  //   sendMessage("__resume__");
-  // }, [conversationId, isConversationLoaded(conversationId ?? "")]);
-
-  // Handlers
-  const handleRenameOpen = () => {
-    const currentConv = conversations.find((c) => c.id === conversationId);
-    setRenameInitialValue(currentConv?.title ?? "");
-    setRenameOpen(true);
-  };
-
-  const handleRenameSubmit = async (trimmedName: string) => {
-    if (!conversationId) return;
-    try {
-      await updateConversationTitle(conversationId, trimmedName);
-      updateTitleInStore(conversationId, trimmedName);
-    } catch (e) {
-      console.error("Failed to rename:", e);
-      throw e; // re-throw so the dialog can catch and log if needed
-    }
-  };
-
-  const handleDelete = async () => {
-    if (!conversationId) return;
-    setIsDeleting(true);
-    try {
-      removeConversation(conversationId);
-      router.replace("/new");
-      await deleteConversation(conversationId);
-    } catch (e) {
-      console.error("Failed to delete:", e);
-      setIsDeleting(false);
-    }
-  };
-
   // Use useChat (which also uses store)
   // Ignoring `messages` from useChat as we consume directly from store above
   const { isLoading, error, sendMessage, clearError } = useChat({
@@ -149,11 +92,6 @@ export function ChatRoom({ conversationId }: ChatRoomProps) {
       behavior: "smooth",
     });
   }, [messages, isLoading]);
-
-  // Handle QuickAction chips
-  const handleQuickAction = (prompt: string) => {
-    sendMessage(prompt);
-  };
 
   return (
     <div className="flex h-full max-h-dvh w-full bg-background relative">
@@ -181,62 +119,22 @@ export function ChatRoom({ conversationId }: ChatRoomProps) {
           }
           rightContent={
             conversationId ? (
-              <>
-                {/* Rename Dialog */}
-                <RenameDialog
-                  open={renameOpen}
-                  onOpenChange={setRenameOpen}
-                  initialValue={renameInitialValue}
-                  onRename={handleRenameSubmit}
-                  title="Rename conversation"
-                  description="Enter a new name for this conversation."
-                />
-
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="text-text-secondary hover:text-foreground"
-                    >
-                      <MoreVertical className="h-5 w-5" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent
-                    align="end"
-                    className="bg-surface border-border"
-                  >
-                    <DropdownMenuItem
-                      onClick={handleRenameOpen}
-                      className="text-foreground focus:bg-surface-hover cursor-pointer gap-2"
-                    >
-                      <Pencil className="w-4 h-4" />
-                      Rename conversation
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
-                      onClick={() => setDeleteConfirmOpen(true)}
-                      className="text-red-500 focus:bg-red-500/10 focus:text-red-500 cursor-pointer gap-2"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                      Delete conversation
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-
-                {/* Delete confirm — controlled, no trigger */}
-                <ConfirmDialog
-                  trigger={<span />}
-                  title="Delete conversation?"
-                  description="This will permanently delete this conversation and all its messages. This cannot be undone."
-                  confirmLabel="Delete"
-                  loadingLabel="Deleting…"
-                  variant="destructive"
-                  isLoading={isDeleting}
-                  open={deleteConfirmOpen}
-                  onOpenChange={setDeleteConfirmOpen}
-                  onConfirm={handleDelete}
-                />
-              </>
+              <ConversationOptions
+                conversationId={conversationId}
+                currentTitle={
+                  conversations.find((c) => c.id === conversationId)?.title ??
+                  ""
+                }
+                onRename={async (id, name) => {
+                  await updateConversationTitle(id, name);
+                  updateTitleInStore(id, name);
+                }}
+                onDelete={async (id) => {
+                  removeConversation(id);
+                  router.replace("/chat");
+                  await deleteConversation(id);
+                }}
+              />
             ) : null
           }
         />
