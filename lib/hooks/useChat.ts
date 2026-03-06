@@ -123,22 +123,24 @@ export function useChat(options: UseChatOptions = {}): UseChatReturn {
 
           // 6. Append user message to store
           appendMessage(conversationId, userMessage);
-
-          // Navigate instantly
-          router.replace(`/chat/${result.id}`, {
-            scroll: false,
-          });
         } else {
-          // 6. Existing conversation
+          // Existing conversation
           appendMessage(conversationId, userMessage);
         }
 
-        // Call AI engine
+        // Call AI engine BEFORE navigating.
+        // This ensures the API call uses the
+        // current valid session cookies.
+        // Navigation triggers middleware token
+        // refresh — doing it after the call
+        // avoids the production race condition
+        // where the refresh invalidates the
+        // in-flight request.
         const { data } = await axios.post("/api/chat", {
           messages: [...messages, userMessage].slice(-20),
           conversationId: conversationId,
           skipUserMessageSave: isNewConversation,
-          context, // send current context with every request
+          context,
           sessionId: sessionIdRef.current,
         });
 
@@ -164,6 +166,16 @@ export function useChat(options: UseChatOptions = {}): UseChatReturn {
           ) {
             updateContext(conversationId, data.contextUpdate);
           }
+        }
+
+        // Navigate only after API responds.
+        // Safe to do here — response is already
+        // in hand so middleware refresh cannot
+        // interrupt anything.
+        if (isNewConversation && conversationId) {
+          router.replace(`/chat/${conversationId}`, {
+            scroll: false,
+          });
         }
       } catch (err: any) {
         const errorMessage =
