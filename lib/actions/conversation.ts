@@ -79,28 +79,42 @@ export async function getConversationWithMessages(
 
   if (!user) return null;
 
-  // Fetch both in parallel — never sequential
-  const [convResult, msgsResult] = await Promise.all([
-    supabase
-      .from("conversations")
-      .select("*")
-      .eq("id", conversationId)
-      .eq("user_id", user.id)
-      .single(),
-    supabase
-      .from("messages")
-      .select("*")
-      .eq("conversation_id", conversationId)
-      .order("created_at", { ascending: true }),
-  ]);
+  // Retry logic for newly created conversations that might not be replicated yet
+  let retries = 3;
+  let convResult;
+  let msgsResult;
 
-  if (convResult.error || !convResult.data) {
+  while (retries > 0) {
+    [convResult, msgsResult] = await Promise.all([
+      supabase
+        .from("conversations")
+        .select("*")
+        .eq("id", conversationId)
+        .eq("user_id", user.id)
+        .single(),
+      supabase
+        .from("messages")
+        .select("*")
+        .eq("conversation_id", conversationId)
+        .order("created_at", { ascending: true }),
+    ]);
+
+    if (!convResult.error && convResult.data) {
+      break; // Found it
+    }
+
+    // Wait 500ms and try again
+    await new Promise((resolve) => setTimeout(resolve, 500));
+    retries--;
+  }
+
+  if (convResult?.error || !convResult?.data) {
     return null;
   }
 
   return {
     conversation: convResult.data as Conversation,
-    messages: (msgsResult.data ?? []) as ChatMessage[],
+    messages: (msgsResult?.data ?? []) as ChatMessage[],
   };
 }
 
