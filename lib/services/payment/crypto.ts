@@ -58,18 +58,32 @@ export function decrypt(ciphertext: string): string {
   );
 }
 
+// export function getMnemonic(): string {
+//   const ciphertext = process.env[MNEMONIC_ENV];
+
+//   if (!ciphertext) {
+//     throw new Error(`${MNEMONIC_ENV} is not set in .env`);
+//   }
+
+//   try {
+//     return decrypt(ciphertext);
+//   } catch {
+//     throw new Error(
+//       "Failed to decrypt mnemonic. " + "Check BCH_ENCRYPTION_KEY is correct.",
+//     );
+//   }
+// }
+
 export function getMnemonic(): string {
   const ciphertext = process.env[MNEMONIC_ENV];
+  if (!ciphertext) throw new Error("Mnemonic not set");
 
-  if (!ciphertext) {
-    throw new Error(`${MNEMONIC_ENV} is not set in .env`);
-  }
-
-  try {
-    return decrypt(ciphertext);
-  } catch {
+  const parts = ciphertext.split(":");
+  if (parts.length !== 3) {
     throw new Error(
-      "Failed to decrypt mnemonic. " + "Check BCH_ENCRYPTION_KEY is correct.",
+      `Invalid ciphertext format: got ${parts.length} parts, expected 3`,
     );
   }
+
+  return decrypt(ciphertext);
 }
